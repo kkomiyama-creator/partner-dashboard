@@ -1,0 +1,50 @@
+name: refresh-dashboard
+
+on:
+  schedule:
+    # 5分おきに起動する。実際に平日8-20時(JST)かどうかはci_refresh.py内で判定してスキップする
+    # (cronはUTCのみ・曜日境界がJSTとズレるため、時間帯の判定はPython側に寄せる)。
+    - cron: "*/5 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-dashboard
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install --quiet google-api-python-client google-auth google-auth-oauthlib requests
+
+      - name: Run refresh pipeline
+        env:
+          CYZEN_DASHBOARD_TOKEN: ${{ secrets.CYZEN_DASHBOARD_TOKEN }}
+          GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
+          GOOGLE_OAUTH_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
+          GOOGLE_OAUTH_REFRESH_TOKEN: ${{ secrets.GOOGLE_OAUTH_REFRESH_TOKEN }}
+        run: python3 automation/ci_refresh.py
+
+      - name: Commit and push if changed
+        run: |
+          git config user.email "dashboard-bot@fit-founder.net"
+          git config user.name "Dashboard Bot (GitHub Actions)"
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "変更なし。コミットをスキップします。"
+          else
+            git commit -m "auto-update dashboard (GitHub Actions)"
+            git push
+          fi
