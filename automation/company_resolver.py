@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import csv
+import os
 
 CYZEN_MASTER = "/Users/fitfounderkomiyamakyousuke/Desktop/Cyzenからのエクスポートデータ/ユーザーマスター（営業担当者の情報）.csv"
 
@@ -70,6 +71,12 @@ def canon_name(raw_name):
     return n.replace("髙", "高").replace("濵", "濱")
 
 def load_master():
+    # CYZEN_MASTERは小宮山さんのローカルMac上にしか無いブラウザ手動エクスポートファイル(個人情報を
+    # 含むため公開リポジトリにはコミットしない)。GitHub Actions実行環境には存在しないので、無い場合は
+    # 空辞書にフォールバックする(2026-08-20・CI対応)。company_of()の優先順位が1段階弱まる
+    # (ロースター多数決/Slack送信者パース/直販スタッフ判定にフォールバック)だけで、クラッシュはしない。
+    if not os.path.exists(CYZEN_MASTER):
+        return {}
     m = {}
     with open(CYZEN_MASTER, encoding="utf-8-sig", errors="replace") as f:
         r = csv.reader(f)
