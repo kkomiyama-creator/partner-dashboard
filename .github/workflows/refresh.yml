@@ -4,8 +4,13 @@ on:
   schedule:
     # 5分おきに起動する。実際に平日8-20時(JST)かどうかはci_refresh.py内で判定してスキップする
     # (cronはUTCのみ・曜日境界がJSTとズレるため、時間帯の判定はPython側に寄せる)。
+    # 2026-08-20: 初回pushから1時間近くscheduleトリガーが一度も発火しなかったため、
+    # ワークフローファイル自体を再pushしてGitHub側のスケジューラ登録を再トリガーする。
     - cron: "*/5 * * * *"
   workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths: [".github/workflows/refresh.yml"]
 
 permissions:
   contents: write
