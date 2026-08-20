@@ -148,7 +148,8 @@ def build(start, end, today=None):
     totals = collections.Counter(d["c"] for d in deals)
     gap_bunbo = gap_reported + gap_missing
     return {
-        "generated": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        # GitHub Actionsランナーはシステム時刻がUTCのため、常にJSTへ明示変換する(2026-08-20対応)。
+        "generated": (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y-%m-%d %H:%M:%S"),
         "source": "Cyzen連携API /schedules（2026-08-17よりスクレイプから移行）",
         "period": {"start": start, "end": end},
         "mappedNames": len(named),

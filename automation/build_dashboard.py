@@ -4208,7 +4208,9 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
         "rate_baseline_pct": config.RATE_BASELINE_PCT,
     }
 
-    updated_label = datetime.now().strftime("%Y-%m-%d %H:%M")
+    # GitHub Actionsのランナーはシステム時刻がUTCのため、datetime.now()をそのまま使うと
+    # 「最終更新」表示が9時間ズレる。常にJSTへ明示変換する(2026-08-20・CI対応)。
+    updated_label = (datetime.utcnow() + timedelta(hours=9)).strftime("%Y-%m-%d %H:%M")
 
     attendance_alert_for_js = None
     if alert_master:
@@ -4367,7 +4369,10 @@ def main():
 
     attendance = resolve_attendance_source(args.attendance_csv) if args.attendance_csv else None
 
-    now = datetime.now()
+    # GitHub Actionsのランナーはシステム時刻がUTCのため、datetime.now()をそのまま使うと
+    # JST早朝(8-9時台等、UTCではまだ前日)に「今日」の判定がずれる。常にJSTへ明示変換する
+    # (2026-08-20・CI対応)。
+    now = datetime.utcnow() + timedelta(hours=9)
     start = args.start or now.strftime("%Y/%m/01")
     end = args.end or now.strftime("%Y/%m/%d")
 
