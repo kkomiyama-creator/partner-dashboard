@@ -836,6 +836,7 @@ function buildCustomRangeData(startYMD, endYMD){
   const soutikuNames = new Set();
   const headcountByCompany = new Map();
   const totalHeadcountNames = new Set();
+  const nameToCompany = new Map();
   let n_closing_in_period = 0;
   let visitsAvailable = false;
   const visitsTotal = {total_spots:0, new_visit_count:0, revisit_count:0, taimen_count:0, taimen_new_count:0, taimen_revisit_count:0};
@@ -878,6 +879,7 @@ function buildCustomRangeData(startYMD, endYMD){
     (dp.attendance_person_rows || []).forEach(r => {
       const [name, company] = r;
       totalHeadcountNames.add(name);
+      if(company) nameToCompany.set(name, company);
       if(!headcountByCompany.has(company)) headcountByCompany.set(company, new Set());
       headcountByCompany.get(company).add(name);
     });
@@ -950,7 +952,7 @@ function buildCustomRangeData(startYMD, endYMD){
   return {
     start, end, n_closing_in_period, companies, apo_ranking, soutiku_ranking, closer_ranking,
     unresolved_apo: [], unresolved_clo: [], name_alerts: [], totals,
-    attendance_person_rows: [...totalHeadcountNames].map(n=>[n, '', 1]),
+    attendance_person_rows: [...totalHeadcountNames].map(n=>[n, nameToCompany.get(n) || '', 1]),
     attendance_unresolved: [], total_headcount: totalHeadcountNames.size,
     prev_start: null, prev_end: null, prev_data_available: false,
     attendance_mismatch_people: null, visits,
