@@ -429,7 +429,7 @@ td.company{color:var(--text-sub);}
     <div class="tile clickable" data-tile="uri"><div class="label">売上</div><div class="value" id="tileUri">—<span class="unit">円</span></div><div class="sub">クローザー基準・契約書記載価格</div></div>
     <div class="tile" data-tile="rate"><div class="label">全社成約率</div><div class="value" id="tileRate">—<span class="unit">%</span></div><div class="sub">成約数 ÷ アポ獲得数（参考値）</div></div>
     <div class="tile clickable" data-tile="headcount"><div class="label" id="tileHeadcountLabel">稼働人員数（出勤打刻あり）</div><div class="value" id="tileHeadcount">—<span class="unit">名</span></div><div class="sub" id="tileHeadcountSub">Cyzen出勤報告・直販含む延べ社数計</div><div id="tileHeadcountPictogram"></div></div>
-    <div class="tile clickable" id="tileDailyHeadcountWrap" data-tile="dailyHeadcount"><div class="label">本日稼働人員数（<span id="tileDailyHeadcountDate">—</span>）</div><div class="value" id="tileDailyHeadcount">—<span class="unit">名</span></div><div class="sub" id="tileDailyHeadcountSub">表示期間の選択に関わらず常に「本日」の値（出勤打刻あり基準）・クリックで個人別内訳</div></div>
+    <div class="tile clickable" id="tileDailyHeadcountWrap" data-tile="dailyHeadcount"><div class="label">稼働人員数・詳細（<span id="tileDailyHeadcountDate">—</span>）</div><div class="value" id="tileDailyHeadcount">—<span class="unit">名</span></div><div class="sub" id="tileDailyHeadcountSub">選択中の期間の値（出勤打刻あり基準）・クリックで個人別内訳</div></div>
     <div class="tile clickable" data-tile="apoAchievers"><div class="label">アポ獲得達成者</div><div class="value" id="tileApoAchievers">—<span class="unit">名</span></div><div class="sub">1件以上アポ獲得した人数</div></div>
     <div class="tile clickable" data-tile="seiyakuAchievers"><div class="label">成約達成者</div><div class="value" id="tileSeiyakuAchievers">—<span class="unit">名</span></div><div class="sub">アポ/クロいずれかで1件以上成約</div></div>
     <div class="tile clickable" id="tileSpotActiveWrap" data-tile="spotActive" style="display:none;"><div class="label">稼働人員数（スポット作成）</div><div class="value" id="tileSpotActive">—<span class="unit">名</span></div><div class="sub" id="tileSpotActiveSub">—</div></div>
@@ -1754,6 +1754,7 @@ function realtimeActiveRecords(company){
 }
 function renderTiles(){
   const d = currentData();
+  renderDailyHeadcountTile();
   if(COMPANY_SCOPE){ renderTilesForCompany(d, COMPANY_SCOPE); return; }
   const tot = d.totals;
   const rate = tot.apo_kakutoku ? (tot.clo_seiyaku/tot.apo_kakutoku*100) : 0;
@@ -2109,15 +2110,16 @@ function headcountByMethod(startYMD, endYMD){
 function headcountRateOf(hc, target){
   return (target && hc!==null && hc!==undefined) ? round1(hc/target*100) : null;
 }
-// トップ画面の「本日稼働人員数」タイル。上部の表示期間ピッカー（日次/週次/月次/カスタム）とは無関係に
-// 常に実際の「本日」（DAILY_DATESの最新日）の値を出す（2026-08-10・小宮山さんの依頼＝累計だけでなく
-// デイリーの稼働人員数を常設で見たい、に対応）。
+// トップ画面の「稼働人員数・詳細」タイル。上部の表示期間ピッカー（日次/週次/月次/カスタム）で
+// 選択中の期間に連動し、その期間固有の実人数（出勤打刻あり基準・重複排除済み）を出す
+// （2026-08-25修正・小宮山さんの指摘＝日付を変えても「本日」の値に固定されたままだったのを解消）。
 function renderDailyHeadcountTile(){
   const wrap = document.getElementById('tileDailyHeadcountWrap');
-  const todayDate = DAILY_DATES[0];
-  if(!todayDate){ wrap.style.display = 'none'; return; }
-  const hc = headcountByMethod(todayDate, todayDate);
-  document.getElementById('tileDailyHeadcountDate').textContent = todayDate;
+  const d = currentData();
+  if(!d || !d.start){ wrap.style.display = 'none'; return; }
+  const hc = headcountByMethod(d.start, d.end);
+  const periodLabel = d.start === d.end ? d.start : `${d.start}〜${d.end}`;
+  document.getElementById('tileDailyHeadcountDate').textContent = periodLabel;
   document.getElementById('tileDailyHeadcount').innerHTML =
     `${hc.attendance===null||hc.attendance===undefined?'—':hc.attendance}<span class="unit">名</span>`;
   const spotTxt = hc.spot===null||hc.spot===undefined ? '—' : hc.spot;
@@ -3375,31 +3377,32 @@ function openPersonDetail(name){
 
   document.getElementById('drillModal').classList.add('show');
 }
-// 「本日稼働人員数」タイル用のドリルダウン定義（2026-08-11・小宮山さんの依頼＝本日出勤打刻がある人を
-// クリックで一覧表示し、各人の出勤/退勤時刻（記録があれば）と本日のアポ獲得数・成約数を見たい、に対応）。
-// 上部の表示期間ピッカーとは無関係に常に「本日」（DAILY_DATESの最新日）を対象にする点はタイル本体と同じ。
+// 「稼働人員数・詳細」タイル用のドリルダウン定義（2026-08-11・小宮山さんの依頼＝出勤打刻がある人を
+// クリックで一覧表示し、各人の出勤/退勤時刻（記録があれば）とアポ獲得数・成約数を見たい、に対応）。
+// 2026-08-25修正：上部の表示期間ピッカーで選択中の期間（日次/週次/月次/カスタム）に連動するよう変更
+// （それまでは常に「本日」固定だった）。
 function dailyHeadcountTileDef(){
-  const todayDate = DAILY_DATES[0];
-  if(!todayDate){
-    return {title:'本日稼働人員数の内訳（個人別）', cols:['氏名'], rows: [], subLabel:'本日の出勤データがありません'};
+  const d = currentData();
+  if(!d || !d.start){
+    return {title:'稼働人員数の内訳（個人別）', cols:['氏名'], rows: [], subLabel:'この期間の出勤データがありません'};
   }
-  const dp = DAILY_PERIODS[todayDate];
-  const todayHyphen = todayDate.replaceAll('/','-');
-  const timeOf = ts => (ts && ts.slice(0,10)===todayHyphen) ? ts.slice(11,16) : '—';
-  const rows = (dp.attendance_person_rows || []).map(r=>{
+  const startHyphen = d.start.replaceAll('/','-'), endHyphen = d.end.replaceAll('/','-');
+  const timeOf = ts => (ts && ts.slice(0,10) >= startHyphen && ts.slice(0,10) <= endHyphen) ? ts.slice(11,16) : '—';
+  const rows = (d.attendance_person_rows || []).map(r=>{
     const name = r[0], company = r[1] || '（不明）';
     const nameKey = normNameJs(name);
     const rec = ATTENDANCE_BY_NAME.get(nameKey);
-    const apoRow = (dp.apo_ranking || []).find(x=>normNameJs(x[1])===nameKey);
-    const cloRow = (dp.closer_ranking || []).find(x=>normNameJs(x[1])===nameKey);
+    const apoRow = (d.apo_ranking || []).find(x=>normNameJs(x[1])===nameKey);
+    const cloRow = (d.closer_ranking || []).find(x=>normNameJs(x[1])===nameKey);
     return [name, company, rec ? timeOf(rec.last_in) : '—', rec ? timeOf(rec.last_out) : '—',
             apoRow ? apoRow[4] : 0, apoRow ? apoRow[3] : 0, cloRow ? cloRow[3] : 0];
   }).sort((a,b)=> (b[4]-a[4]) || (b[5]-a[5]) || (b[6]-a[6]) || String(a[0]).localeCompare(String(b[0]),'ja'));
+  const periodLabel = d.start === d.end ? d.start : `${d.start}〜${d.end}`;
   return {
-    title: '本日稼働人員数の内訳（個人別・出勤打刻あり）',
+    title: '稼働人員数の内訳（個人別・出勤打刻あり）',
     cols: ['氏名','会社名','出勤時刻','退勤時刻','アポ獲得','アポ成約','クロ成約'],
     rows,
-    subLabel: `${todayDate}時点／${rows.length}名（出勤打刻あり基準・退勤時刻は記録がある場合のみ）`,
+    subLabel: `${periodLabel}時点／${rows.length}名（出勤打刻あり基準・出退勤時刻は選択期間内の打刻がある場合のみ表示）`,
   };
 }
 // ---------- ③ KPIタイルクリック→内訳ドリルダウン（既存drillModalを流用） ----------
@@ -3607,7 +3610,6 @@ renderRoute();
 renderTrend();
 renderAiSummary();
 renderExecTab();
-renderDailyHeadcountTile();
 renderShiftStatus();
 renderShodanPipeline();
 renderDecline();
