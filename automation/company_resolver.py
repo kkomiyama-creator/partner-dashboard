@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 import csv
 import os
+import sys
 
+# 2026-08-24: ユーザーマスタの取得元をローカルCSV(GitHub Actions環境には存在せず常に空辞書
+# フォールバックだった)からCyzen連携API(/users)直接取得に切り替えた。CI環境には
+# CYZEN_DASHBOARD_TOKENがSecretsとして既に設定済みのため、そのままAPI取得に利用できる。
 CYZEN_MASTER = "/Users/fitfounderkomiyamakyousuke/Desktop/Cyzenからのエクスポートデータ/ユーザーマスター（営業担当者の情報）.csv"
 
 COMPANY_CANON = {
@@ -70,26 +74,44 @@ def canon_name(raw_name):
     n = NAME_CANON.get(n, n)
     return n.replace("髙", "高").replace("濵", "濱")
 
-def load_master():
-    # CYZEN_MASTERは小宮山さんのローカルMac上にしか無いブラウザ手動エクスポートファイル(個人情報を
-    # 含むため公開リポジトリにはコミットしない)。GitHub Actions実行環境には存在しないので、無い場合は
-    # 空辞書にフォールバックする(2026-08-20・CI対応)。company_of()の優先順位が1段階弱まる
-    # (ロースター多数決/Slack送信者パース/直販スタッフ判定にフォールバック)だけで、クラッシュはしない。
-    if not os.path.exists(CYZEN_MASTER):
-        return {}
-    m = {}
-    with open(CYZEN_MASTER, encoding="utf-8-sig", errors="replace") as f:
-        r = csv.reader(f)
-        idx = {h: i for i, h in enumerate(next(r))}
-        for row in r:
-            name = row[idx["名前"]].strip()
-            if not name:
-                continue
-            attrs = [a.strip() for a in row[idx["メンバー属性"]].split("\n") if a.strip()]
-            comps = [a for a in attrs if a not in NON_COMPANY]
-            if comps:
-                m[norm_name(name)] = canon(comps[0])
+def _load_master_from_api():
+    """Cyzen連携API(/users)からライブのユーザーマスタを取得する。同姓同名が複数会社に
+    またがる場合はaccount_status=1(有効)を優先し、無ければ無効アカウントにフォールバックする。"""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from cyzen_api_client import CyzenAPIClient  # noqa: E402
+
+    client = CyzenAPIClient()
+    users = client.get_all("users", key="users", field="all")
+
+    m, m_inactive = {}, {}
+    for u in users:
+        name = (u.get("user_name") or "").strip()
+        if not name:
+            continue
+        tags = [t.get("user_tag_name") for t in (u.get("user_tags") or [])]
+        comps = [t for t in tags if t and t not in NON_COMPANY]
+        if not comps:
+            continue
+        key = norm_name(name)
+        target = m if u.get("account_status") == 1 else m_inactive
+        target[key] = canon(comps[0])
+
+    for key, company in m_inactive.items():
+        m.setdefault(key, company)
     return m
+
+
+def load_master():
+    # トークン未設定・API障害時は空辞書にフォールバックする(2026-08-20対応と同じ思想)。
+    # company_of()の優先順位が1段階弱まる(ロースター多数決/Slack送信者パース/直販スタッフ判定に
+    # フォールバック)だけで、クラッシュはしない。
+    try:
+        return _load_master_from_api()
+    except Exception as e:  # noqa: BLE001
+        print(f"[company_resolver] API経由のユーザーマスタ取得に失敗、空辞書で継続します: {e}",
+              file=sys.stderr)
+        return {}
+
 
 MASTER = load_master()
 
