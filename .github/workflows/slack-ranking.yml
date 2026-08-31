@@ -1,0 +1,75 @@
+name: slack-apo-ranking
+
+# アポ獲得ランキング・成約ランキング・企業別総計のSlack日次投稿(2026-08-31追加)。
+# 社長→佐久間さんへのkintone×Slack要件書(FF-KS-APPOINT-RANK-001)を、小宮山さんの
+# 既存ダッシュボード(Google Sheets/Cyzen API集計)ベースに置き換えて実装したもの。
+#
+# 2026-08-31時点: SLACK_BOT_TOKEN/SLACK_CHANNEL_ID未設定のためscheduleトリガーは
+# あえて付けていない(workflow_dispatchの手動実行のみ)。投稿先チャンネルと
+# Slack Botトークンが確定し、小宮山さんの許可が取れたら、scheduleトリガー
+# (例: 平日20:30 JST = "32 11 * * 1-5" ※refresh.ymlと同じく毎時ちょうどを避けた
+# オフセット)を追加する。
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: slack-apo-ranking
+  cancel-in-progress: false
+
+jobs:
+  post-ranking:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install --quiet google-api-python-client google-auth google-auth-oauthlib requests
+
+      - name: Fetch roster/closing sheets
+        env:
+          GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
+          GOOGLE_OAUTH_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
+          GOOGLE_OAUTH_REFRESH_TOKEN: ${{ secrets.GOOGLE_OAUTH_REFRESH_TOKEN }}
+        run: |
+          mkdir -p automation/data
+          python3 -c "
+          import sys
+          sys.path.insert(0, 'automation')
+          from gsheets_client_ci import fetch_all
+          paths = fetch_all('automation/data')
+          print(paths)
+          "
+
+      - name: Run post_slack_ranking.py
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+        run: |
+          python3 automation/post_slack_ranking.py \
+            --roster-csv automation/data/roster_live.csv \
+            --closing-csv automation/data/closing_live.csv \
+            --state-json automation/data/slack_ranking_state.json
+
+      - name: Commit state if changed
+        run: |
+          git config user.email "dashboard-bot@fit-founder.net"
+          git config user.name "Dashboard Bot (GitHub Actions)"
+          git add automation/data/slack_ranking_state.json
+          if git diff --cached --quiet; then
+            echo "変更なし。コミットをスキップします。"
+          else
+            git fetch origin main
+            git rebase origin/main
+            git commit -m "update slack ranking state (GitHub Actions)"
+            git push
+          fi

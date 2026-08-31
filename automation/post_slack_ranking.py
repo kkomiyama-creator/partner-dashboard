@@ -1,0 +1,223 @@
+# -*- coding: utf-8 -*-
+"""アポ獲得ランキング・成約ランキング・企業別総計をSlackへ日次自動投稿する（2026-08-31追加）。
+
+背景: 社長が佐久間さんへ依頼した「kintone×Slack アポ獲得ランキング連携」要件書
+（文書ID FF-KS-APPOINT-RANK-001・v1.0・2026-08-30）を、佐久間さん×小宮山さんの
+2026-08-31ハドルミーティングで「小宮山さんの既存ダッシュボード（Google Sheets/Cyzen
+API集計・ranking_core.py）をデータソースに使うのが最も正しい」と合意した内容の実装。
+Render+Node.js新規構築ではなく、既存のGitHub Actions(Python)基盤を拡張する形にした
+（実行基盤の選定は小宮山さんに確認済み・2026-08-31）。
+
+要件書からの主な簡略化・差し替え点（小宮山さんに確認済み）:
+- 要件書の「後確通過」（kintoneのpost_check_status=通過による当日獲得コホートの
+  事後承認）は、Cyzen側に同等のステータス管理が無いため、既存の「アポ成約」
+  （獲得報告データ＝Slackクロージング報告ワークフロー由来）と同じ意味として扱う。
+  つまり「後確通過ランキング」は「本日アポ成約報告があった件数のランキング」になる
+  （要件書の厳密なコホート定義＝獲得日基準ではなく、成約報告日基準という違いがある）。
+- kintone REST API/Cursor取得は使わず、ranking_core.aggregate()（roster/closing CSV
+  ベース）をそのまま再利用する。
+- 投稿先チャンネル・SLACK_BOT_TOKENは2026-08-31時点で未確定。未設定の間はドライラン
+  （Slackへ実際には投稿せず、生成したBlock Kit JSONを標準出力するだけ）で動作する。
+
+使い方:
+  # ドライラン（SLACK_BOT_TOKEN未設定でも実行可能・実際には投稿しない）
+  python3 post_slack_ranking.py --roster-csv <CSV> --closing-csv <CSV> \
+      --target-date 2026-08-31 --state-json data/slack_ranking_state.json
+
+  # 本番投稿（環境変数 SLACK_BOT_TOKEN・SLACK_CHANNEL_ID が両方揃っている場合のみ実際に投稿する）
+"""
+import argparse
+import datetime
+import json
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from ranking_core import aggregate  # noqa: E402
+
+CUMULATIVE_START = "2020/01/01"  # roster CSVの実データ開始(2026年1月)より十分前の安全な起点
+TOP_N = 10
+COMPANY_TOP_N = 10
+
+
+def pct(numerator, denominator):
+    return round(numerator / denominator * 100, 1) if denominator else None
+
+
+def fmt_pct(v):
+    return "—" if v is None else f"{v}%"
+
+
+def yen(n):
+    return f"{n:,}"
+
+
+def ranked_by_apo(apo_ranking):
+    """要件書の「アポ獲得ランキング」順位ルール（アポ獲得 降順→成約 降順→氏名昇順）で並べ替える。
+    apo_ranking の行は [順位, 氏名, 会社, 成約数, アポ数] （ranking_core.aggregate()の既存出力）。
+    ダッシュボード本体の既定ソート（成約優先）とは目的が違うため、ここで独自に並べ替える。"""
+    rows = sorted(apo_ranking, key=lambda r: (-r[4], -r[3], r[1]))
+    return rows[:TOP_N]
+
+
+def ranked_by_seiyaku(apo_ranking):
+    """「成約(後確通過扱い)ランキング」。aggregate()側の既定ソート(成約降順→アポ数降順)がそのまま使える。"""
+    return apo_ranking[:TOP_N]
+
+
+def build_summary(roster_csv, closing_csv, target_date):
+    """target_date: 'YYYY-MM-DD'。日次・当月・累計の3つを集計して返す。"""
+    d = datetime.date.fromisoformat(target_date)
+    day_s = d.strftime("%Y/%m/%d")
+    month_start = d.replace(day=1).strftime("%Y/%m/%d")
+
+    day = aggregate(roster_csv, closing_csv, day_s, day_s)
+    month = aggregate(roster_csv, closing_csv, month_start, day_s)
+    cumulative = aggregate(roster_csv, closing_csv, CUMULATIVE_START, day_s)
+
+    month_by_co = {c["company"]: c["apo_kakutoku"] for c in month["companies"]}
+    cum_by_co = {c["company"]: c["apo_kakutoku"] for c in cumulative["companies"]}
+
+    company_rows = []
+    for c in day["companies"]:
+        company_rows.append({
+            "company": c["company"],
+            "day": c["apo_kakutoku"],
+            "month": month_by_co.get(c["company"], 0),
+            "cumulative": cum_by_co.get(c["company"], 0),
+        })
+    company_rows.sort(key=lambda r: -r["day"])
+
+    total_apo = sum(c["apo_kakutoku"] for c in day["companies"])
+    total_seiyaku = sum(c["apo_seiyaku"] for c in day["companies"])
+    unassigned = len(day["unresolved_apo"]) + len(day["unresolved_clo"])
+    cancelled = sum(day.get("apo_cancel_by_name", {}).values())
+
+    return {
+        "target_date": target_date,
+        "apo_ranking_by_apo": ranked_by_apo(day["apo_ranking"]),
+        "apo_ranking_by_seiyaku": ranked_by_seiyaku(day["apo_ranking"]),
+        "company_rows": company_rows[:COMPANY_TOP_N],
+        "n_companies_total": len(company_rows),
+        "total_apo": total_apo,
+        "total_seiyaku": total_seiyaku,
+        "unassigned": unassigned,
+        "cancelled": cancelled,
+        "n_companies": len(day["companies"]),
+    }
+
+
+def build_blocks(summary, dashboard_url):
+    d = summary["target_date"]
+    lines_apo = []
+    for i, r in enumerate(summary["apo_ranking_by_apo"], 1):
+        name, co, seiyaku, apo = r[1], r[2], r[3], r[4]
+        lines_apo.append(f"{i}. {name}（{co}） {apo}件（成約{seiyaku}件／成約率{fmt_pct(pct(seiyaku, apo))}）")
+
+    lines_seiyaku = []
+    for i, r in enumerate(summary["apo_ranking_by_seiyaku"], 1):
+        name, co, seiyaku, apo = r[1], r[2], r[3], r[4]
+        lines_seiyaku.append(f"{i}. {name}（{co}） 成約{seiyaku}件（アポ{apo}件）")
+
+    lines_company = []
+    for c in summary["company_rows"]:
+        lines_company.append(f"{c['company']}：当日{c['day']}／当月{c['month']}／累計{c['cumulative']:,}")
+
+    note_parts = []
+    if summary["unassigned"]:
+        note_parts.append(f"未紐付け{summary['unassigned']}件")
+    if summary["cancelled"]:
+        note_parts.append(f"キャンセル{summary['cancelled']}件")
+    if summary["n_companies_total"] > COMPANY_TOP_N:
+        note_parts.append(f"企業総計は上位{COMPANY_TOP_N}社のみ表示（全{summary['n_companies_total']}社）")
+    note = "　|　".join(note_parts) if note_parts else "特になし"
+
+    now_jst = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y-%m-%d %H:%M JST")
+
+    text_fallback = (
+        f"{d} アポ獲得ランキング：総アポ{summary['total_apo']}件｜成約{summary['total_seiyaku']}件"
+    )
+
+    blocks = [
+        {"type": "header", "text": {"type": "plain_text", "text": f"📊 アポ獲得ランキング｜{d}"}},
+        {"type": "section", "text": {"type": "mrkdwn",
+         "text": f"*総アポ獲得* {summary['total_apo']}件　|　*成約* {summary['total_seiyaku']}件　|　*集計対象* {summary['n_companies']}社"}},
+        {"type": "divider"},
+        {"type": "section", "text": {"type": "mrkdwn",
+         "text": "*🏆 アポ獲得ランキング（当日）*\n" + ("\n".join(lines_apo) if lines_apo else "対象データなし")}},
+        {"type": "section", "text": {"type": "mrkdwn",
+         "text": "*✅ 成約ランキング（当日）*\n" + ("\n".join(lines_seiyaku) if lines_seiyaku else "対象データなし")}},
+        {"type": "divider"},
+        {"type": "section", "text": {"type": "mrkdwn",
+         "text": "*🏢 企業別総計（当日／当月／累計）*\n" + ("\n".join(lines_company) if lines_company else "対象データなし")}},
+        {"type": "context", "elements": [{"type": "mrkdwn", "text": f"注意: {note}"}]},
+        {"type": "context", "elements": [
+            {"type": "mrkdwn", "text": f"最終更新 {now_jst}　|　<{dashboard_url}|ダッシュボードで詳細を見る>"}
+        ]},
+    ]
+    return blocks, text_fallback
+
+
+def load_state(path):
+    if path and os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
+
+def save_state(path, state):
+    if not path:
+        return
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(state, f, ensure_ascii=False, indent=1)
+
+
+def post_or_update_slack(token, channel, blocks, text, existing_ts):
+    import requests
+    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json; charset=utf-8"}
+    if existing_ts:
+        payload = {"channel": channel, "ts": existing_ts, "text": text, "blocks": blocks}
+        resp = requests.post("https://slack.com/api/chat.update", headers=headers, json=payload, timeout=30)
+    else:
+        payload = {"channel": channel, "text": text, "blocks": blocks}
+        resp = requests.post("https://slack.com/api/chat.postMessage", headers=headers, json=payload, timeout=30)
+    body = resp.json()
+    if not body.get("ok"):
+        raise RuntimeError(f"Slack API error: {body.get('error')}")
+    return body["ts"]
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--roster-csv", required=True)
+    ap.add_argument("--closing-csv", required=True)
+    ap.add_argument("--target-date", default=None, help="YYYY-MM-DD（省略時はJSTの今日）")
+    ap.add_argument("--state-json", default=None,
+                     help="business_date -> slack_ts の永続状態ファイル（再実行時の重複投稿防止用）")
+    ap.add_argument("--dashboard-url", default="https://kkomiyama-creator.github.io/partner-dashboard/")
+    args = ap.parse_args()
+
+    target_date = args.target_date or (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y-%m-%d")
+
+    summary = build_summary(args.roster_csv, args.closing_csv, target_date)
+    blocks, text = build_blocks(summary, args.dashboard_url)
+
+    token = os.environ.get("SLACK_BOT_TOKEN")
+    channel = os.environ.get("SLACK_CHANNEL_ID")
+
+    if not token or not channel:
+        print("[DRY RUN] SLACK_BOT_TOKEN/SLACK_CHANNEL_IDが未設定のため実際には投稿しません。")
+        print(json.dumps({"text": text, "blocks": blocks}, ensure_ascii=False, indent=2))
+        return
+
+    state = load_state(args.state_json)
+    existing_ts = state.get(target_date)
+    ts = post_or_update_slack(token, channel, blocks, text, existing_ts)
+    state[target_date] = ts
+    save_state(args.state_json, state)
+    print(f"投稿完了 ({'更新' if existing_ts else '新規'}): ts={ts}")
+
+
+if __name__ == "__main__":
+    main()
