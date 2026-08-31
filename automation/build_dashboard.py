@@ -491,12 +491,13 @@ td.company{color:var(--text-sub);}
         <summary style="cursor:pointer; font-weight:700; font-size:13px; color:var(--ink);">🎯 企業別目標を編集（ブラウザに保存・次回アクセス時も復元）</summary>
         <div class="note" style="margin-top:10px;">
           パートナー企業ごとの月次目標（アポ獲得数・成約数・売上・稼働人員数）を入力すると、下の企業別実績表に達成率が表示されます。実データが未回収の会社は空欄のままでOKです（表では「未設定」と表示されます）。2026/8/31時点、各社の目標値は9月分を回収中で、判明した会社から順次このフォームに入力していく運用を想定しています。<br>
-          <b>保存範囲について</b>　この入力はご利用のブラウザにのみ保存されます（他の人のブラウザや別端末には反映されません）。全社共通の値として恒久的に配布したい場合は、小宮山さんに「data/company_targets.json」への反映を依頼してください。
+          <b>保存範囲について</b>　「保存して再計算」はご利用のブラウザにのみ保存されます（他の人のブラウザや別端末には反映されません）。<b>全社共通・恒久的な値にしたい場合は「JSONで書き出す」でファイルを保存し、そのファイルをClaudeに渡して「data/company_targets.jsonを更新して」と伝えてください</b>（deploy側・skill側の両方に反映され、以後は誰が見ても・ブラウザを変えてもこの値が初期表示されます）。
         </div>
         <div class="tablewrap" style="margin-top:14px;"><table id="companyTargetForm"></table></div>
         <div style="margin-top:10px; display:flex; gap:8px; align-items:center;">
           <button class="csvbtn" id="companyTargetSaveBtn" type="button">保存して再計算</button>
           <button class="printbtn" id="companyTargetResetBtn" type="button">初期値に戻す</button>
+          <button class="printbtn" id="companyTargetExportBtn" type="button">JSONで書き出す（恒久反映用）</button>
           <span id="companyTargetSavedMsg" style="font-size:12px; color:var(--success); display:none;">✓ 保存しました</span>
         </div>
       </details>
@@ -817,7 +818,7 @@ function tenureBucketLabel(bucket){
 function tenureCell(name){
   const t = TENURE_BY_NAME.get(normNameJs(name));
   if(!t) return '<span class="pill flat">不明</span>';
-  return `<span title="登録日 ${t.created_at}・在籍${t.tenure_days}日">${tenureBucketLabel(t.bucket)}</span>`;
+  return `<span title="Cyzenアカウント登録日を初稼働日の代理指標として使用">${tenureBucketLabel(t.bucket)}　${t.created_at}（${t.tenure_days}日）</span>`;
 }
 const COMPANY_TARGETS_DEFAULT = __COMPANY_TARGETS_JSON__;
 const COMPANY_TARGETS_STORAGE_KEY = 'partnerDashboardCompanyTargets_v1';
@@ -3200,6 +3201,11 @@ document.getElementById('companyTargetResetBtn').addEventListener('click', ()=>{
   localStorage.removeItem(COMPANY_TARGETS_STORAGE_KEY);
   COMPANY_TARGETS = loadCompanyTargets();
   renderAllTables();
+});
+document.getElementById('companyTargetExportBtn').addEventListener('click', async ()=>{
+  const btn = document.getElementById('companyTargetExportBtn');
+  COMPANY_TARGETS = readCompanyTargetForm();
+  await saveWithFallback(btn, 'company_targets.json', JSON.stringify(COMPANY_TARGETS, null, 1));
 });
 
 function renderOutreach(){
