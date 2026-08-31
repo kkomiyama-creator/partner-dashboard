@@ -483,6 +483,11 @@ td.company{color:var(--text-sub);}
     <div class="tile clickable" id="tileSpotTotalWrap" data-tile="spotTags" style="display:none;"><div class="label">スポット更新数</div><div class="value" id="tileSpotTotal">—<span class="unit">件</span></div><div class="sub">クリックでタグ別内訳を表示</div></div>
   </div>
 
+  <div class="card" id="companyKpiGaugeTopCard" style="display:none; margin-bottom:22px;">
+    <div style="font-size:13px; font-weight:700; margin-bottom:14px;">🎯 <span id="companyKpiGaugeTopTitle"></span> 目標に対する進捗（当期間・目標未設定の項目は表示されません）</div>
+    <div class="kpi-gauge-row" id="companyKpiGaugeTopWrap"></div>
+  </div>
+
   <div class="tabbar">
     <div class="tabs">
       <div class="tab active" data-panel="p-company"><span class="tab-ico">🏢</span><span class="tab-txt">企業別</span></div>
@@ -557,16 +562,18 @@ td.company{color:var(--text-sub);}
         </div>
       </details>
       <div class="card"><div class="tablewrap"><table id="t-company"></table></div></div>
-      <div class="note" style="margin-top:10px;">企業名をクリックすると、その企業の担当者別の内訳（アポ獲得数・アポ成約・クロ成約・売上）をモーダルで表示します。上の検索欄で会社を選ぶと、この一覧の代わりにその会社のメンバー内訳を常時表示に切り替えます（ダッシュボード上部のKPIタイルもその会社の値に切り替わります。他のランキングタブは全社表示のまま変わりません）。</div>
+      <div class="note" style="margin-top:10px;">企業名をクリックすると、その企業の目標進捗ゲージがページ上部に表示され、メンバー別内訳の表示に切り替わります（ダッシュボード上部のKPIタイルもその会社の値に切り替わります。他のランキングタブは全社表示のまま変わりません）。</div>
     </div>
 
     <div id="companyScopedView" style="display:none;">
-      <div class="card" id="companyKpiGaugeCard" style="margin-bottom:16px; display:none;">
-        <div style="font-size:13px; font-weight:700; margin-bottom:14px;">🎯 目標に対する進捗（当期間・目標未設定の項目は表示されません）</div>
-        <div class="kpi-gauge-row" id="companyKpiGaugeWrap"></div>
+      <div class="card" style="margin-bottom:16px;">
+        <div style="font-size:12.5px; font-weight:700; color:var(--text-sub); margin-bottom:10px;">担当者別の内訳を見る指標を選んでください</div>
+        <div id="companyMemberChips" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
       </div>
-      <div class="card"><div class="tablewrap"><table id="t-company-scoped"></table></div></div>
-      <div class="note" style="margin-top:10px;" id="companyScopedNote"></div>
+      <div class="card" id="companyMemberTableCard" style="display:none;">
+        <div class="tablewrap"><table id="t-company-scoped"></table></div>
+      </div>
+      <div class="note" style="margin-top:10px; display:none;" id="companyScopedNote"></div>
     </div>
   </div>
   <div id="p-apo" class="panel">
@@ -1834,34 +1841,50 @@ function computeCompanyMembers(d, company){
   });
   return [...byName.values()].sort((a,b)=> (b.uriage - a.uriage) || (b.apoCount - a.apoCount));
 }
+// 担当者別内訳テーブルで選べる指標（2026-08-31改訂・小宮山さん依頼）。クリックするまで
+// テーブル自体を表示しない。colIdxはrenderTable()に渡す行配列（[名前,アポ獲得数,アポ成約,
+// クロ成約,売上,稼働日数]）でのインデックス＝defaultSortにそのまま使う。
+const COMPANY_MEMBER_METRICS = [
+  {label:'アポ獲得数', colIdx:1},
+  {label:'アポ成約', colIdx:2},
+  {label:'クロ成約', colIdx:3},
+  {label:'売上', colIdx:4},
+  {label:'稼働日数', colIdx:5},
+];
 function renderCompanyScopedView(d){
   const company = COMPANY_SCOPE;
-
-  const c = (d.companies || []).find(x => x.company === company) || {};
-  const t = COMPANY_TARGETS[company] || {};
-  const gauges = [
-    kpiGaugeCard('アポ獲得数', c.apo_kakutoku, t.apo, v => (v===null||v===undefined)?'—':v+'件'),
-    kpiGaugeCard('成約数', c.clo_seiyaku, t.seiyaku, v => (v===null||v===undefined)?'—':v+'件'),
-    kpiGaugeCard('売上', c.uriage, t.uriage, v => (v===null||v===undefined)?'—':yen(v)+'円'),
-    kpiGaugeCard('稼働人員数', c.headcount, t.chinin, v => (v===null||v===undefined)?'—':v+'名'),
-  ].filter(Boolean);
-  document.getElementById('companyKpiGaugeCard').style.display = gauges.length ? '' : 'none';
-  document.getElementById('companyKpiGaugeWrap').innerHTML = gauges.join('');
-
   const people = computeCompanyMembers(d, company);
-  const table = document.getElementById('t-company-scoped');
-  const cols = ['名前','アポ獲得数','アポ成約','クロ成約','売上','稼働日数'];
-  const thead = '<thead><tr>' + cols.map(c=>`<th class="${c==='名前'?'':'num'}">${c}</th>`).join('') + '</tr></thead>';
-  const tbody = '<tbody>' + (people.length ? people.map(p=>
-    `<tr><td class="name clickable-name" data-name="${escapeHtml(p.name)}">${escapeHtml(p.name)}</td><td class="num">${p.apoCount}</td><td class="num">${p.apoSeiyaku}</td>` +
-    `<td class="num">${p.cloSeiyaku}</td><td class="num">${yen(p.uriage)}</td><td class="num">${p.activeDays===null?'—':p.activeDays}</td></tr>`
-  ).join('') : '<tr><td colspan="6" style="text-align:center;color:var(--text-sub);">この期間、担当者別データがありません</td></tr>') + '</tbody>';
-  table.innerHTML = thead + tbody;
-  table.querySelectorAll('.clickable-name').forEach(td=>{
-    td.addEventListener('click', ()=> openPersonDetail(td.dataset.name));
+  const rows = people.map(p => [p.name, p.apoCount, p.apoSeiyaku, p.cloSeiyaku, p.uriage, p.activeDays]);
+
+  function drawMemberTable(sortColIdx){
+    renderTable('t-company-scoped', [
+      {label:'名前'},
+      {label:'アポ獲得数', num:true},
+      {label:'アポ成約', num:true},
+      {label:'クロ成約', num:true},
+      {label:'売上', num:true, fmt:v=>yen(v)},
+      {label:'稼働日数', num:true, fmt:v=>(v===null||v===undefined)?'—':v},
+    ], rows, {defaultSort: sortColIdx, rowClick: r=>openPersonDetail(r[0])});
+  }
+
+  document.getElementById('companyMemberTableCard').style.display = 'none';
+  document.getElementById('companyScopedNote').style.display = 'none';
+  const chipsWrap = document.getElementById('companyMemberChips');
+  chipsWrap.innerHTML = COMPANY_MEMBER_METRICS.map(m =>
+    `<button class="printbtn" type="button" data-metric-col="${m.colIdx}">${escapeHtml(m.label)}</button>`
+  ).join('');
+  chipsWrap.querySelectorAll('button[data-metric-col]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      drawMemberTable(Number(btn.dataset.metricCol));
+      const card = document.getElementById('companyMemberTableCard');
+      card.style.display = '';
+      document.getElementById('companyScopedNote').style.display = '';
+      card.scrollIntoView({behavior:'smooth', block:'start'});
+    });
   });
+
   document.getElementById('companyScopedNote').textContent =
-    `${company} の担当者 ${people.length}名／期間: ${d.start}〜${d.end}。名前をクリックすると個人の日別実績を表示します。上部のKPIタイルもこの会社の値に切り替わっています（他のランキングタブは全社表示のままです）。`;
+    `${company} の担当者 ${people.length}名／期間: ${d.start}〜${d.end}。行をクリックすると個人の日別実績を表示します。上部のKPIタイルもこの会社の値に切り替わっています（他のランキングタブは全社表示のままです）。`;
 }
 function setCompanyScope(company){
   COMPANY_SCOPE = company || null;
@@ -1907,6 +1930,7 @@ function renderTiles(){
   const d = currentData();
   renderDailyHeadcountTile();
   if(COMPANY_SCOPE){ renderTilesForCompany(d, COMPANY_SCOPE); return; }
+  document.getElementById('companyKpiGaugeTopCard').style.display = 'none';
   const tot = d.totals;
   const rate = tot.apo_kakutoku ? (tot.clo_seiyaku/tot.apo_kakutoku*100) : 0;
   document.getElementById('tileApo').innerHTML = `${yen(tot.apo_kakutoku)}<span class="unit">件</span>` +
@@ -1969,6 +1993,17 @@ function renderTiles(){
 // 稼働人員数（スポット作成／ルート自動記録あり）の会社別集計ができる（Python側の追加実装は不要）。
 function renderTilesForCompany(d, company){
   const c = d.companies.find(x => x.company === company);
+  const cSafe = c || {};
+  const t = COMPANY_TARGETS[company] || {};
+  const gauges = [
+    kpiGaugeCard('アポ獲得数', cSafe.apo_kakutoku, t.apo, v => (v===null||v===undefined)?'—':v+'件'),
+    kpiGaugeCard('成約数', cSafe.clo_seiyaku, t.seiyaku, v => (v===null||v===undefined)?'—':v+'件'),
+    kpiGaugeCard('売上', cSafe.uriage, t.uriage, v => (v===null||v===undefined)?'—':yen(v)+'円'),
+    kpiGaugeCard('稼働人員数', cSafe.headcount, t.chinin, v => (v===null||v===undefined)?'—':v+'名'),
+  ].filter(Boolean);
+  document.getElementById('companyKpiGaugeTopTitle').textContent = company;
+  document.getElementById('companyKpiGaugeTopCard').style.display = gauges.length ? '' : 'none';
+  document.getElementById('companyKpiGaugeTopWrap').innerHTML = gauges.join('');
   const rate = (c && c.apo_kakutoku) ? (c.clo_seiyaku/c.apo_kakutoku*100) : 0;
   document.getElementById('tileApo').innerHTML = `${yen(c?c.apo_kakutoku:0)}<span class="unit">件</span>`;
   document.getElementById('tileSei').innerHTML = `${yen(c?c.clo_seiyaku:0)}<span class="unit">件</span>`;
@@ -3550,42 +3585,16 @@ document.getElementById('printBtn').addEventListener('click', ()=>{
   }, 800);
 });
 
-// ---------- 企業名クリック→担当者別内訳 ----------
+// ---------- 企業名クリック→企業スコープに切り替え(2026-08-31改訂) ----------
+// 以前はモーダルで担当者別内訳を表示していたが、小宮山さんの依頼で「検索欄から絞り込んだ時と
+// 同じ挙動」に統一。setCompanyScope()を呼びページ上部のKPI進捗ゲージ（companyKpiGaugeTopCard）
+// までスクロールする。担当者別の内訳は企業別タブ側の「指標チップ」をクリックした時に見る形になった
+// （renderCompanyScopedView参照）。
 function openDrilldown(company){
-  const d = currentData();
-  const byName = new Map();
-  const get = n => {
-    if(!byName.has(n)) byName.set(n, {name:n, apoCount:0, apoSeiyaku:0, cloSeiyaku:0, uriage:0, activeDays:null});
-    return byName.get(n);
-  };
-  d.apo_ranking.filter(r=>r[2]===company).forEach(r=>{
-    const rec = get(r[1]); rec.apoSeiyaku = r[3]; rec.apoCount = r[4];
-  });
-  d.closer_ranking.filter(r=>r[2]===company).forEach(r=>{
-    const rec = get(r[1]); rec.cloSeiyaku = r[3]; rec.uriage = r[4];
-  });
-  (d.attendance_person_rows || []).filter(r=>r[1]===company).forEach(r=>{
-    const rec = get(r[0]); rec.activeDays = r[2];
-  });
-  const people = [...byName.values()].sort((a,b)=> (b.uriage - a.uriage) || (b.apoCount - a.apoCount));
-
-  document.getElementById('drillTitle').textContent = company;
-  document.getElementById('drillSub').textContent =
-    `担当者 ${people.length}名／期間: ${d.start}〜${d.end}`;
-
-  const table = document.getElementById('drillTable');
-  const cols = ['名前','アポ獲得数','アポ成約','クロ成約','売上','稼働日数'];
-  const thead = '<thead><tr>' + cols.map(c=>`<th class="${c==='名前'?'':'num'}">${c}</th>`).join('') + '</tr></thead>';
-  const tbody = '<tbody>' + (people.length ? people.map(p=>
-    `<tr><td class="name clickable-name" data-name="${escapeHtml(p.name)}">${escapeHtml(p.name)}</td><td class="num">${p.apoCount}</td><td class="num">${p.apoSeiyaku}</td>` +
-    `<td class="num">${p.cloSeiyaku}</td><td class="num">${yen(p.uriage)}</td><td class="num">${p.activeDays===null?'—':p.activeDays}</td></tr>`
-  ).join('') : '<tr><td colspan="6" style="text-align:center;color:var(--text-sub);">担当者別データなし</td></tr>') + '</tbody>';
-  table.innerHTML = thead + tbody;
-  table.querySelectorAll('.clickable-name').forEach(td=>{
-    td.addEventListener('click', ()=> openPersonDetail(td.dataset.name));
-  });
-
-  document.getElementById('drillModal').classList.add('show');
+  setCompanyScope(company);
+  document.querySelector('[data-panel="p-company"]').click();
+  const target = document.getElementById('companyKpiGaugeTopCard');
+  (target.style.display !== 'none' ? target : document.querySelector('.tiles')).scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 // ---------- 個人名クリック→日別実績 ----------
