@@ -1,0 +1,52 @@
+name: keepalive-refresh
+
+# refresh-dashboard(5分おき想定)のscheduleトリガーがGitHub側の既知の弱点で
+# 間引かれ、実際には2〜5時間おきにしか発火しない事象への自己復旧ジョブ(2026-08-31追加)。
+# こちらもオフセットした別周期でschedule起動し、最終コミットが古すぎたら
+# refresh.ymlをworkflow_dispatchで即時再発火させる。新しいsecretは追加しない
+# (組み込みのGITHUB_TOKENだけで完結)。
+
+on:
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: keepalive-refresh
+  cancel-in-progress: false
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check staleness and re-trigger refresh.yml if needed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          now=$(date -u +%s)
+          # 平日8-20時JST(=UTC 23-11時、日またぎに注意)以外はrefresh.yml自体が
+          # スキップする運用なので、こちらも同じ時間帯だけチェックする。
+          jst_hour=$(TZ=Asia/Tokyo date +%H)
+          jst_wday=$(TZ=Asia/Tokyo date +%u)  # 1=月 ... 7=日
+          if [ "$jst_wday" -gt 5 ] || [ "$jst_hour" -lt 8 ] || [ "$jst_hour" -gt 20 ]; then
+            echo "対象時間外のためスキップします。"
+            exit 0
+          fi
+
+          last=$(git log -1 --format=%ct)
+          age_min=$(( (now - last) / 60 ))
+          echo "last commit age: ${age_min} 分"
+
+          if [ "$age_min" -gt 20 ]; then
+            echo "20分以上更新が無いためrefresh.ymlを再発火します。"
+            gh workflow run refresh.yml
+          else
+            echo "正常範囲内のため何もしません。"
+          fi
