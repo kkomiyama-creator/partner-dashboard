@@ -54,6 +54,7 @@ jobs:
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+          CYZEN_DASHBOARD_TOKEN: ${{ secrets.CYZEN_DASHBOARD_TOKEN }}
         run: |
           python3 automation/post_slack_ranking.py \
             --roster-csv automation/data/roster_live.csv \
@@ -64,6 +65,10 @@ jobs:
         run: |
           git config user.email "dashboard-bot@fit-founder.net"
           git config user.name "Dashboard Bot (GitHub Actions)"
+          if [ ! -f automation/data/slack_ranking_state.json ]; then
+            echo "ドライラン（未投稿）のためstate.jsonは生成されていません。コミットをスキップします。"
+            exit 0
+          fi
           git add automation/data/slack_ranking_state.json
           if git diff --cached --quiet; then
             echo "変更なし。コミットをスキップします。"
