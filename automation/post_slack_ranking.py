@@ -52,21 +52,25 @@ def yen(n):
     return f"{n:,}"
 
 
-def ranked_by_apo(apo_ranking):
-    """要件書の「アポ獲得ランキング」順位ルール（アポ獲得 降順→成約 降順→氏名昇順）で並べ替える。
-    apo_ranking の行は [順位, 氏名, 会社, 成約数, アポ数] （ranking_core.aggregate()の既存出力）。
-    ダッシュボード本体の既定ソート（成約優先）とは目的が違うため、ここで独自に並べ替える。"""
-    rows = sorted(apo_ranking, key=lambda r: (-r[4], -r[3], r[1]))
+def ranked_by_apo(month_ranking):
+    """月間アポ獲得ランキング（アポ獲得 降順→成約 降順→氏名昇順）。
+    month_ranking の行は [順位, 氏名, 会社, 成約数, アポ数] （ranking_core.aggregate()の既存出力、
+    集計期間は月初〜対象日）。ダッシュボード本体の既定ソート（成約優先）とは目的が違うため、
+    ここで独自に並べ替える。"""
+    rows = sorted(month_ranking, key=lambda r: (-r[4], -r[3], r[1]))
     return rows[:TOP_N]
 
 
-def ranked_by_seiyaku(apo_ranking):
-    """「成約(後確通過扱い)ランキング」。aggregate()側の既定ソート(成約降順→アポ数降順)がそのまま使える。"""
-    return apo_ranking[:TOP_N]
+def ranked_by_seiyaku(month_ranking):
+    """月間成約(後確通過扱い)ランキング。aggregate()側の既定ソート(成約降順→アポ数降順)がそのまま使える。"""
+    return month_ranking[:TOP_N]
 
 
 def build_summary(roster_csv, closing_csv, target_date):
-    """target_date: 'YYYY-MM-DD'。日次・当月・累計の3つを集計して返す。"""
+    """target_date: 'YYYY-MM-DD'。
+    2026-08-31の小宮山さんの依頼により、ランキング本体は「その日時点での当月累計」を毎日
+    更新する形式にした（1日分の新規件数ランキングではない）。本日の伸びは各行に補足表示し、
+    企業別総計は引き続き当日/当月/累計の3列を並べて見せる。"""
     d = datetime.date.fromisoformat(target_date)
     day_s = d.strftime("%Y/%m/%d")
     month_start = d.replace(day=1).strftime("%Y/%m/%d")
@@ -75,49 +79,69 @@ def build_summary(roster_csv, closing_csv, target_date):
     month = aggregate(roster_csv, closing_csv, month_start, day_s)
     cumulative = aggregate(roster_csv, closing_csv, CUMULATIVE_START, day_s)
 
+    # 氏名 -> (本日アポ数, 本日成約数) のルックアップ（ランキング各行に「本日+N件」を添えるため）
+    day_by_name = {r[1]: (r[4], r[3]) for r in day["apo_ranking"]}
+
     month_by_co = {c["company"]: c["apo_kakutoku"] for c in month["companies"]}
     cum_by_co = {c["company"]: c["apo_kakutoku"] for c in cumulative["companies"]}
 
     company_rows = []
-    for c in day["companies"]:
+    for c in month["companies"]:
         company_rows.append({
             "company": c["company"],
-            "day": c["apo_kakutoku"],
-            "month": month_by_co.get(c["company"], 0),
+            "day": next((dc["apo_kakutoku"] for dc in day["companies"] if dc["company"] == c["company"]), 0),
+            "month": c["apo_kakutoku"],
             "cumulative": cum_by_co.get(c["company"], 0),
         })
-    company_rows.sort(key=lambda r: -r["day"])
+    company_rows.sort(key=lambda r: -r["month"])
 
-    total_apo = sum(c["apo_kakutoku"] for c in day["companies"])
-    total_seiyaku = sum(c["apo_seiyaku"] for c in day["companies"])
-    unassigned = len(day["unresolved_apo"]) + len(day["unresolved_clo"])
-    cancelled = sum(day.get("apo_cancel_by_name", {}).values())
+    total_apo_month = sum(c["apo_kakutoku"] for c in month["companies"])
+    total_seiyaku_month = sum(c["apo_seiyaku"] for c in month["companies"])
+    total_apo_day = sum(c["apo_kakutoku"] for c in day["companies"])
+    unassigned = len(month["unresolved_apo"]) + len(month["unresolved_clo"])
+    cancelled = sum(month.get("apo_cancel_by_name", {}).values())
 
     return {
         "target_date": target_date,
-        "apo_ranking_by_apo": ranked_by_apo(day["apo_ranking"]),
-        "apo_ranking_by_seiyaku": ranked_by_seiyaku(day["apo_ranking"]),
+        "month_label": d.strftime("%Y年%m月度"),
+        "apo_ranking_by_apo": ranked_by_apo(month["apo_ranking"]),
+        "apo_ranking_by_seiyaku": ranked_by_seiyaku(month["apo_ranking"]),
+        "day_by_name": day_by_name,
         "company_rows": company_rows[:COMPANY_TOP_N],
         "n_companies_total": len(company_rows),
-        "total_apo": total_apo,
-        "total_seiyaku": total_seiyaku,
+        "total_apo_month": total_apo_month,
+        "total_seiyaku_month": total_seiyaku_month,
+        "total_apo_day": total_apo_day,
         "unassigned": unassigned,
         "cancelled": cancelled,
-        "n_companies": len(day["companies"]),
+        "n_companies": len(month["companies"]),
     }
 
 
 def build_blocks(summary, dashboard_url):
     d = summary["target_date"]
+    month_label = summary["month_label"]
+
+    def today_delta_txt(name):
+        day_apo, day_seiyaku = summary["day_by_name"].get(name, (0, 0))
+        parts = []
+        if day_apo:
+            parts.append(f"本日+{day_apo}件")
+        if day_seiyaku:
+            parts.append(f"本日成約+{day_seiyaku}件")
+        return "・" + "・".join(parts) if parts else ""
+
     lines_apo = []
     for i, r in enumerate(summary["apo_ranking_by_apo"], 1):
         name, co, seiyaku, apo = r[1], r[2], r[3], r[4]
-        lines_apo.append(f"{i}. {name}（{co}） {apo}件（成約{seiyaku}件／成約率{fmt_pct(pct(seiyaku, apo))}）")
+        lines_apo.append(
+            f"{i}. {name}（{co}） 月間{apo}件（成約{seiyaku}件／成約率{fmt_pct(pct(seiyaku, apo))}）{today_delta_txt(name)}"
+        )
 
     lines_seiyaku = []
     for i, r in enumerate(summary["apo_ranking_by_seiyaku"], 1):
         name, co, seiyaku, apo = r[1], r[2], r[3], r[4]
-        lines_seiyaku.append(f"{i}. {name}（{co}） 成約{seiyaku}件（アポ{apo}件）")
+        lines_seiyaku.append(f"{i}. {name}（{co}） 月間成約{seiyaku}件（アポ{apo}件）{today_delta_txt(name)}")
 
     lines_company = []
     for c in summary["company_rows"]:
@@ -135,18 +159,20 @@ def build_blocks(summary, dashboard_url):
     now_jst = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y-%m-%d %H:%M JST")
 
     text_fallback = (
-        f"{d} アポ獲得ランキング：総アポ{summary['total_apo']}件｜成約{summary['total_seiyaku']}件"
+        f"{month_label}（{d}時点） アポ獲得ランキング：月間アポ{summary['total_apo_month']}件"
+        f"（本日+{summary['total_apo_day']}件）｜月間成約{summary['total_seiyaku_month']}件"
     )
 
     blocks = [
-        {"type": "header", "text": {"type": "plain_text", "text": f"📊 アポ獲得ランキング｜{d}"}},
+        {"type": "header", "text": {"type": "plain_text", "text": f"📊 月間アポ獲得ランキング｜{month_label}（{d}時点）"}},
         {"type": "section", "text": {"type": "mrkdwn",
-         "text": f"*総アポ獲得* {summary['total_apo']}件　|　*成約* {summary['total_seiyaku']}件　|　*集計対象* {summary['n_companies']}社"}},
+         "text": f"*月間アポ獲得* {summary['total_apo_month']}件（本日+{summary['total_apo_day']}件）"
+                 f"　|　*月間成約* {summary['total_seiyaku_month']}件　|　*集計対象* {summary['n_companies']}社"}},
         {"type": "divider"},
         {"type": "section", "text": {"type": "mrkdwn",
-         "text": "*🏆 アポ獲得ランキング（当日）*\n" + ("\n".join(lines_apo) if lines_apo else "対象データなし")}},
+         "text": "*🏆 アポ獲得ランキング（当月累計）*\n" + ("\n".join(lines_apo) if lines_apo else "対象データなし")}},
         {"type": "section", "text": {"type": "mrkdwn",
-         "text": "*✅ 成約ランキング（当日）*\n" + ("\n".join(lines_seiyaku) if lines_seiyaku else "対象データなし")}},
+         "text": "*✅ 成約ランキング（当月累計）*\n" + ("\n".join(lines_seiyaku) if lines_seiyaku else "対象データなし")}},
         {"type": "divider"},
         {"type": "section", "text": {"type": "mrkdwn",
          "text": "*🏢 企業別総計（当日／当月／累計）*\n" + ("\n".join(lines_company) if lines_company else "対象データなし")}},
