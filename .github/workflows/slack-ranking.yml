@@ -1,6 +1,7 @@
 name: slack-apo-ranking
 
-# アポ獲得ランキング・成約ランキング・企業別総計のSlack日次投稿(2026-08-31追加)。
+# アポ獲得数ランキング・成約数ランキング・稼働日数ランキング(Cyzen出退勤ベース)・
+# 企業別アポ獲得数ランキングのSlack日次投稿(2026-08-31追加)。
 # 社長→佐久間さんへのkintone×Slack要件書(FF-KS-APPOINT-RANK-001)を、小宮山さんの
 # 既存ダッシュボード(Google Sheets/Cyzen API集計)ベースに置き換えて実装したもの。
 #
@@ -50,6 +51,17 @@ jobs:
           print(paths)
           "
 
+      - name: Fetch this month's attendance (Cyzen API, for 稼働日数ランキング)
+        env:
+          CYZEN_DASHBOARD_TOKEN: ${{ secrets.CYZEN_DASHBOARD_TOKEN }}
+        run: |
+          MONTH_START=$(date -u -d '9 hours' +%Y-%m-01)
+          TODAY=$(date -u -d '9 hours' +%Y-%m-%d)
+          python3 automation/build_attendance_api.py \
+            --start "$MONTH_START" --end "$TODAY" \
+            --attendance-out automation/data/attendance_month.csv \
+            --clockout-out automation/data/clockout_month.csv
+
       - name: Run post_slack_ranking.py
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
@@ -59,6 +71,7 @@ jobs:
           python3 automation/post_slack_ranking.py \
             --roster-csv automation/data/roster_live.csv \
             --closing-csv automation/data/closing_live.csv \
+            --attendance-csv automation/data/attendance_month.csv \
             --state-json automation/data/slack_ranking_state.json
 
       - name: Commit state if changed

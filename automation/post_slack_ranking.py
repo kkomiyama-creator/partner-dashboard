@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""アポ獲得ランキング・成約ランキング・企業別総計をSlackへ日次自動投稿する（2026-08-31追加）。
+"""アポ獲得数ランキング・成約数ランキング・企業別アポ獲得数ランキングをSlackへ日次自動投稿する（2026-08-31追加）。
 
 背景: 社長が佐久間さんへ依頼した「kintone×Slack アポ獲得ランキング連携」要件書
 （文書ID FF-KS-APPOINT-RANK-001・v1.0・2026-08-30）を、佐久間さん×小宮山さんの
@@ -33,11 +33,11 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from ranking_core import aggregate  # noqa: E402
+from ranking_core import aggregate, aggregate_attendance  # noqa: E402
 
-CUMULATIVE_START = "2020/01/01"  # roster CSVの実データ開始(2026年1月)より十分前の安全な起点
 TOP_N = 10
 COMPANY_TOP_N = 10
+ATTENDANCE_TOP_N = 10
 
 
 def pct(numerator, denominator):
@@ -53,7 +53,7 @@ def yen(n):
 
 
 def ranked_by_apo(month_ranking):
-    """月間アポ獲得ランキング（アポ獲得 降順→成約 降順→氏名昇順）。
+    """月間アポ獲得数ランキング（アポ獲得 降順→成約 降順→氏名昇順）。
     month_ranking の行は [順位, 氏名, 会社, 成約数, アポ数] （ranking_core.aggregate()の既存出力、
     集計期間は月初〜対象日）。ダッシュボード本体の既定ソート（成約優先）とは目的が違うため、
     ここで独自に並べ替える。"""
@@ -66,33 +66,36 @@ def ranked_by_seiyaku(month_ranking):
     return month_ranking[:TOP_N]
 
 
-def build_summary(roster_csv, closing_csv, target_date):
+def build_attendance_ranking(attendance_csv, target_date):
+    """月次合計の稼働日数ランキング（2026-08-31追加・小宮山さんの依頼）。
+    Cyzenの出勤報告CSV（report-v2の出勤報告エクスポート、またはCyzen連携APIの
+    build_attendance_api.py出力＝attendance_merged.csvと同じ列構成）を使い、
+    ranking_core.aggregate_attendance()の既存ロジック（同日複数回打刻の重複排除込み）を
+    そのまま再利用する。roster/closing（Google Sheets）とは別系統のデータソース。"""
+    d = datetime.date.fromisoformat(target_date)
+    month_start = d.replace(day=1).strftime("%Y-%m-%d")
+    att = aggregate_attendance(attendance_csv, month_start, target_date)
+    # person_rows: [表示名, 会社, 稼働日数] （aggregate_attendance側で稼働日数降順ソート済み）
+    return att["person_rows"][:ATTENDANCE_TOP_N]
+
+
+def build_summary(roster_csv, closing_csv, target_date, attendance_csv=None):
     """target_date: 'YYYY-MM-DD'。
     2026-08-31の小宮山さんの依頼により、ランキング本体は「その日時点での当月累計」を毎日
-    更新する形式にした（1日分の新規件数ランキングではない）。本日の伸びは各行に補足表示し、
-    企業別総計は引き続き当日/当月/累計の3列を並べて見せる。"""
+    更新する形式にした（1日分の新規件数ランキングではない）。本日の伸びは各行に補足表示する。
+    企業別総計は当日/累計を廃止し、当月のアポ獲得数ランキングのみに変更（2026-08-31改訂）。
+    attendance_csvを渡すと、Cyzen出勤記録ベースの月次稼働日数ランキングも追加する。"""
     d = datetime.date.fromisoformat(target_date)
     day_s = d.strftime("%Y/%m/%d")
     month_start = d.replace(day=1).strftime("%Y/%m/%d")
 
     day = aggregate(roster_csv, closing_csv, day_s, day_s)
     month = aggregate(roster_csv, closing_csv, month_start, day_s)
-    cumulative = aggregate(roster_csv, closing_csv, CUMULATIVE_START, day_s)
 
     # 氏名 -> (本日アポ数, 本日成約数) のルックアップ（ランキング各行に「本日+N件」を添えるため）
     day_by_name = {r[1]: (r[4], r[3]) for r in day["apo_ranking"]}
 
-    month_by_co = {c["company"]: c["apo_kakutoku"] for c in month["companies"]}
-    cum_by_co = {c["company"]: c["apo_kakutoku"] for c in cumulative["companies"]}
-
-    company_rows = []
-    for c in month["companies"]:
-        company_rows.append({
-            "company": c["company"],
-            "day": next((dc["apo_kakutoku"] for dc in day["companies"] if dc["company"] == c["company"]), 0),
-            "month": c["apo_kakutoku"],
-            "cumulative": cum_by_co.get(c["company"], 0),
-        })
+    company_rows = [{"company": c["company"], "month": c["apo_kakutoku"]} for c in month["companies"]]
     company_rows.sort(key=lambda r: -r["month"])
 
     total_apo_month = sum(c["apo_kakutoku"] for c in month["companies"])
@@ -101,11 +104,14 @@ def build_summary(roster_csv, closing_csv, target_date):
     unassigned = len(month["unresolved_apo"]) + len(month["unresolved_clo"])
     cancelled = sum(month.get("apo_cancel_by_name", {}).values())
 
+    attendance_ranking = build_attendance_ranking(attendance_csv, target_date) if attendance_csv else None
+
     return {
         "target_date": target_date,
         "month_label": d.strftime("%Y年%m月度"),
         "apo_ranking_by_apo": ranked_by_apo(month["apo_ranking"]),
         "apo_ranking_by_seiyaku": ranked_by_seiyaku(month["apo_ranking"]),
+        "attendance_ranking": attendance_ranking,
         "day_by_name": day_by_name,
         "company_rows": company_rows[:COMPANY_TOP_N],
         "n_companies_total": len(company_rows),
@@ -144,8 +150,14 @@ def build_blocks(summary, dashboard_url):
         lines_seiyaku.append(f"{i}. {name}（{co}） 月間成約{seiyaku}件（アポ{apo}件）{today_delta_txt(name)}")
 
     lines_company = []
-    for c in summary["company_rows"]:
-        lines_company.append(f"{c['company']}：当日{c['day']}／当月{c['month']}／累計{c['cumulative']:,}")
+    for i, c in enumerate(summary["company_rows"], 1):
+        lines_company.append(f"{i}. {c['company']}　{c['month']}件")
+
+    lines_attendance = None
+    if summary["attendance_ranking"] is not None:
+        lines_attendance = []
+        for i, (name, co, days) in enumerate(summary["attendance_ranking"], 1):
+            lines_attendance.append(f"{i}. {name}（{co}） {days}日")
 
     note_parts = []
     if summary["unassigned"]:
@@ -153,29 +165,35 @@ def build_blocks(summary, dashboard_url):
     if summary["cancelled"]:
         note_parts.append(f"キャンセル{summary['cancelled']}件")
     if summary["n_companies_total"] > COMPANY_TOP_N:
-        note_parts.append(f"企業総計は上位{COMPANY_TOP_N}社のみ表示（全{summary['n_companies_total']}社）")
+        note_parts.append(f"企業別ランキングは上位{COMPANY_TOP_N}社のみ表示（全{summary['n_companies_total']}社）")
     note = "　|　".join(note_parts) if note_parts else "特になし"
 
     now_jst = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y-%m-%d %H:%M JST")
 
     text_fallback = (
-        f"{month_label}（{d}時点） アポ獲得ランキング：月間アポ{summary['total_apo_month']}件"
+        f"{month_label}（{d}時点） アポ獲得数ランキング：月間アポ{summary['total_apo_month']}件"
         f"（本日+{summary['total_apo_day']}件）｜月間成約{summary['total_seiyaku_month']}件"
     )
 
     blocks = [
-        {"type": "header", "text": {"type": "plain_text", "text": f"📊 月間アポ獲得ランキング｜{month_label}（{d}時点）"}},
+        {"type": "header", "text": {"type": "plain_text", "text": f"📊 月間アポ獲得数ランキング｜{month_label}（{d}時点）"}},
         {"type": "section", "text": {"type": "mrkdwn",
          "text": f"*月間アポ獲得* {summary['total_apo_month']}件（本日+{summary['total_apo_day']}件）"
                  f"　|　*月間成約* {summary['total_seiyaku_month']}件　|　*集計対象* {summary['n_companies']}社"}},
         {"type": "divider"},
         {"type": "section", "text": {"type": "mrkdwn",
-         "text": "*🏆 アポ獲得ランキング（当月累計）*\n" + ("\n".join(lines_apo) if lines_apo else "対象データなし")}},
+         "text": "*🏆 アポ獲得数ランキング（当月累計）*\n" + ("\n".join(lines_apo) if lines_apo else "対象データなし")}},
         {"type": "section", "text": {"type": "mrkdwn",
-         "text": "*✅ 成約ランキング（当月累計）*\n" + ("\n".join(lines_seiyaku) if lines_seiyaku else "対象データなし")}},
+         "text": "*✅ 成約数ランキング（当月累計）*\n" + ("\n".join(lines_seiyaku) if lines_seiyaku else "対象データなし")}},
+    ]
+    if lines_attendance is not None:
+        blocks.append({"type": "section", "text": {"type": "mrkdwn",
+            "text": "*🚶 稼働日数ランキング（当月累計・Cyzen出退勤記録ベース）*\n"
+                    + ("\n".join(lines_attendance) if lines_attendance else "対象データなし")}})
+    blocks += [
         {"type": "divider"},
         {"type": "section", "text": {"type": "mrkdwn",
-         "text": "*🏢 企業別総計（当日／当月／累計）*\n" + ("\n".join(lines_company) if lines_company else "対象データなし")}},
+         "text": "*🏢 企業別アポ獲得数ランキング（当月）*\n" + ("\n".join(lines_company) if lines_company else "対象データなし")}},
         {"type": "context", "elements": [{"type": "mrkdwn", "text": f"注意: {note}"}]},
         {"type": "context", "elements": [
             {"type": "mrkdwn", "text": f"最終更新 {now_jst}　|　<{dashboard_url}|ダッシュボードで詳細を見る>"}
@@ -221,12 +239,15 @@ def main():
     ap.add_argument("--target-date", default=None, help="YYYY-MM-DD（省略時はJSTの今日）")
     ap.add_argument("--state-json", default=None,
                      help="business_date -> slack_ts の永続状態ファイル（再実行時の重複投稿防止用）")
+    ap.add_argument("--attendance-csv", default=None,
+                     help="Cyzen出勤報告CSV（attendance_merged.csvと同じ列構成）。"
+                          "省略時は稼働日数ランキングのセクションが非表示になる")
     ap.add_argument("--dashboard-url", default="https://kkomiyama-creator.github.io/partner-dashboard/")
     args = ap.parse_args()
 
     target_date = args.target_date or (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y-%m-%d")
 
-    summary = build_summary(args.roster_csv, args.closing_csv, target_date)
+    summary = build_summary(args.roster_csv, args.closing_csv, target_date, attendance_csv=args.attendance_csv)
     blocks, text = build_blocks(summary, args.dashboard_url)
 
     token = os.environ.get("SLACK_BOT_TOKEN")
