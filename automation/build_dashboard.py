@@ -135,14 +135,30 @@ header.top .meta b{color:var(--text);}
 .bi-pictogram-icon{font-size:13px; line-height:1;}
 .bi-pictogram-note{font-size:9.5px; color:var(--text-xs); margin-left:4px;}
 
-.tabbar{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom:14px; border-bottom:1px solid var(--border);}
-.tabs{display:flex; gap:4px;}
-.tab{
-  padding:9px 16px; font-size:13.5px; font-weight:600; color:var(--text-sub); cursor:pointer;
-  border-bottom:2px solid transparent; user-select:none; transition:color .12s, border-color .12s;
+.kpi-gauge-row{display:flex; gap:28px; flex-wrap:wrap; justify-content:flex-start;}
+.kpi-gauge{display:flex; flex-direction:column; align-items:center; gap:6px; min-width:132px;}
+.kpi-gauge-label{font-size:12px; font-weight:700; color:var(--text-sub);}
+.kpi-gauge-target{font-size:11.5px; color:var(--text-xs); font-weight:600;}
+@media (max-width:640px){
+  .kpi-gauge-row{gap:16px; justify-content:space-around;}
+  .kpi-gauge{min-width:104px;}
+  .kpi-gauge svg{width:104px; height:104px;}
 }
-.tab:hover{color:var(--text);}
-.tab.active{color:var(--blue); border-color:var(--blue);}
+
+.tabbar{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom:14px; border-bottom:1px solid var(--border); flex-wrap:wrap;}
+.tabs{
+  display:flex; gap:6px; flex-wrap:nowrap; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin; padding-bottom:2px; max-width:100%;
+}
+.tab{
+  display:flex; align-items:center; gap:5px; flex:none; white-space:nowrap;
+  padding:8px 14px; font-size:13px; font-weight:600; color:var(--text-sub); cursor:pointer;
+  border:1px solid transparent; border-radius:999px; background:transparent;
+  user-select:none; transition:color .12s, background-color .12s, border-color .12s;
+}
+.tab .tab-ico{font-size:14px; line-height:1;}
+.tab:hover{color:var(--text); background:var(--border);}
+.tab.active{color:var(--blue); background:var(--blue-pale); border-color:var(--blue-border);}
 .printbtn{
   display:flex; align-items:center; gap:6px; margin-bottom:8px; padding:7px 13px;
   font-size:12.5px; font-weight:700; color:var(--blue); background:var(--blue-pale);
@@ -238,7 +254,7 @@ td.company{color:var(--text-sub);}
 .delta-up{color:var(--success); font-weight:700;}
 .delta-down{color:var(--danger); font-weight:700;}
 .hide-diff .diffcol{display:none;}
-.diffToggle{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-sub); cursor:pointer; user-select:none; margin-left:auto;}
+.diffToggle{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-sub); cursor:pointer; user-select:none; margin-left:auto; white-space:nowrap; flex:none;}
 .diffToggle input{cursor:pointer;}
 .hide-target .targetcol{display:none;}
 
@@ -307,12 +323,13 @@ td.company{color:var(--text-sub);}
 .note b{color:var(--text-sub);}
 .footer-links{margin-top:10px; font-size:11.5px; color:var(--text-xs);}
 
-.periodbar{display:flex; align-items:center; gap:10px; margin-bottom:18px;}
-.periodbar .label{font-size:11.5px; color:var(--text-sub); font-weight:600;}
-.period-switch{display:flex; gap:2px; background:var(--slate); border:1px solid var(--border); border-radius:999px; padding:3px;}
+.periodbar{display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:18px;}
+.periodbar .label{font-size:11.5px; color:var(--text-sub); font-weight:600; white-space:nowrap;}
+.period-switch{display:flex; flex:none; gap:2px; background:var(--slate); border:1px solid var(--border); border-radius:999px; padding:3px; max-width:100%; overflow-x:auto;}
 .period-btn{
   padding:6px 16px; font-size:12.5px; font-weight:700; color:var(--text-sub); background:transparent;
   border:none; border-radius:999px; cursor:pointer; font-family:inherit; transition:background .12s, color .12s;
+  white-space:nowrap; flex:none;
 }
 .period-btn:hover{color:var(--text);}
 .period-btn.active{background:var(--blue); color:#fff;}
@@ -325,6 +342,30 @@ td.company{color:var(--text-sub);}
 #alertBanner .title{font-weight:700; color:var(--warn); margin-bottom:6px;}
 #alertBanner ul{margin:0; padding-left:18px;}
 #alertBanner li{margin:2px 0;}
+
+/* ============================================================
+   モバイル対応（2026-08-31追加・小宮山さん依頼）
+   ============================================================ */
+@media (max-width:640px){
+  .wrap{padding:18px 12px 48px;}
+  header.top{flex-direction:column; align-items:flex-start; gap:6px;}
+  header.top h1{font-size:18px;}
+  header.top .meta{text-align:left; font-size:11.5px;}
+  .actionbar{flex-wrap:wrap;}
+  .actionbar .csvbtn, .actionbar .printbtn{flex:1 1 auto; justify-content:center;}
+  .tile{padding:12px 14px;}
+  .tile .value{font-size:21px;}
+  .card{padding:14px !important;}
+  .modal-box{max-width:none;}
+  .ai-summary-grid{grid-template-columns:1fr;}
+  .bi-journey{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+  .companyKpiGaugeCard, #companyKpiGaugeCard{padding:14px !important;}
+  table{font-size:12px;}
+}
+@media (max-width:420px){
+  .tiles{grid-template-columns:1fr 1fr;}
+  .tile .value{font-size:19px;}
+}
 
 @page{ size:A4 landscape; margin:12mm; }
 @media print{
@@ -444,17 +485,17 @@ td.company{color:var(--text-sub);}
 
   <div class="tabbar">
     <div class="tabs">
-      <div class="tab active" data-panel="p-company">企業別</div>
-      <div class="tab" data-panel="p-apo">アポインター</div>
-      <div class="tab" data-panel="p-soutiku">創蓄アポインター</div>
-      <div class="tab" data-panel="p-closer">クローザー</div>
-      <div class="tab" data-panel="p-naihan">🎯直販メンバー</div>
-      <div class="tab" data-panel="p-topics">トピックス/現況（Slack）</div>
-      <div class="tab" data-panel="p-outreach">開拓先パートナー</div>
-      <div class="tab" data-panel="p-route">行動分析</div>
-      <div class="tab" data-panel="p-trend">傾向分析</div>
-      <div class="tab" data-panel="p-decline">📉下落メンバー</div>
-      <div class="tab" data-panel="p-exec">責任者会議</div>
+      <div class="tab active" data-panel="p-company"><span class="tab-ico">🏢</span><span class="tab-txt">企業別</span></div>
+      <div class="tab" data-panel="p-apo"><span class="tab-ico">📇</span><span class="tab-txt">アポインター</span></div>
+      <div class="tab" data-panel="p-soutiku"><span class="tab-ico">🔋</span><span class="tab-txt">創蓄アポインター</span></div>
+      <div class="tab" data-panel="p-closer"><span class="tab-ico">🤝</span><span class="tab-txt">クローザー</span></div>
+      <div class="tab" data-panel="p-naihan"><span class="tab-ico">🎯</span><span class="tab-txt">直販メンバー</span></div>
+      <div class="tab" data-panel="p-topics"><span class="tab-ico">💬</span><span class="tab-txt">トピックス/現況(Slack)</span></div>
+      <div class="tab" data-panel="p-outreach"><span class="tab-ico">🔭</span><span class="tab-txt">開拓先パートナー</span></div>
+      <div class="tab" data-panel="p-route"><span class="tab-ico">🗺️</span><span class="tab-txt">行動分析</span></div>
+      <div class="tab" data-panel="p-trend"><span class="tab-ico">📈</span><span class="tab-txt">傾向分析</span></div>
+      <div class="tab" data-panel="p-decline"><span class="tab-ico">📉</span><span class="tab-txt">下落メンバー</span></div>
+      <div class="tab" data-panel="p-exec"><span class="tab-ico">📋</span><span class="tab-txt">責任者会議</span></div>
     </div>
     <div class="actionbar">
       <button class="csvbtn" id="csvBtn" title="今表示中のタブをCSVで保存（役員会資料等への連携用）">
@@ -520,6 +561,10 @@ td.company{color:var(--text-sub);}
     </div>
 
     <div id="companyScopedView" style="display:none;">
+      <div class="card" id="companyKpiGaugeCard" style="margin-bottom:16px; display:none;">
+        <div style="font-size:13px; font-weight:700; margin-bottom:14px;">🎯 目標に対する進捗（当期間・目標未設定の項目は表示されません）</div>
+        <div class="kpi-gauge-row" id="companyKpiGaugeWrap"></div>
+      </div>
       <div class="card"><div class="tablewrap"><table id="t-company-scoped"></table></div></div>
       <div class="note" style="margin-top:10px;" id="companyScopedNote"></div>
     </div>
@@ -1262,6 +1307,32 @@ function gaugeRing(pctVal, opts={}){
   </svg>`;
 }
 
+// 企業別ページのKPI進捗ゲージ（2026-08-31追加・小宮山さん依頼）。実績値を大きく見せつつ、
+// リングの塗り具合と色（緑=達成/黄=あと一歩/赤=遅れ）で目標に対する進捗を直感的に示す。
+// gaugeRing()（%だけを表示する小型版）とは別に、実績値そのものを主役にした大型カードとして作る。
+function kpiGaugeCard(label, actual, target, fmt){
+  if(target === null || target === undefined || target === '') return '';
+  fmt = fmt || (v => (v===null||v===undefined) ? '—' : String(v));
+  const size = 132, stroke = 12;
+  const r = (size-stroke)/2, c = 2*Math.PI*r;
+  const rate = target > 0 ? Math.round((actual||0)/target*1000)/10 : null;
+  const p = Math.max(0, Math.min(100, rate===null?0:rate));
+  const color = rate===null ? 'var(--border)' : rate>=100 ? 'var(--success)' : rate>=85 ? 'var(--warn)' : 'var(--danger)';
+  const offset = c*(1-p/100);
+  return `<div class="kpi-gauge">
+    <div class="kpi-gauge-label">${escapeHtml(label)}</div>
+    <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+      <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--border)" stroke-width="${stroke}"/>
+      <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}"
+        stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${offset.toFixed(1)}" stroke-linecap="round"
+        transform="rotate(-90 ${size/2} ${size/2})"/>
+      <text x="50%" y="45%" text-anchor="middle" dominant-baseline="central" font-size="19" font-weight="800" fill="var(--ink)">${fmt(actual)}</text>
+      <text x="50%" y="65%" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="700" fill="${color}">${rate===null?'—':rate+'%'}</text>
+    </svg>
+    <div class="kpi-gauge-target">目標 ${fmt(target)}</div>
+  </div>`;
+}
+
 // 役員会（SH役職者定例）で正式決定した急落・下降ターゲット32名バッジ（2026-08-04追加）。
 // 上のreinforcementCell（自動判定の「候補」）とは別枠——こちらは会議で正式に決定済みの確定リストであることを
 // 明示するため、ラベルも「候補」ではなく「役員会ターゲット」にしている。
@@ -1765,6 +1836,18 @@ function computeCompanyMembers(d, company){
 }
 function renderCompanyScopedView(d){
   const company = COMPANY_SCOPE;
+
+  const c = (d.companies || []).find(x => x.company === company) || {};
+  const t = COMPANY_TARGETS[company] || {};
+  const gauges = [
+    kpiGaugeCard('アポ獲得数', c.apo_kakutoku, t.apo, v => (v===null||v===undefined)?'—':v+'件'),
+    kpiGaugeCard('成約数', c.clo_seiyaku, t.seiyaku, v => (v===null||v===undefined)?'—':v+'件'),
+    kpiGaugeCard('売上', c.uriage, t.uriage, v => (v===null||v===undefined)?'—':yen(v)+'円'),
+    kpiGaugeCard('稼働人員数', c.headcount, t.chinin, v => (v===null||v===undefined)?'—':v+'名'),
+  ].filter(Boolean);
+  document.getElementById('companyKpiGaugeCard').style.display = gauges.length ? '' : 'none';
+  document.getElementById('companyKpiGaugeWrap').innerHTML = gauges.join('');
+
   const people = computeCompanyMembers(d, company);
   const table = document.getElementById('t-company-scoped');
   const cols = ['名前','アポ獲得数','アポ成約','クロ成約','売上','稼働日数'];
