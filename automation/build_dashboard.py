@@ -137,6 +137,8 @@ header.top .meta b{color:var(--text);}
 
 .kpi-gauge-row{display:flex; gap:28px; flex-wrap:wrap; justify-content:flex-start;}
 .kpi-gauge{display:flex; flex-direction:column; align-items:center; gap:6px; min-width:132px;}
+.kpi-gauge.clickable{cursor:pointer; border-radius:var(--radius-sm); padding:6px; transition:background-color .12s;}
+.kpi-gauge.clickable:hover{background:var(--border);}
 .kpi-gauge-label{font-size:12px; font-weight:700; color:var(--text-sub);}
 .kpi-gauge-target{font-size:11.5px; color:var(--text-xs); font-weight:600;}
 @media (max-width:640px){
@@ -1317,7 +1319,7 @@ function gaugeRing(pctVal, opts={}){
 // 企業別ページのKPI進捗ゲージ（2026-08-31追加・小宮山さん依頼）。実績値を大きく見せつつ、
 // リングの塗り具合と色（緑=達成/黄=あと一歩/赤=遅れ）で目標に対する進捗を直感的に示す。
 // gaugeRing()（%だけを表示する小型版）とは別に、実績値そのものを主役にした大型カードとして作る。
-function kpiGaugeCard(label, actual, target, fmt){
+function kpiGaugeCard(label, actual, target, fmt, tileKind){
   if(target === null || target === undefined || target === '') return '';
   fmt = fmt || (v => (v===null||v===undefined) ? '—' : String(v));
   const size = 132, stroke = 12;
@@ -1326,7 +1328,9 @@ function kpiGaugeCard(label, actual, target, fmt){
   const p = Math.max(0, Math.min(100, rate===null?0:rate));
   const color = rate===null ? 'var(--border)' : rate>=100 ? 'var(--success)' : rate>=85 ? 'var(--warn)' : 'var(--danger)';
   const offset = c*(1-p/100);
-  return `<div class="kpi-gauge">
+  const clickAttr = tileKind ? ` data-tile="${tileKind}"` : '';
+  const clickCls = tileKind ? ' clickable' : '';
+  return `<div class="kpi-gauge${clickCls}"${clickAttr}>
     <div class="kpi-gauge-label">${escapeHtml(label)}</div>
     <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
       <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--border)" stroke-width="${stroke}"/>
@@ -1996,14 +2000,18 @@ function renderTilesForCompany(d, company){
   const cSafe = c || {};
   const t = COMPANY_TARGETS[company] || {};
   const gauges = [
-    kpiGaugeCard('アポ獲得数', cSafe.apo_kakutoku, t.apo, v => (v===null||v===undefined)?'—':v+'件'),
-    kpiGaugeCard('成約数', cSafe.clo_seiyaku, t.seiyaku, v => (v===null||v===undefined)?'—':v+'件'),
-    kpiGaugeCard('売上', cSafe.uriage, t.uriage, v => (v===null||v===undefined)?'—':yen(v)+'円'),
-    kpiGaugeCard('稼働人員数', cSafe.headcount, t.chinin, v => (v===null||v===undefined)?'—':v+'名'),
+    kpiGaugeCard('アポ獲得数', cSafe.apo_kakutoku, t.apo, v => (v===null||v===undefined)?'—':v+'件', 'apo'),
+    kpiGaugeCard('成約数', cSafe.clo_seiyaku, t.seiyaku, v => (v===null||v===undefined)?'—':v+'件', 'sei'),
+    kpiGaugeCard('売上', cSafe.uriage, t.uriage, v => (v===null||v===undefined)?'—':yen(v)+'円', 'uri'),
+    kpiGaugeCard('稼働人員数', cSafe.headcount, t.chinin, v => (v===null||v===undefined)?'—':v+'名', 'headcount'),
   ].filter(Boolean);
   document.getElementById('companyKpiGaugeTopTitle').textContent = company;
   document.getElementById('companyKpiGaugeTopCard').style.display = gauges.length ? '' : 'none';
-  document.getElementById('companyKpiGaugeTopWrap').innerHTML = gauges.join('');
+  const gaugeWrap = document.getElementById('companyKpiGaugeTopWrap');
+  gaugeWrap.innerHTML = gauges.join('');
+  gaugeWrap.querySelectorAll('.kpi-gauge[data-tile]').forEach(el=>{
+    el.addEventListener('click', ()=> openTileDrill(el.dataset.tile));
+  });
   const rate = (c && c.apo_kakutoku) ? (c.clo_seiyaku/c.apo_kakutoku*100) : 0;
   document.getElementById('tileApo').innerHTML = `${yen(c?c.apo_kakutoku:0)}<span class="unit">件</span>`;
   document.getElementById('tileSei').innerHTML = `${yen(c?c.clo_seiyaku:0)}<span class="unit">件</span>`;
@@ -3658,8 +3666,53 @@ function dailyHeadcountTileDef(){
   };
 }
 // ---------- ③ KPIタイルクリック→内訳ドリルダウン（既存drillModalを流用） ----------
+// 企業スコープ中(COMPANY_SCOPE)は、会社別内訳ではなくその会社内の担当者別内訳を表示する
+// （2026-08-31追加・小宮山さん依頼）。対面数/スポット更新数は担当者別データを持たないため
+// スコープ中はドリルダウン自体を出さない（存在しないデータを捏造しない）。
+function openTileDrillScoped(kind, d, company){
+  const people = computeCompanyMembers(d, company);
+  const scopedRecords = ((ATTENDANCE_ALERT && ATTENDANCE_ALERT.records) || []).filter(r=>r.company===company);
+  const SCOPED_DEFS = {
+    apo: {title:`${company} アポ獲得数の内訳（担当者別）`, cols:['氏名','アポ獲得数'],
+      rows: people.filter(p=>p.apoCount>0).slice().sort((a,b)=>b.apoCount-a.apoCount).map(p=>[p.name, p.apoCount])},
+    sei: {title:`${company} 成約数の内訳（担当者別・クロ成約基準）`, cols:['氏名','クロ成約'],
+      rows: people.filter(p=>p.cloSeiyaku>0).slice().sort((a,b)=>b.cloSeiyaku-a.cloSeiyaku).map(p=>[p.name, p.cloSeiyaku])},
+    uri: {title:`${company} 売上の内訳（担当者別）`, cols:['氏名','売上'],
+      rows: people.filter(p=>p.uriage>0).slice().sort((a,b)=>b.uriage-a.uriage).map(p=>[p.name, yen(p.uriage)])},
+    headcount: {title:`${company} 稼働人員数（出勤打刻あり）の内訳（担当者別）`, cols:['氏名','稼働日数'],
+      rows: people.filter(p=>p.activeDays).slice().sort((a,b)=>b.activeDays-a.activeDays).map(p=>[p.name, p.activeDays])},
+    apoAchievers: {title:`${company} アポ獲得達成者の内訳（担当者別）`, cols:['氏名','アポ獲得数'],
+      rows: people.filter(p=>p.apoCount>0).slice().sort((a,b)=>b.apoCount-a.apoCount).map(p=>[p.name, p.apoCount])},
+    seiyakuAchievers: {title:`${company} 成約達成者の内訳（担当者別）`, cols:['氏名','アポ成約','クロ成約'],
+      rows: people.filter(p=>p.apoSeiyaku>0 || p.cloSeiyaku>0).slice()
+        .sort((a,b)=>(b.apoSeiyaku+b.cloSeiyaku)-(a.apoSeiyaku+a.cloSeiyaku)).map(p=>[p.name, p.apoSeiyaku, p.cloSeiyaku])},
+    spotActive: {title:`${company} 稼働人員数（スポット作成）の内訳（担当者別）`, cols:['氏名','スポット作成数'],
+      rows: scopedRecords.filter(r=>r.spot_count>0).sort((a,b)=>b.spot_count-a.spot_count).map(r=>[r.name, r.spot_count])},
+    routeActive: {title:`${company} 稼働人員数（ルート自動記録あり）の内訳（担当者別）`, cols:['氏名','ルート自動記録数'],
+      rows: scopedRecords.filter(r=>r.route_count>0).sort((a,b)=>b.route_count-a.route_count).map(r=>[r.name, r.route_count])},
+    resetAlert: {title:`${company} 要リセット（出勤放置）の内訳（担当者別）`, cols:['氏名','アラート判定'],
+      rows: scopedRecords.filter(r=>r.alert==='要対応').map(r=>[r.name, r.alert])},
+  };
+  const def = SCOPED_DEFS[kind];
+  if(!def) return; // 対面数/スポット更新数など担当者別データが無い指標はスコープ中は何もしない
+
+  document.getElementById('drillTitle').textContent = def.title;
+  document.getElementById('drillSub').textContent = `期間: ${d.start}〜${d.end}／${def.rows.length}名`;
+  const table = document.getElementById('drillTable');
+  const thead = '<thead><tr>' + def.cols.map((c,i)=>`<th class="${i===0?'':'num'}">${escapeHtml(c)}</th>`).join('') + '</tr></thead>';
+  const tbody = '<tbody>' + (def.rows.length ? def.rows.map(r=>
+    `<tr><td class="name clickable-name" data-name="${escapeHtml(r[0])}">${escapeHtml(r[0])}</td>` +
+    r.slice(1).map(v=>`<td class="num">${escapeHtml(v)}</td>`).join('') + '</tr>'
+  ).join('') : `<tr><td colspan="${def.cols.length}" style="text-align:center;color:var(--text-sub);">該当データなし</td></tr>`) + '</tbody>';
+  table.innerHTML = thead + tbody;
+  table.querySelectorAll('.clickable-name').forEach(td=>{
+    td.addEventListener('click', ()=> openPersonDetail(td.dataset.name));
+  });
+  document.getElementById('drillModal').classList.add('show');
+}
 function openTileDrill(kind){
   const d = currentData();
+  if(COMPANY_SCOPE) return openTileDrillScoped(kind, d, COMPANY_SCOPE);
   const alertRecords = (ATTENDANCE_ALERT && ATTENDANCE_ALERT.records) || [];
   const headcountDrill = (isTodayDaySelected() && ATTENDANCE_ALERT) ? (() => {
     const active = realtimeActiveRecords();
