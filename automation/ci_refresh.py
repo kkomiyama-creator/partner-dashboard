@@ -103,6 +103,15 @@ def main():
          "--clock-in-csv", attendance_csv, "--clock-out-csv", clockout_csv,
          "--now", now.strftime("%Y-%m-%d %H:%M:%S"), "--out", attendance_alert_csv])
 
+    print("--- build_tenure_api.py ---")
+    tenure_json = os.path.join(DATA_DIR, "tenure.json")
+    run(["python3", os.path.join(AUTOMATION_DIR, "build_tenure_api.py"),
+         "--as-of", today.isoformat(), "--out", tenure_json])
+
+    # 企業別の月次目標値(2026-08-31追加)。人手で編集する小さいファイルで、CIが生成するもの
+    # ではない(automation/data/company_targets.json としてgit管理・毎回チェックアウトされる)。
+    company_targets_json = os.path.join(AUTOMATION_DIR, "data", "company_targets.json")
+
     print("--- build_dashboard.py ---")
     out_html = os.path.join(DATA_DIR, "partner_dashboard_latest_raw.html")
     run(["python3", os.path.join(AUTOMATION_DIR, "build_dashboard.py"),
@@ -110,6 +119,7 @@ def main():
          "--status-csv", sheet_paths["status"], "--shift-status-json", shift_status_json,
          "--clockout-csv", clockout_csv, "--attendance-csv", attendance_csv,
          "--attendance-alert-csv", attendance_alert_csv, "--shodan-json", shodan_json,
+         "--tenure-json", tenure_json, "--company-targets-json", company_targets_json,
          "--out", out_html], cwd=AUTOMATION_DIR)
 
     print("--- パスワードゲート付与 -> index.html ---")

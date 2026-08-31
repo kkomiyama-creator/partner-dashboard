@@ -240,6 +240,7 @@ td.company{color:var(--text-sub);}
 .hide-diff .diffcol{display:none;}
 .diffToggle{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-sub); cursor:pointer; user-select:none; margin-left:auto;}
 .diffToggle input{cursor:pointer;}
+.hide-target .targetcol{display:none;}
 
 .topic-filters{display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap;}
 .topic-filters select{
@@ -393,6 +394,7 @@ td.company{color:var(--text-sub);}
       <button class="csvbtn" id="customApplyBtn" type="button" style="padding:4px 10px;">適用</button>
     </span>
     <label class="diffToggle"><input type="checkbox" id="diffToggle" checked> 前期間比を表示</label>
+    <label class="diffToggle"><input type="checkbox" id="targetColToggle" checked> 🎯目標比を表示</label>
   </div>
   <div class="note" id="customRangeNote" style="display:none; margin-top:-6px; margin-bottom:10px;">
     ⑤ カスタム期間は、当月＋前月の日次事前集計（<code>DAILY_PERIODS</code>）をブラウザ側で合算して表示しています（企業別・アポ・成約・クローザーが対象）。稼働人員数・対面率は、その期間に対応する出勤報告・スポット台帳データを取得済みの日のみ表示されます（未取得の日は空欄）。それより前の月を選んだ場合はデータが無いため空表示になります。
@@ -485,6 +487,19 @@ td.company{color:var(--text-sub);}
     </div>
 
     <div id="companyAllView">
+      <details class="card" id="companyTargetCard" style="margin-bottom:16px; padding:14px 18px;">
+        <summary style="cursor:pointer; font-weight:700; font-size:13px; color:var(--ink);">🎯 企業別目標を編集（ブラウザに保存・次回アクセス時も復元）</summary>
+        <div class="note" style="margin-top:10px;">
+          パートナー企業ごとの月次目標（アポ獲得数・成約数・売上・稼働人員数）を入力すると、下の企業別実績表に達成率が表示されます。実データが未回収の会社は空欄のままでOKです（表では「未設定」と表示されます）。2026/8/31時点、各社の目標値は9月分を回収中で、判明した会社から順次このフォームに入力していく運用を想定しています。<br>
+          <b>保存範囲について</b>　この入力はご利用のブラウザにのみ保存されます（他の人のブラウザや別端末には反映されません）。全社共通の値として恒久的に配布したい場合は、小宮山さんに「data/company_targets.json」への反映を依頼してください。
+        </div>
+        <div class="tablewrap" style="margin-top:14px;"><table id="companyTargetForm"></table></div>
+        <div style="margin-top:10px; display:flex; gap:8px; align-items:center;">
+          <button class="csvbtn" id="companyTargetSaveBtn" type="button">保存して再計算</button>
+          <button class="printbtn" id="companyTargetResetBtn" type="button">初期値に戻す</button>
+          <span id="companyTargetSavedMsg" style="font-size:12px; color:var(--success); display:none;">✓ 保存しました</span>
+        </div>
+      </details>
       <details class="card" style="margin-bottom:16px; padding:14px 18px;" open>
         <summary style="cursor:pointer; font-weight:700; font-size:13px; color:var(--ink);">📍 ポジション分析マトリックス（パートナー各社の立ち位置）</summary>
         <div class="note" style="margin-top:10px;">2軸でパートナー各社をプロットし、どの象限に位置するかで打ち手の方向性を見立てるための図です。点をクリックすると企業別の担当者内訳（既存のドリルダウン）が開きます。円が大きい点は株式会社Fit Founder（直販）です。</div>
@@ -639,6 +654,13 @@ td.company{color:var(--text-sub);}
     <div class="table-caption" style="margin-top:24px;">④ 研修効果モニタリング</div>
     <div id="trainingEffectWrap"></div>
 
+    <div class="table-caption" style="margin-top:24px;">⑤ 在籍期間別の成績分析（2026-08-31追加）</div>
+    <div class="note" style="margin-bottom:10px;">
+      Cyzen連携APIのアカウント作成日を「登録日」の代理指標として、新人（登録から<span id="tenureNewDays">—</span>日以内）／中堅（〜<span id="tenureMidDays">—</span>日）／ベテラン（それ以上）の3区分で当月実績を比較します。
+      <b>クローザー昇格日に相当するデータはCyzen側に存在しないため未搭載</b>です（アポインター・クローザーどちらの実績も、同じ「Cyzenアカウント登録日」基準の区分で見ています）。中堅/ベテランの境界（1年）は暫定値です。
+    </div>
+    <div id="tenureAnalysisWrap"></div>
+
     <div class="note" style="margin-top:24px; border-left:4px solid var(--warn); background:var(--warn-bg);">
       <b>⚠ 天気・住宅密集度との相関分析について</b>　外部データ（気象・人口密度統計）との組み合わせ分析は現時点では未実装です。実装する場合はClaude Codeが日次更新時に外部データを取得して埋め込む形になります（このダッシュボード自体は外部通信をしない自己完結型のため）。着手が決まり次第このタブに追加します。
     </div>
@@ -785,6 +807,36 @@ const URGENT_TARGETS_BY_NAME = new Map(
   (URGENT_TARGETS.targets || []).map(t => [normNameJs(t.name), t])
 );
 const DOW_HOUR = __DOWHOUR_JSON__;
+const TENURE = __TENURE_JSON__;
+const TENURE_BY_NAME = new Map(
+  Object.entries(TENURE.people || {}).map(([name, t]) => [normNameJs(name), t])
+);
+function tenureBucketLabel(bucket){
+  return bucket === 'new' ? '🌱新人' : (bucket === 'mid' ? '中堅' : (bucket === 'veteran' ? 'ベテラン' : '—'));
+}
+function tenureCell(name){
+  const t = TENURE_BY_NAME.get(normNameJs(name));
+  if(!t) return '<span class="pill flat">不明</span>';
+  return `<span title="登録日 ${t.created_at}・在籍${t.tenure_days}日">${tenureBucketLabel(t.bucket)}</span>`;
+}
+const COMPANY_TARGETS_DEFAULT = __COMPANY_TARGETS_JSON__;
+const COMPANY_TARGETS_STORAGE_KEY = 'partnerDashboardCompanyTargets_v1';
+function loadCompanyTargets(){
+  let t = null;
+  try{ const raw = localStorage.getItem(COMPANY_TARGETS_STORAGE_KEY); if(raw) t = JSON.parse(raw); }catch(e){}
+  return Object.assign({}, COMPANY_TARGETS_DEFAULT, t);
+}
+function saveCompanyTargets(t){
+  localStorage.setItem(COMPANY_TARGETS_STORAGE_KEY, JSON.stringify(t));
+}
+let COMPANY_TARGETS = loadCompanyTargets();
+function targetAchieveCell(actual, target){
+  if(target === null || target === undefined || target === '') return '<span class="pill flat">未設定</span>';
+  const a = actual || 0;
+  const rate = target > 0 ? Math.round(a/target*1000)/10 : null;
+  const cls = rate === null ? 'flat' : (rate >= 100 ? 'good' : (rate >= 85 ? 'mid' : 'low'));
+  return `<span class="pill ${cls}" title="実績${a} / 目標${target}">${rate===null?'—':rate+'%'}</span>`;
+}
 const TARGETS_DEFAULT = __TARGETS_DEFAULT_JSON__;
 const TARGETS_STORAGE_KEY = 'partnerDashboardTargets_v1';
 function loadTargets(){
@@ -1424,20 +1476,25 @@ function renderAllTables(){
     renderCompanyScopedView(d);
   } else {
   const companyByName = new Map(d.companies.map(c=>[c.company, c]));
+  const ctRate = (actual, target) => (target ? Math.round((actual||0)/target*1000)/10 : null);
   renderTable('t-company', [
     {label:'順位', num:true},
     {label:'順位変動', num:true, cls:'diffcol', fmt:v=>rankChangeCell(v)},
     {label:'企業名'},
     {label:'アポ獲得数', num:true},
     {label:'アポ数Δ', num:true, cls:'diffcol', fmt:(v,r)=>deltaCell(v, companyByName.get(r[2]).delta_apo_pct)},
+    {label:'目標比(アポ)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).apo_kakutoku, (COMPANY_TARGETS[r[2]]||{}).apo)},
     {label:'アポ成約', num:true},
     {label:'クロ成約', num:true},
     {label:'成約数Δ', num:true, cls:'diffcol', fmt:(v,r)=>deltaCell(v, companyByName.get(r[2]).delta_clo_pct)},
+    {label:'目標比(成約)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).clo_seiyaku, (COMPANY_TARGETS[r[2]]||{}).seiyaku)},
     {label:'売上', num:true, fmt:v=>yen(v)},
     {label:'売上Δ', num:true, cls:'diffcol', fmt:(v,r)=>deltaCell(v, companyByName.get(r[2]).delta_uriage_pct)},
+    {label:'目標比(売上)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).uriage, (COMPANY_TARGETS[r[2]]||{}).uriage)},
     {label:'成約率', num:true, fmt:v=>ratePill(v)},
     {label:'成約率Δ', num:true, cls:'diffcol', fmt:v=>deltaRateCell(v)},
     {label:'稼働人員数', num:true, fmt:v=>headcountCell(v)},
+    {label:'目標比(稼働)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).headcount, (COMPANY_TARGETS[r[2]]||{}).chinin)},
     {label:'アポ達成者数', num:true, fmt:v=>headcountCell(v)},
     {label:'成約達成者数', num:true, fmt:v=>headcountCell(v)},
     {label:'要対応', num:true, cls:'attn-needsaction', fmt:v=>headcountCell(v)},
@@ -1449,16 +1506,21 @@ function renderAllTables(){
   ], d.companies.map(c=>[
       c.rank, c.rank_change, c.company,
       c.apo_kakutoku, c.delta_apo_kakutoku,
+      ctRate(c.apo_kakutoku, (COMPANY_TARGETS[c.company]||{}).apo),
       c.apo_seiyaku, c.clo_seiyaku, c.delta_clo_seiyaku,
+      ctRate(c.clo_seiyaku, (COMPANY_TARGETS[c.company]||{}).seiyaku),
       c.uriage, c.delta_uriage,
+      ctRate(c.uriage, (COMPANY_TARGETS[c.company]||{}).uriage),
       c.rate, c.delta_rate,
       c.headcount,
+      ctRate(c.headcount, (COMPANY_TARGETS[c.company]||{}).chinin),
       c.apo_achiever_count, c.seiyaku_achiever_count,
       c.attendance_alert_needsaction, c.attendance_alert_noclockin, c.attendance_alert_ok,
       c.status_tag, c.cause, c.next_action,
     ]),
      {defaultSort:3, directCheck:r=>r[2].includes('Fit Founder'), rowClick:r=>openDrilldown(r[2])});
     renderPositionMatrices(d);
+    renderCompanyTargetForm(d.companies.map(c=>c.company));
   }
 
   function attMatches(v, lastInOut, filterVal){
@@ -1487,6 +1549,7 @@ function renderAllTables(){
     {label:'再訪問数', num:true, fmt:v=>v===null||v===undefined?'—':v},
     {label:'対面数', num:true, fmt:v=>v===null||v===undefined?'—':v},
     {label:'対面率', num:true, fmt:(v,r)=>`<span title="${escapeHtml(r[15])}">${v===null||v===undefined?'—':v.toFixed(1)+'%'}</span>`},
+    {label:'在籍', fmt:(v,r)=>tenureCell(r[1])},
     {label:'役員会ターゲット', fmt:(v,r)=>urgentTargetCell(r[1])},
   ], apoFiltered,
      {defaultSort:3, directCheck:r=>r[2].includes('Fit Founder'), rowClick:r=>openPersonDetail(r[1])});
@@ -1506,6 +1569,7 @@ function renderAllTables(){
     {label:'再訪問数', num:true, fmt:v=>v===null||v===undefined?'—':v},
     {label:'対面数', num:true, fmt:v=>v===null||v===undefined?'—':v},
     {label:'対面率', num:true, fmt:(v,r)=>`<span title="${escapeHtml(r[15])}">${v===null||v===undefined?'—':v.toFixed(1)+'%'}</span>`},
+    {label:'在籍', fmt:(v,r)=>tenureCell(r[1])},
     {label:'役員会ターゲット', fmt:(v,r)=>urgentTargetCell(r[1])},
   ], soutikuFiltered,
      {defaultSort:3, directCheck:r=>r[2].includes('Fit Founder'), rowClick:r=>openPersonDetail(r[1])});
@@ -1520,6 +1584,7 @@ function renderAllTables(){
     {label:'取材候補', fmt:v=>interviewCell(v)}, {label:'強化対象', fmt:v=>reinforcementCell(v)},
     {label:'スポット作成数', num:true, fmt:v=>spotCountCell(v)}, {label:'最終出退勤', fmt:v=>lastInOutCell(v)},
     {label:'出勤打刻', fmt:v=>attendanceCell(v)},
+    {label:'在籍', fmt:(v,r)=>tenureCell(r[1])},
     {label:'役員会ターゲット', fmt:(v,r)=>urgentTargetCell(r[1])},
   ], closerFiltered,
      {defaultSort:3, directCheck:r=>r[2].includes('Fit Founder'), rowClick:r=>openPersonDetail(r[1])});
@@ -2468,6 +2533,29 @@ function readTargetForm(){
   return t;
 }
 
+// ---------- 企業別目標の編集フォーム（2026-08-31追加） ----------
+const COMPANY_TARGET_FIELDS = [['apo','目標アポ数'], ['seiyaku','目標成約数'], ['uriage','目標売上(円)'], ['chinin','目標稼働人員数']];
+function renderCompanyTargetForm(companies){
+  const el = document.getElementById('companyTargetForm');
+  const inputCell = (company, key, val) => `<td><input type="number" data-ct-company="${escapeHtml(company)}" data-ct-key="${key}"
+    value="${val===undefined||val===null?'':val}" style="width:100px; padding:5px 6px; border:1px solid var(--border); border-radius:6px; font-family:inherit;"></td>`;
+  const rows = companies.map(company => {
+    const t = COMPANY_TARGETS[company] || {};
+    return `<tr><td class="name">${escapeHtml(company)}</td>${COMPANY_TARGET_FIELDS.map(([k])=>inputCell(company, k, t[k])).join('')}</tr>`;
+  }).join('');
+  el.innerHTML = `<thead><tr><th>会社名</th>${COMPANY_TARGET_FIELDS.map(([,l])=>`<th>${l}</th>`).join('')}</tr></thead><tbody>${rows}</tbody>`;
+}
+function readCompanyTargetForm(){
+  const t = {};
+  document.querySelectorAll('#companyTargetForm input[data-ct-company]').forEach(inp=>{
+    const company = inp.dataset.ctCompany, key = inp.dataset.ctKey;
+    const v = inp.value === '' ? null : Number(inp.value);
+    t[company] = t[company] || {};
+    t[company][key] = v;
+  });
+  return t;
+}
+
 // ---------- 行動分析タブ（Cyzen行動履歴＝ルート自動記録+訪問等イベントのGPS集計） ----------
 let ROUTE_SELECTED_DAY = null;
 let ROUTE_SELECTED_PERSON = null;
@@ -2658,6 +2746,53 @@ function renderTrend(){
   renderTrendArea();
   renderTrendTop();
   renderTrainingEffect();
+  renderTenureAnalysis();
+}
+
+// ---------- ⑤ 在籍期間別の成績分析（2026-08-31追加） ----------
+// 当月実績(PERIODS.month)を対象に、アポインター/クローザーそれぞれ本人の役割の指標(アポ数/クロ成約数)で
+// 在籍区分(新人/中堅/ベテラン/不明)ごとに合算する。表示期間ピッカーとは連動しない独立集計。
+function tenureBucketOf(name){
+  const t = TENURE_BY_NAME.get(normNameJs(name));
+  return t ? t.bucket : 'unknown';
+}
+function summarizeByTenure(rows, countIdx){
+  const buckets = {new:{n:0, total:0}, mid:{n:0, total:0}, veteran:{n:0, total:0}, unknown:{n:0, total:0}};
+  rows.forEach(r=>{
+    const b = tenureBucketOf(r[1]);
+    buckets[b].n++;
+    buckets[b].total += r[countIdx] || 0;
+  });
+  return buckets;
+}
+function renderTenureAnalysis(){
+  document.getElementById('tenureNewDays').textContent = TENURE.new_hire_days ?? '90';
+  document.getElementById('tenureMidDays').textContent = TENURE.mid_days ?? '365';
+  const wrap = document.getElementById('tenureAnalysisWrap');
+  if(!TENURE.people || !Object.keys(TENURE.people).length){
+    wrap.innerHTML = '<div class="note">在籍期間データが未取得です（--tenure-json未指定）。</div>';
+    return;
+  }
+  const m = PERIODS.month;
+  const apoBuckets = summarizeByTenure(m.apo_ranking, 4);      // r[4] = アポ数
+  const closerBuckets = summarizeByTenure(m.closer_ranking, 3); // r[3] = クロ成約数
+  const labels = [['new','🌱新人'], ['mid','中堅'], ['veteran','ベテラン'], ['unknown','不明（未取得）']];
+  const row = (label, key) => {
+    const a = apoBuckets[key], c = closerBuckets[key];
+    const avgApo = a.n ? round1(a.total/a.n) : '—';
+    const avgClo = c.n ? round1(c.total/c.n) : '—';
+    return `<tr><td class="name">${label}</td>
+      <td class="num">${a.n}名</td><td class="num">${a.total}件</td><td class="num">${avgApo}</td>
+      <td class="num">${c.n}名</td><td class="num">${c.total}件</td><td class="num">${avgClo}</td></tr>`;
+  };
+  wrap.innerHTML = `<div class="card"><div class="tablewrap"><table>
+    <thead><tr><th>在籍区分</th>
+      <th class="num">アポインター人数</th><th class="num">アポ数合計</th><th class="num">1人あたり平均</th>
+      <th class="num">クローザー人数</th><th class="num">クロ成約数合計</th><th class="num">1人あたり平均</th>
+    </tr></thead>
+    <tbody>${labels.map(([k,l])=>row(l,k)).join('')}</tbody>
+  </table></div></div>
+  <div class="note" style="margin-top:8px;">「不明（未取得）」はCyzenアカウント名がロースター/獲得報告データの表記と一致しなかった人、またはCyzenアカウント作成日が取得できなかった人です。名前の表記ゆれが原因の場合があります。</div>`;
 }
 
 // ---------- ④ 研修効果モニタリング（2026-08-04追加） ----------
@@ -3053,6 +3188,20 @@ document.getElementById('targetResetBtn').addEventListener('click', ()=>{
   renderExecTab();
 });
 
+document.getElementById('companyTargetSaveBtn').addEventListener('click', ()=>{
+  COMPANY_TARGETS = readCompanyTargetForm();
+  saveCompanyTargets(COMPANY_TARGETS);
+  renderAllTables();
+  const msg = document.getElementById('companyTargetSavedMsg');
+  msg.style.display = 'inline';
+  setTimeout(()=>{ msg.style.display = 'none'; }, 2500);
+});
+document.getElementById('companyTargetResetBtn').addEventListener('click', ()=>{
+  localStorage.removeItem(COMPANY_TARGETS_STORAGE_KEY);
+  COMPANY_TARGETS = loadCompanyTargets();
+  renderAllTables();
+});
+
 function renderOutreach(){
   if(!OUTREACH){
     document.getElementById('p-outreach').innerHTML = '<div class="note">開拓先パートナーのデータが未取得です。</div>';
@@ -3241,6 +3390,9 @@ document.querySelectorAll('.period-btn').forEach(btn=>{
 
 document.getElementById('diffToggle').addEventListener('change', (e)=>{
   document.body.classList.toggle('hide-diff', !e.target.checked);
+});
+document.getElementById('targetColToggle').addEventListener('change', (e)=>{
+  document.body.classList.toggle('hide-target', !e.target.checked);
 });
 
 (function initCompanyScope(){
@@ -3972,7 +4124,7 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
           targets_json=None, completion_dir=None, attendance_alert_csv=None, spot_csv=None,
           route_history_json=None, closer_shodan_dir=None,
           urgent_targets_json=None, training_json=None, shift_status_json=None,
-          clockout_csv=None, shodan_json=None):
+          clockout_csv=None, shodan_json=None, tenure_json=None, company_targets_json=None):
     end_dt = datetime.strptime(end, "%Y/%m/%d")
     start_dt = datetime.strptime(start, "%Y/%m/%d")
     day_start = end_dt.strftime("%Y/%m/%d")
@@ -4169,6 +4321,23 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
         with open(training_json, encoding="utf-8") as f:
             training = json.load(f)
 
+    # 在籍期間データ（2026-08-31追加・build_tenure_api.pyの出力）。Cyzen連携API /users の
+    # created_at（アカウント作成日時）を登録日の代理指標として使う。クローザー昇格日に相当する
+    # フィールドはCyzen側に無いため未搭載（2026/8/31の辻さん×小宮山さん打ち合わせで要望が出たが、
+    # 今回は「新人(3ヶ月以内)/中堅/ベテラン」の区分のみ実装）。
+    tenure = {"people": {}, "new_hire_days": None, "mid_days": None}
+    if tenure_json and os.path.exists(tenure_json):
+        with open(tenure_json, encoding="utf-8") as f:
+            tenure = json.load(f)
+
+    # 企業別の月次目標値（2026-08-31追加）。2026/8/31の打ち合わせで「パートナー企業単位でまず実装」と
+    # 合意。実際の目標値は各パートナーから9月分を回収中（未回収の会社はnullのまま＝「未設定」表示）。
+    # data/company_targets.json は人手で編集するファイル（CIが自動生成するものではない）。
+    company_targets_default = {}
+    if company_targets_json and os.path.exists(company_targets_json):
+        with open(company_targets_json, encoding="utf-8") as f:
+            company_targets_default = json.load(f)
+
     # パートナーごとのシフト提出状況（2026-08-09追加・build_shift_status.pyの出力）。
     # 表示期間とは連動しない独立スナップショット（開拓先パートナー・行動分析タブと同じ設計）。
     shift_status = None
@@ -4269,6 +4438,8 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
         {"baseline_start": baseline_start_dt.strftime("%Y-%m-%d"), "baseline_end": baseline_end_dt.strftime("%Y-%m-%d"),
          "recent_start": week_start.replace("/", "-"), "recent_end": week_end.replace("/", "-"),
          "rows": declining_performers}, ensure_ascii=False))
+    html_out = html_out.replace("__TENURE_JSON__", json.dumps(tenure, ensure_ascii=False))
+    html_out = html_out.replace("__COMPANY_TARGETS_JSON__", json.dumps(company_targets_default, ensure_ascii=False))
 
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(html_out)
@@ -4360,6 +4531,12 @@ def main():
     ap.add_argument("--clockout-csv", default=None,
                      help="Cyzen「報告閲覧」勤務終了報告のマージ済みCSV（data/clockout_merged.csv）。"
                           "省略時は下落メンバータブが空になる")
+    ap.add_argument("--tenure-json", default=None,
+                     help="在籍期間データJSON（data/tenure.json・build_tenure_api.pyの出力）。"
+                          "省略時は在籍区分列・傾向分析タブの在籍期間セクションが空になる")
+    ap.add_argument("--company-targets-json", default=None,
+                     help="企業別の月次目標値JSON（data/company_targets.json・人手で編集）。"
+                          "省略時は企業別タブの目標/達成率列が「未設定」表示になる")
     ap.add_argument("--start", default=None)
     ap.add_argument("--end", default=None)
     ap.add_argument("--out", default=os.path.expanduser("~/Desktop/partner_dashboard.html"))
@@ -4391,7 +4568,9 @@ def main():
                      training_json=args.training_json,
                      shift_status_json=args.shift_status_json,
                      shodan_json=args.shodan_json,
-                     clockout_csv=args.clockout_csv)
+                     clockout_csv=args.clockout_csv,
+                     tenure_json=args.tenure_json,
+                     company_targets_json=args.company_targets_json)
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
 
