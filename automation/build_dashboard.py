@@ -243,6 +243,10 @@ td.company{color:var(--text-sub);}
 .pill.attendance-abandoned{background:var(--danger-bg); color:var(--danger); border:1px solid var(--danger);}
 .pill.attendance-noclock{background:var(--border); color:var(--text-sub);}
 .pill.attendance-ok{background:var(--success-bg); color:var(--success);}
+tbody tr.houjin-overdue{background:var(--danger-bg);}
+tbody tr.houjin-overdue:hover{background:var(--danger-bg);}
+tbody tr.houjin-due-soon{background:var(--warn-bg);}
+tbody tr.houjin-due-soon:hover{background:var(--warn-bg);}
 .attfilter{
   font-family:inherit; font-size:12.5px; padding:6px 10px; border-radius:8px;
   border:1px solid var(--border); background:var(--white); color:var(--text); cursor:pointer;
@@ -643,6 +647,7 @@ td.company{color:var(--text-sub);}
   </div>
 
   <div id="p-outreach" class="panel">
+    <div id="outreachCandidatesSection">
     <div class="tiles" style="margin-bottom:16px;">
       <div class="tile"><div class="label">総候補数</div><div class="value" id="outTotal">—</div></div>
       <div class="tile"><div class="label">積極アプローチ対象</div><div class="value" id="outActive">—</div></div>
@@ -657,6 +662,22 @@ td.company{color:var(--text-sub);}
       <b>データ出典</b>　partner-outreachスキルのNotion CRM（新規パートナー候補管理）のスナップショットです。他のタブ（Cyzen実績）とはデータソースが別で、表示期間（日次/週次/月次）とは連動しません。<br>
       <b>優先順位について</b>　積極アプローチ対象=YES かつ 未コンタクトの候補を、優先度(S→A→B→C)→フォロワー数→リスト追加日の古い順、で並べています（partner-outreachスキルSKILL.mdフェーズ②「開拓先パートナーの選定」と同じロジック）。存在しない指標でのスコア付けはしていません。<br>
       <b>データ更新日時</b>　<span id="outUpdated">—</span>
+    </div>
+    </div>
+
+    <div class="table-caption" style="margin-top:26px;">📝 法人開拓・折衝ログ（接触が始まった開拓先の状況）</div>
+    <div class="tiles" style="margin-bottom:12px;">
+      <div class="tile"><div class="label">接触中の法人数</div><div class="value" id="houjinTotal">—</div></div>
+      <div class="tile"><div class="label">期限超過</div><div class="value" id="houjinOverdue">—</div></div>
+      <div class="tile"><div class="label">3日以内に期限</div><div class="value" id="houjinDueSoon">—</div></div>
+      <div class="tile"><div class="label">次回アクション未記入</div><div class="value" id="houjinNoAction">—</div></div>
+    </div>
+    <div class="card"><div class="tablewrap"><table id="t-houjin-crm"></table></div></div>
+    <div class="note" style="margin-top:10px;">
+      <b>データ出典</b>　法人開拓・折衝ログのGoogleフォーム（辻さんチームが日々の接触後に手入力）のスナップショットです。上記のNotion候補者リストとは別データソースで、実際に接触が始まった法人（まだCyzenで稼働していない新規開拓先）の折衝状況を追跡します。表示期間（日次/週次/月次）とは連動しません。<br>
+      <b>「期限超過」について</b>　直近の折衝ログに記載された期限（次回アクション日）が本日より前の場合に表示します。対応が完了しているかどうかを示す入力欄がフォームに無いため、<b>実際にはすでに対応済みでも期限超過のまま表示され続けることがあります</b>（参考情報としてご利用ください）。<br>
+      <b>名寄せについて</b>　同じ開拓先が別表記で入力された場合の統一は、静的な対応表（houjin_company_alias.json）に基づく手動メンテナンスです。表記ゆれに気づいた場合はお知らせください。<br>
+      <b>データ更新日時</b>　<span id="houjinUpdated">—</span>
     </div>
   </div>
 
@@ -850,6 +871,7 @@ const ATTENDANCE_BY_NAME = new Map(
 );
 const SLACK_TOPICS = __SLACK_TOPICS_JSON__;
 const OUTREACH = __OUTREACH_JSON__;
+const HOUJIN_CRM = __HOUJIN_CRM_JSON__;
 const ROUTE_HISTORY = __ROUTE_HISTORY_JSON__;
 const TREND = __TREND_JSON__;
 const AI_SUMMARY = __AI_SUMMARY_JSON__;
@@ -3336,7 +3358,10 @@ document.getElementById('companyTargetExportBtn').addEventListener('click', asyn
 
 function renderOutreach(){
   if(!OUTREACH){
-    document.getElementById('p-outreach').innerHTML = '<div class="note">開拓先パートナーのデータが未取得です。</div>';
+    // 2026-09-01: 以前はp-outreachパネル全体を上書きしていたが、それだと同パネル内の
+    // 法人開拓・折衝ログセクション(renderHoujinCrm)まで消えてしまうため、
+    // Notion候補者リスト部分(outreachCandidatesSection)だけに書き換え範囲を限定した。
+    document.getElementById('outreachCandidatesSection').innerHTML = '<div class="note">開拓先パートナーのデータが未取得です。</div>';
     return;
   }
   const s = OUTREACH.summary;
@@ -3392,6 +3417,70 @@ function openOutreachDetail(c){
   table.innerHTML = '<thead><tr><th>項目</th><th>内容</th></tr></thead><tbody>' + bodyRows + '</tbody>';
   document.getElementById('drillModal').classList.add('show');
 }
+function houjinDate(s){ return s ? s.replace(/-/g, '/') : '—'; }
+
+function houjinStatusPill(c){
+  if(c.is_overdue) return `<span class="pill low">期限超過</span>`;
+  if(c.is_due_soon) return `<span class="pill mid">まもなく期限</span>`;
+  return `<span class="pill flat">${escapeHtml(c.deal_status || '—')}</span>`;
+}
+
+function renderHoujinCrm(){
+  const wrap = document.getElementById('t-houjin-crm');
+  if(!wrap) return;
+  if(!HOUJIN_CRM){
+    document.getElementById('houjinTotal').textContent = '—';
+    document.getElementById('houjinOverdue').textContent = '—';
+    document.getElementById('houjinDueSoon').textContent = '—';
+    document.getElementById('houjinNoAction').textContent = '—';
+    wrap.innerHTML = '<tbody><tr><td style="text-align:center;color:var(--text-sub);">法人開拓・折衝ログのデータが未取得です。</td></tr></tbody>';
+    document.getElementById('houjinUpdated').textContent = '—';
+    return;
+  }
+  const s = HOUJIN_CRM.summary;
+  document.getElementById('houjinTotal').textContent = s.total_companies;
+  document.getElementById('houjinOverdue').textContent = s.overdue_count;
+  document.getElementById('houjinDueSoon').textContent = s.due_soon_count;
+  document.getElementById('houjinNoAction').textContent = s.no_next_action_count;
+  document.getElementById('houjinUpdated').textContent = HOUJIN_CRM.updated;
+
+  const rows = HOUJIN_CRM.companies;
+  const cols = ['状態', '法人名', '最新接触日', '折衝カテゴリ', '案件ステータス', '次回アクション', '期限', '先方担当者'];
+  const thead = '<thead><tr>' + cols.map(c => `<th>${escapeHtml(c)}</th>`).join('') + '</tr></thead>';
+  const tbody = '<tbody>' + (rows.length ? rows.map((c, i) => {
+    const rowCls = c.is_overdue ? 'houjin-overdue' : (c.is_due_soon ? 'houjin-due-soon' : '');
+    return `<tr class="${rowCls}">` +
+      `<td>${houjinStatusPill(c)}</td>` +
+      `<td class="name clickable-name" data-idx="${i}">${escapeHtml(c.company)}</td>` +
+      `<td>${houjinDate(c.latest_contact_date)}</td>` +
+      `<td>${escapeHtml(c.category || '—')}</td>` +
+      `<td>${escapeHtml(c.deal_status || '—')}</td>` +
+      `<td>${escapeHtml(c.next_action || '—')}</td>` +
+      `<td>${houjinDate(c.due_date)}</td>` +
+      `<td>${escapeHtml(c.contact_person || '—')}</td></tr>`;
+  }).join('') : `<tr><td colspan="${cols.length}" style="text-align:center;color:var(--text-sub);">接触中の法人はありません</td></tr>`) + '</tbody>';
+  wrap.innerHTML = thead + tbody;
+  wrap.querySelectorAll('.clickable-name').forEach(td => {
+    td.addEventListener('click', () => openHoujinCrmDetail(rows[parseInt(td.dataset.idx)]));
+  });
+}
+
+function openHoujinCrmDetail(c){
+  document.getElementById('drillTitle').textContent = c.company;
+  document.getElementById('drillSub').textContent = `折衝${c.contact_count}件・接触日の新しい順`;
+  const table = document.getElementById('drillTable');
+  const cols = ['接触日', '折衝カテゴリ', '連絡種別', '案件ステータス', '内容（要点）', '次回アクション', '期限', '先方担当者'];
+  const thead = '<thead><tr>' + cols.map(c2 => `<th>${escapeHtml(c2)}</th>`).join('') + '</tr></thead>';
+  const tbody = '<tbody>' + c.history.map(h =>
+    `<tr><td>${houjinDate(h.contact_date)}</td><td>${escapeHtml(h.category || '—')}</td>` +
+    `<td>${escapeHtml(h.contact_kind || '—')}</td><td>${escapeHtml(h.deal_status || '—')}</td>` +
+    `<td>${escapeHtml(h.content || '—')}</td><td>${escapeHtml(h.next_action || '—')}</td>` +
+    `<td>${houjinDate(h.due_date)}</td><td>${escapeHtml(h.contact_person || '—')}</td></tr>`
+  ).join('') + '</tbody>';
+  table.innerHTML = thead + tbody;
+  document.getElementById('drillModal').classList.add('show');
+}
+
 const ORIGINAL_TITLE = document.title;
 
 function updateTitleForActiveTab(){
@@ -3911,6 +4000,7 @@ document.getElementById('materialExportBtn').addEventListener('click', async ()=
 
 switchPeriod('month');
 renderOutreach();
+renderHoujinCrm();
 renderRoute();
 renderTrend();
 renderAiSummary();
@@ -4275,7 +4365,8 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
           targets_json=None, completion_dir=None, attendance_alert_csv=None, spot_csv=None,
           route_history_json=None, closer_shodan_dir=None,
           urgent_targets_json=None, training_json=None, shift_status_json=None,
-          clockout_csv=None, shodan_json=None, tenure_json=None, company_targets_json=None):
+          clockout_csv=None, shodan_json=None, tenure_json=None, company_targets_json=None,
+          houjin_crm_json=None):
     end_dt = datetime.strptime(end, "%Y/%m/%d")
     start_dt = datetime.strptime(start, "%Y/%m/%d")
     day_start = end_dt.strftime("%Y/%m/%d")
@@ -4442,6 +4533,11 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
         with open(outreach_json, encoding="utf-8") as f:
             outreach = json.load(f)
 
+    houjin_crm = None
+    if houjin_crm_json and os.path.exists(houjin_crm_json):
+        with open(houjin_crm_json, encoding="utf-8") as f:
+            houjin_crm = json.load(f)
+
     # 行動分析タブ用（Cyzen行動履歴の日別・担当者別集計＝build_route_history.pyの出力）。
     # 表示期間（日次/週次/月次）とは連動しない独立ビュー（開拓先パートナータブと同じ設計）で、
     # 蓄積済みの全日付をそのまま埋め込み、タブ内の日付ピッカーで選ばせる。
@@ -4575,6 +4671,7 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
     html_out = html_out.replace("__CONFIG_JSON__", json.dumps(config_for_js, ensure_ascii=False))
     html_out = html_out.replace("__SLACK_TOPICS_JSON__", json.dumps(slack_topics, ensure_ascii=False))
     html_out = html_out.replace("__OUTREACH_JSON__", json.dumps(outreach, ensure_ascii=False))
+    html_out = html_out.replace("__HOUJIN_CRM_JSON__", json.dumps(houjin_crm, ensure_ascii=False))
     html_out = html_out.replace("__ROUTE_HISTORY_JSON__", json.dumps(route_history, ensure_ascii=False, separators=(",", ":")))
     html_out = html_out.replace("__AI_SUMMARY_JSON__", json.dumps(ai_summary, ensure_ascii=False))
     html_out = html_out.replace("__COMPLETION_JSON__", json.dumps(completion, ensure_ascii=False))
@@ -4688,6 +4785,9 @@ def main():
     ap.add_argument("--company-targets-json", default=None,
                      help="企業別の月次目標値JSON（data/company_targets.json・人手で編集）。"
                           "省略時は企業別タブの目標/達成率列が「未設定」表示になる")
+    ap.add_argument("--houjin-crm-json", default=None,
+                     help="法人開拓・折衝ログの集計JSON（data/houjin_crm.json・build_houjin_crm.pyの出力）。"
+                          "省略時は開拓先パートナータブの接触ログセクションが空になる")
     ap.add_argument("--start", default=None)
     ap.add_argument("--end", default=None)
     ap.add_argument("--out", default=os.path.expanduser("~/Desktop/partner_dashboard.html"))
@@ -4721,7 +4821,8 @@ def main():
                      shodan_json=args.shodan_json,
                      clockout_csv=args.clockout_csv,
                      tenure_json=args.tenure_json,
-                     company_targets_json=args.company_targets_json)
+                     company_targets_json=args.company_targets_json,
+                     houjin_crm_json=args.houjin_crm_json)
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
 

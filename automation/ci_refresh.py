@@ -112,6 +112,17 @@ def main():
     # ではない(automation/data/company_targets.json としてgit管理・毎回チェックアウトされる)。
     company_targets_json = os.path.join(AUTOMATION_DIR, "data", "company_targets.json")
 
+    # 法人開拓・折衝ログ(2026-09-01追加)。gsheets_client_ci.fetch_allが取得したCSVを
+    # build_houjin_crm.pyで会社別に集計する。除外リスト・名寄せエイリアスも人手編集ファイル
+    # (company_targets.jsonと同じくgit管理・毎回チェックアウトされる)。
+    print("--- build_houjin_crm.py ---")
+    houjin_crm_json = os.path.join(DATA_DIR, "houjin_crm.json")
+    run(["python3", os.path.join(AUTOMATION_DIR, "build_houjin_crm.py"),
+         "--csv", sheet_paths["houjin_crm"],
+         "--exclude-json", os.path.join(AUTOMATION_DIR, "data", "houjin_crm_exclude.json"),
+         "--alias-json", os.path.join(AUTOMATION_DIR, "data", "houjin_company_alias.json"),
+         "--today", today.isoformat(), "--out", houjin_crm_json])
+
     print("--- build_dashboard.py ---")
     out_html = os.path.join(DATA_DIR, "partner_dashboard_latest_raw.html")
     run(["python3", os.path.join(AUTOMATION_DIR, "build_dashboard.py"),
@@ -120,6 +131,7 @@ def main():
          "--clockout-csv", clockout_csv, "--attendance-csv", attendance_csv,
          "--attendance-alert-csv", attendance_alert_csv, "--shodan-json", shodan_json,
          "--tenure-json", tenure_json, "--company-targets-json", company_targets_json,
+         "--houjin-crm-json", houjin_crm_json,
          "--out", out_html], cwd=AUTOMATION_DIR)
 
     print("--- パスワードゲート付与 -> index.html ---")

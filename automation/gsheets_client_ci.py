@@ -60,15 +60,19 @@ def _sheet_title_by_gid(service, spreadsheet_id, gid):
     raise RuntimeError(f"gid={gid} に一致するシートが見つかりません(spreadsheet_id={spreadsheet_id})")
 
 
-def fetch_sheet_rows(service, spreadsheet_id, gid):
-    title = _sheet_title_by_gid(service, spreadsheet_id, gid)
+def fetch_sheet_rows(service, spreadsheet_id, gid=None, title=None):
+    # gidまたはtitleのどちらかで対象シートを指定する。gidは数値タブID(既存の全シートで使用)、
+    # titleはシート名そのもの(2026-09-01追加: Googleフォームの回答先シートはgidが分かりにくい/
+    # 変わりうる一方、フォームが自動で付ける"Form Responses 1"というタイトルは安定しているため)。
+    if title is None:
+        title = _sheet_title_by_gid(service, spreadsheet_id, gid)
     resp = _with_retry(lambda: service.spreadsheets().values().get(
         spreadsheetId=spreadsheet_id, range=f"'{title}'").execute())
     return resp.get("values", [])
 
 
-def fetch_sheet_as_csv(service, spreadsheet_id, gid, out_path):
-    rows = fetch_sheet_rows(service, spreadsheet_id, gid)
+def fetch_sheet_as_csv(service, spreadsheet_id, out_path, gid=None, title=None):
+    rows = fetch_sheet_rows(service, spreadsheet_id, gid=gid, title=title)
     max_cols = max((len(r) for r in rows), default=0)
     buf = io.StringIO()
     w = csv.writer(buf)
@@ -86,6 +90,12 @@ SHEETS = [
     ("shift", "シフト表", "1HX7xFXvIYFapWyWmDOsrTXubgjYiWlQ1_ybFIhBMQpM", "353470606"),
 ]
 
+# gidではなくタイトル指定で取得するシート(2026-09-01追加)。法人開拓・折衝ログのGoogleフォーム
+# 回答先で、フォームが自動生成する既定タブ名"Form Responses 1"で取得する。
+SHEETS_BY_TITLE = [
+    ("houjin_crm", "法人開拓 折衝ログ（回答蓄積）", "1uYH7E8vNqcJrMmZyULd6c7ox5IVZFlVlIhZufj5ITz4", "Form Responses 1"),
+]
+
 
 def fetch_all(out_dir):
     creds = get_credentials()
@@ -93,7 +103,12 @@ def fetch_all(out_dir):
     out_paths = {}
     for key, label, spreadsheet_id, gid in SHEETS:
         out_path = os.path.join(out_dir, f"{key}_live.csv")
-        _, n = fetch_sheet_as_csv(service, spreadsheet_id, gid, out_path)
+        _, n = fetch_sheet_as_csv(service, spreadsheet_id, out_path, gid=gid)
+        print(f"{label}: {n}行 -> {out_path}")
+        out_paths[key] = out_path
+    for key, label, spreadsheet_id, title in SHEETS_BY_TITLE:
+        out_path = os.path.join(out_dir, f"{key}_live.csv")
+        _, n = fetch_sheet_as_csv(service, spreadsheet_id, out_path, title=title)
         print(f"{label}: {n}行 -> {out_path}")
         out_paths[key] = out_path
     return out_paths
