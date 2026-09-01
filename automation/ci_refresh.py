@@ -63,8 +63,14 @@ def month_add(d, delta):
 def main():
     now = jst_now()
     print(f"JST now: {now.isoformat()}")
-    if not in_business_window(now):
-        print("平日8-20時の対象時間外のためスキップします。")
+    # 2026-09-01追加: 法人開拓・折衝ログのGoogleフォーム送信時、Apps Scriptが即座に
+    # workflow_dispatchでこのパイプラインを起動する仕組みを追加した(数分おきのschedule
+    # 発火を待たずに反映するため)。schedule(5分おきの自動実行)は引き続き平日8-20時のみに
+    # 絞るが、workflow_dispatch(Apps Scriptからの起動・小宮山さんの手動`gh workflow run`
+    # 双方を含む)は「今すぐ反映してほしい」という明示的な意図なので、時間帯に関わらず実行する。
+    event_name = os.environ.get("GITHUB_EVENT_NAME", "")
+    if event_name != "workflow_dispatch" and not in_business_window(now):
+        print(f"平日8-20時の対象時間外のためスキップします（トリガー: {event_name or '不明'}）。")
         return
 
     today = now.date()
