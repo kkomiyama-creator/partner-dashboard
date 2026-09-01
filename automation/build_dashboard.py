@@ -876,6 +876,7 @@ const ATTENDANCE_BY_NAME = new Map(
 const SLACK_TOPICS = __SLACK_TOPICS_JSON__;
 const OUTREACH = __OUTREACH_JSON__;
 const HOUJIN_CRM = __HOUJIN_CRM_JSON__;
+const HOUJIN_WRITEBACK_URL = __HOUJIN_WRITEBACK_URL_JSON__;
 const ROUTE_HISTORY = __ROUTE_HISTORY_JSON__;
 const TREND = __TREND_JSON__;
 const AI_SUMMARY = __AI_SUMMARY_JSON__;
@@ -3427,9 +3428,37 @@ function openOutreachDetail(c){
 function houjinDate(s){ return s ? s.replace(/-/g, '/') : '—'; }
 
 function houjinStatusPill(c){
+  if(c.resolved) return `<span class="pill attendance-ok">対応済</span>`;
   if(c.is_overdue) return `<span class="pill low">期限超過</span>`;
   if(c.is_due_soon) return `<span class="pill mid">まもなく期限</span>`;
   return `<span class="pill flat">${escapeHtml(c.deal_status || '—')}</span>`;
+}
+
+// 2026-09-01追加: 折衝ログの「対応済」チェックをダッシュボード上から直接更新する。
+// スプレッドシートに紐づくApps ScriptをWebアプリとして公開し、そのURLを
+// --houjin-writeback-urlでbuild_dashboard.pyに渡す(未設定ならチェック操作は無効)。
+// Apps Script Webアプリはブラウザからの通常のCORS fetchに正しく応答しないことがある
+// 既知の癖があるため、mode:'no-cors'で応答を読まない「投げっぱなし」方式にしている
+// (実際の書き込みはApps Script側のdoPost内で完結し、応答を待つ必要が無いため)。
+// そのため成功/失敗をJS側では判定できない点に注意(次回のデータ更新で正しい状態に揃う)。
+function markHoujinResolved(entry, resolved, checkboxEl){
+  if(!HOUJIN_WRITEBACK_URL){
+    alert('「対応済」の書き込み機能がまだ設定されていません（管理者にご連絡ください）。');
+    checkboxEl.checked = !resolved;
+    return;
+  }
+  entry.resolved = resolved;
+  checkboxEl.disabled = true;
+  fetch(HOUJIN_WRITEBACK_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type': 'text/plain;charset=utf-8'},
+    body: JSON.stringify({row_number: entry.row_number, resolved: resolved}),
+  }).catch(err => {
+    console.error('対応済みの更新リクエストに失敗しました', err);
+  }).finally(() => {
+    checkboxEl.disabled = false;
+  });
 }
 
 function renderHoujinCrm(){
@@ -3452,7 +3481,7 @@ function renderHoujinCrm(){
   document.getElementById('houjinUpdated').textContent = HOUJIN_CRM.updated;
 
   const rows = HOUJIN_CRM.companies;
-  const cols = ['状態', '法人名', '最新接触日', '折衝カテゴリ', '案件ステータス', '次回アクション', '期限', '先方担当者'];
+  const cols = ['状態', '法人名', '最新接触日', '折衝カテゴリ', '案件ステータス', '次回アクション', '期限', '先方担当者', '対応済'];
   const thead = '<thead><tr>' + cols.map(c => `<th>${escapeHtml(c)}</th>`).join('') + '</tr></thead>';
   const tbody = '<tbody>' + (rows.length ? rows.map((c, i) => {
     const rowCls = c.is_overdue ? 'houjin-overdue' : (c.is_due_soon ? 'houjin-due-soon' : '');
@@ -3464,11 +3493,23 @@ function renderHoujinCrm(){
       `<td>${escapeHtml(c.deal_status || '—')}</td>` +
       `<td>${escapeHtml(c.next_action || '—')}</td>` +
       `<td>${houjinDate(c.due_date)}</td>` +
-      `<td>${escapeHtml(c.contact_person || '—')}</td></tr>`;
+      `<td>${escapeHtml(c.contact_person || '—')}</td>` +
+      `<td style="text-align:center;"><input type="checkbox" class="houjin-resolve-cb" data-idx="${i}" ${c.resolved?'checked':''}></td></tr>`;
   }).join('') : `<tr><td colspan="${cols.length}" style="text-align:center;color:var(--text-sub);">接触中の法人はありません</td></tr>`) + '</tbody>';
   wrap.innerHTML = thead + tbody;
   wrap.querySelectorAll('.clickable-name').forEach(td => {
     td.addEventListener('click', () => openHoujinCrmDetail(rows[parseInt(td.dataset.idx)]));
+  });
+  wrap.querySelectorAll('.houjin-resolve-cb').forEach(cb => {
+    cb.addEventListener('click', e => e.stopPropagation());
+    cb.addEventListener('change', () => {
+      const c = rows[parseInt(cb.dataset.idx)];
+      markHoujinResolved(c, cb.checked, cb);
+      const tr = cb.closest('tr');
+      tr.classList.toggle('houjin-overdue', !cb.checked && c.is_overdue);
+      tr.classList.toggle('houjin-due-soon', !cb.checked && !c.is_overdue && c.is_due_soon);
+      tr.querySelector('td').innerHTML = houjinStatusPill({...c, resolved: cb.checked});
+    });
   });
 }
 
@@ -3476,16 +3517,25 @@ function openHoujinCrmDetail(c){
   document.getElementById('drillTitle').textContent = c.company;
   document.getElementById('drillSub').textContent = `折衝${c.contact_count}件・接触日の新しい順`;
   const table = document.getElementById('drillTable');
-  const cols = ['接触日', '折衝カテゴリ', '連絡種別', '案件ステータス', '内容（要点）', '次回アクション', '期限', '先方担当者', '関連リンク'];
+  const cols = ['接触日', '折衝カテゴリ', '連絡種別', '案件ステータス', '内容（要点）', '次回アクション', '期限', '先方担当者', '関連リンク', '入力者', '対応済'];
   const thead = '<thead><tr>' + cols.map(c2 => `<th>${escapeHtml(c2)}</th>`).join('') + '</tr></thead>';
-  const tbody = '<tbody>' + c.history.map(h =>
+  const tbody = '<tbody>' + c.history.map((h, i) =>
     `<tr><td>${houjinDate(h.contact_date)}</td><td>${escapeHtml(h.category || '—')}</td>` +
     `<td>${escapeHtml(h.contact_kind || '—')}</td><td>${escapeHtml(h.deal_status || '—')}</td>` +
     `<td>${escapeHtml(h.content || '—')}</td><td>${escapeHtml(h.next_action || '—')}</td>` +
     `<td>${houjinDate(h.due_date)}</td><td>${escapeHtml(h.contact_person || '—')}</td>` +
-    `<td>${h.link ? `<a href="${h.link.replace(/"/g,'&quot;')}" target="_blank" rel="noopener">開く →</a>` : '—'}</td></tr>`
+    `<td>${h.link ? `<a href="${h.link.replace(/"/g,'&quot;')}" target="_blank" rel="noopener">開く →</a>` : '—'}</td>` +
+    `<td>${escapeHtml(h.email || '—')}</td>` +
+    `<td style="text-align:center;"><input type="checkbox" class="houjin-resolve-cb-detail" data-idx="${i}" ${h.resolved?'checked':''}></td></tr>`
   ).join('') + '</tbody>';
   table.innerHTML = thead + tbody;
+  table.querySelectorAll('.houjin-resolve-cb-detail').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const h = c.history[parseInt(cb.dataset.idx)];
+      markHoujinResolved(h, cb.checked, cb);
+      if(h.row_number === c.row_number) c.resolved = cb.checked;
+    });
+  });
   document.getElementById('drillModal').classList.add('show');
 }
 
@@ -4374,7 +4424,7 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
           route_history_json=None, closer_shodan_dir=None,
           urgent_targets_json=None, training_json=None, shift_status_json=None,
           clockout_csv=None, shodan_json=None, tenure_json=None, company_targets_json=None,
-          houjin_crm_json=None):
+          houjin_crm_json=None, houjin_writeback_url=None):
     end_dt = datetime.strptime(end, "%Y/%m/%d")
     start_dt = datetime.strptime(start, "%Y/%m/%d")
     day_start = end_dt.strftime("%Y/%m/%d")
@@ -4680,6 +4730,7 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
     html_out = html_out.replace("__SLACK_TOPICS_JSON__", json.dumps(slack_topics, ensure_ascii=False))
     html_out = html_out.replace("__OUTREACH_JSON__", json.dumps(outreach, ensure_ascii=False))
     html_out = html_out.replace("__HOUJIN_CRM_JSON__", json.dumps(houjin_crm, ensure_ascii=False))
+    html_out = html_out.replace("__HOUJIN_WRITEBACK_URL_JSON__", json.dumps(houjin_writeback_url or ""))
     html_out = html_out.replace("__ROUTE_HISTORY_JSON__", json.dumps(route_history, ensure_ascii=False, separators=(",", ":")))
     html_out = html_out.replace("__AI_SUMMARY_JSON__", json.dumps(ai_summary, ensure_ascii=False))
     html_out = html_out.replace("__COMPLETION_JSON__", json.dumps(completion, ensure_ascii=False))
@@ -4796,6 +4847,9 @@ def main():
     ap.add_argument("--houjin-crm-json", default=None,
                      help="法人開拓・折衝ログの集計JSON（data/houjin_crm.json・build_houjin_crm.pyの出力）。"
                           "省略時は開拓先パートナータブの接触ログセクションが空になる")
+    ap.add_argument("--houjin-writeback-url", default=None,
+                     help="折衝ログの「対応済」チェックをダッシュボードから書き込むためのApps Script "
+                          "WebアプリURL。省略時はチェック操作が無効になる（表示のみ）")
     ap.add_argument("--start", default=None)
     ap.add_argument("--end", default=None)
     ap.add_argument("--out", default=os.path.expanduser("~/Desktop/partner_dashboard.html"))
@@ -4830,7 +4884,8 @@ def main():
                      clockout_csv=args.clockout_csv,
                      tenure_json=args.tenure_json,
                      company_targets_json=args.company_targets_json,
-                     houjin_crm_json=args.houjin_crm_json)
+                     houjin_crm_json=args.houjin_crm_json,
+                     houjin_writeback_url=args.houjin_writeback_url)
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
 

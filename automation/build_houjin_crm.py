@@ -30,6 +30,7 @@ COLUMNS = [
     "timestamp", "company_raw", "contact_date", "inflow_channel", "referrer",
     "area", "channel_business", "category", "contact_kind", "deal_status",
     "content", "next_action", "due_date", "contact_person", "proposal", "note", "link",
+    "email", "resolved",
 ]
 
 
@@ -57,11 +58,18 @@ def load_rows(csv_path):
         return []
     header = rows[0]
     out = []
-    for r in rows[1:]:
+    # row_numberは実際のスプレッドシート上の行番号(1始まり・ヘッダー=1行目)。
+    # gsheets_client_ci.pyがシートの値をそのままCSVへ書き出しており、行の並び替え・
+    # 欠落が無いため、CSVのインデックスから直接計算できる。ダッシュボード上の「対応済」
+    # チェック操作(Apps ScriptのdoPost)で、どの行を更新するか特定する一意な識別子として使う
+    # （タイムスタンプの文字列/日付表現をPython側とApps Script側で突き合わせるより、
+    # 行番号を直接渡す方が書式・タイムゾーンの差異による不一致のリスクが無く確実）。
+    for idx, r in enumerate(rows[1:], start=2):
         if not any((v or "").strip() for v in r):
             continue
         r = r + [""] * (len(COLUMNS) - len(r))
         rec = dict(zip(COLUMNS, r))
+        rec["row_number"] = idx
         out.append(rec)
     return out
 
@@ -92,7 +100,12 @@ def build(csv_path, exclude_json, alias_json, today, out_path):
         company = canon_company(raw_name, alias_map)
         contact_dt = parse_date(rec["contact_date"]) or parse_date(rec["timestamp"])
         due_dt = parse_date(rec["due_date"])
+        resolved = (rec.get("resolved") or "").strip().upper() == "TRUE"
         entry = {
+            "timestamp": rec["timestamp"],
+            # row_numberが行の一意識別子。ダッシュボード上の「対応済」チェック操作
+            # （Apps ScriptのdoPost）で、どの行を更新するか特定するのに使う。
+            "row_number": rec["row_number"],
             "contact_date": contact_dt.isoformat() if contact_dt else None,
             "category": rec["category"],
             "contact_kind": rec["contact_kind"],
@@ -108,6 +121,8 @@ def build(csv_path, exclude_json, alias_json, today, out_path):
             "proposal": rec["proposal"],
             "note": rec["note"],
             "link": rec["link"],
+            "email": rec.get("email"),
+            "resolved": resolved,
             "_sort_key": (contact_dt or datetime.date.min, rec["timestamp"]),
         }
         by_company.setdefault(company, []).append(entry)
@@ -117,8 +132,11 @@ def build(csv_path, exclude_json, alias_json, today, out_path):
         entries.sort(key=lambda e: e["_sort_key"], reverse=True)
         latest = entries[0]
         due_dt = datetime.date.fromisoformat(latest["due_date"]) if latest["due_date"] else None
-        is_overdue = bool(due_dt and due_dt < today)
-        is_due_soon = bool(due_dt and today <= due_dt <= today + datetime.timedelta(days=3))
+        # 「対応済」チェックが入っている行は、期限が過去でも超過扱いにしない
+        # （2026-09-01追加：スプレッドシートに対応済列ができたことで、以前は
+        # 「対応完了かどうか分からない」という限界があったが、これで判定できるようになった）。
+        is_overdue = bool(due_dt and due_dt < today and not latest["resolved"])
+        is_due_soon = bool(due_dt and today <= due_dt <= today + datetime.timedelta(days=3) and not latest["resolved"])
         for e in entries:
             e.pop("_sort_key", None)
         companies.append({
@@ -135,6 +153,10 @@ def build(csv_path, exclude_json, alias_json, today, out_path):
             "contact_person": latest["contact_person"],
             "area": latest["area"],
             "channel_business": latest["channel_business"],
+            "resolved": latest["resolved"],
+            "timestamp": latest["timestamp"],
+            "row_number": latest["row_number"],
+            "email": latest["email"],
             "history": entries,
         })
 

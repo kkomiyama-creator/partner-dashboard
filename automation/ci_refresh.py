@@ -129,16 +129,28 @@ def main():
          "--alias-json", os.path.join(AUTOMATION_DIR, "data", "houjin_company_alias.json"),
          "--today", today.isoformat(), "--out", houjin_crm_json])
 
+    # 折衝ログの「対応済」チェックをダッシュボードから書き込むためのApps Script WebアプリURL
+    # (2026-09-01追加)。company_targets.json等と同じく人手管理の小さいファイルで、CIが生成
+    # するものではない。ファイルが無い/空なら未設定として扱い、ダッシュボード側のチェック操作は無効になる。
+    houjin_writeback_url = None
+    writeback_url_file = os.path.join(AUTOMATION_DIR, "data", "houjin_writeback_url.txt")
+    if os.path.exists(writeback_url_file):
+        with open(writeback_url_file) as f:
+            houjin_writeback_url = f.read().strip() or None
+
     print("--- build_dashboard.py ---")
     out_html = os.path.join(DATA_DIR, "partner_dashboard_latest_raw.html")
-    run(["python3", os.path.join(AUTOMATION_DIR, "build_dashboard.py"),
+    build_dashboard_cmd = ["python3", os.path.join(AUTOMATION_DIR, "build_dashboard.py"),
          "--roster-csv", sheet_paths["roster"], "--closing-csv", sheet_paths["closing"],
          "--status-csv", sheet_paths["status"], "--shift-status-json", shift_status_json,
          "--clockout-csv", clockout_csv, "--attendance-csv", attendance_csv,
          "--attendance-alert-csv", attendance_alert_csv, "--shodan-json", shodan_json,
          "--tenure-json", tenure_json, "--company-targets-json", company_targets_json,
          "--houjin-crm-json", houjin_crm_json,
-         "--out", out_html], cwd=AUTOMATION_DIR)
+         "--out", out_html]
+    if houjin_writeback_url:
+        build_dashboard_cmd += ["--houjin-writeback-url", houjin_writeback_url]
+    run(build_dashboard_cmd, cwd=AUTOMATION_DIR)
 
     print("--- パスワードゲート付与 -> index.html ---")
     from deploy_gate import inject_gate
