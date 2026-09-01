@@ -665,7 +665,10 @@ tbody tr.houjin-due-soon:hover{background:var(--warn-bg);}
     </div>
     </div>
 
-    <div class="table-caption" style="margin-top:26px;">📝 法人開拓・折衝ログ（接触が始まった開拓先の状況）</div>
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-top:26px;">
+      <div class="table-caption" style="margin-top:0;">📝 法人開拓・折衝ログ（接触が始まった開拓先の状況）</div>
+      <a class="printbtn" href="https://docs.google.com/forms/d/1SaLC9ZAxFivelBD4tPKoHbqHzF_j0lQLRQaebyagjKk/viewform" target="_blank" rel="noopener" style="text-decoration:none; margin-bottom:0;">📝 折衝ログを入力する（フォームを開く）</a>
+    </div>
     <div class="tiles" style="margin-bottom:12px;">
       <div class="tile"><div class="label">接触中の法人数</div><div class="value" id="houjinTotal">—</div></div>
       <div class="tile"><div class="label">期限超過</div><div class="value" id="houjinOverdue">—</div></div>
@@ -3469,13 +3472,14 @@ function openHoujinCrmDetail(c){
   document.getElementById('drillTitle').textContent = c.company;
   document.getElementById('drillSub').textContent = `折衝${c.contact_count}件・接触日の新しい順`;
   const table = document.getElementById('drillTable');
-  const cols = ['接触日', '折衝カテゴリ', '連絡種別', '案件ステータス', '内容（要点）', '次回アクション', '期限', '先方担当者'];
+  const cols = ['接触日', '折衝カテゴリ', '連絡種別', '案件ステータス', '内容（要点）', '次回アクション', '期限', '先方担当者', '関連リンク'];
   const thead = '<thead><tr>' + cols.map(c2 => `<th>${escapeHtml(c2)}</th>`).join('') + '</tr></thead>';
   const tbody = '<tbody>' + c.history.map(h =>
     `<tr><td>${houjinDate(h.contact_date)}</td><td>${escapeHtml(h.category || '—')}</td>` +
     `<td>${escapeHtml(h.contact_kind || '—')}</td><td>${escapeHtml(h.deal_status || '—')}</td>` +
     `<td>${escapeHtml(h.content || '—')}</td><td>${escapeHtml(h.next_action || '—')}</td>` +
-    `<td>${houjinDate(h.due_date)}</td><td>${escapeHtml(h.contact_person || '—')}</td></tr>`
+    `<td>${houjinDate(h.due_date)}</td><td>${escapeHtml(h.contact_person || '—')}</td>` +
+    `<td>${h.link ? `<a href="${h.link.replace(/"/g,'&quot;')}" target="_blank" rel="noopener">開く →</a>` : '—'}</td></tr>`
   ).join('') + '</tbody>';
   table.innerHTML = thead + tbody;
   document.getElementById('drillModal').classList.add('show');
