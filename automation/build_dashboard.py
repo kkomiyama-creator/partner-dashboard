@@ -300,6 +300,7 @@ tbody tr.houjin-due-soon:hover{background:var(--warn-bg);}
 .breakdown-item.clickable-chip:hover{background:var(--blue-pale);}
 .breakdown-item.clickable-chip.active{background:var(--blue); border-color:var(--blue); color:#fff;}
 .breakdown-item.clickable-chip.active b{color:#fff;}
+button.printbtn.active{background:var(--blue); color:#fff; border-color:var(--blue);}
 .table-caption{font-size:12px; color:var(--text-sub); margin-bottom:8px; font-weight:600;}
 
 .ai-summary{
@@ -573,7 +574,7 @@ tbody tr.houjin-due-soon:hover{background:var(--warn-bg);}
 
     <div id="companyScopedView" style="display:none;">
       <div class="card" style="margin-bottom:16px;">
-        <div style="font-size:12.5px; font-weight:700; color:var(--text-sub); margin-bottom:10px;">担当者別の内訳を見る指標を選んでください</div>
+        <div style="font-size:12.5px; font-weight:700; color:var(--text-sub); margin-bottom:10px;">担当者別の内訳（並び替える指標を選べます）</div>
         <div id="companyMemberChips" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
       </div>
       <div class="card" id="companyMemberTableCard" style="display:none;">
@@ -1896,21 +1897,24 @@ function renderCompanyScopedView(d){
     ], rows, {defaultSort: sortColIdx, rowClick: r=>openPersonDetail(r[0])});
   }
 
-  document.getElementById('companyMemberTableCard').style.display = 'none';
-  document.getElementById('companyScopedNote').style.display = 'none';
+  // 2026-09-01: 以前はチップをクリックするまでテーブル非表示だったが、小宮山さんの指摘で
+  // 「毎回クリックが要る」手間を無くすため、スコープした時点でアポ獲得数順に最初から表示する
+  // よう変更した。チップは表示/非表示の切替ではなく、並び替えの選択として機能する。
+  const DEFAULT_METRIC_COL = COMPANY_MEMBER_METRICS[0].colIdx;
+  document.getElementById('companyMemberTableCard').style.display = '';
+  document.getElementById('companyScopedNote').style.display = '';
   const chipsWrap = document.getElementById('companyMemberChips');
   chipsWrap.innerHTML = COMPANY_MEMBER_METRICS.map(m =>
-    `<button class="printbtn" type="button" data-metric-col="${m.colIdx}">${escapeHtml(m.label)}</button>`
+    `<button class="printbtn${m.colIdx===DEFAULT_METRIC_COL?' active':''}" type="button" data-metric-col="${m.colIdx}">${escapeHtml(m.label)}</button>`
   ).join('');
   chipsWrap.querySelectorAll('button[data-metric-col]').forEach(btn=>{
     btn.addEventListener('click', ()=>{
+      chipsWrap.querySelectorAll('button[data-metric-col]').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
       drawMemberTable(Number(btn.dataset.metricCol));
-      const card = document.getElementById('companyMemberTableCard');
-      card.style.display = '';
-      document.getElementById('companyScopedNote').style.display = '';
-      card.scrollIntoView({behavior:'smooth', block:'start'});
     });
   });
+  drawMemberTable(DEFAULT_METRIC_COL);
 
   document.getElementById('companyScopedNote').textContent =
     `${company} の担当者 ${people.length}名／期間: ${d.start}〜${d.end}。行をクリックすると個人の日別実績を表示します。上部のKPIタイルもこの会社の値に切り替わっています（他のランキングタブは全社表示のままです）。`;
