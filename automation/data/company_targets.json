@@ -1,7 +1,7 @@
 {
  "Ambitious株式会社": {
   "apo": 265,
-  "seiyaku": 55,
+  "apo_seiyaku": null,
   "uriage": null,
   "chinin": null,
   "members": [
@@ -29,23 +29,26 @@
    "藤本啓介",
    "野﨑太志",
    "鳥海美香"
-  ]
+  ],
+  "clo_seiyaku": 55
  },
  "D-MAK株式会社": {
   "apo": null,
-  "seiyaku": null,
+  "apo_seiyaku": null,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "clo_seiyaku": null
  },
  "G.WORTH株式会社": {
   "apo": null,
-  "seiyaku": null,
+  "apo_seiyaku": null,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "clo_seiyaku": null
  },
  "HY株式会社": {
   "apo": 160,
-  "seiyaku": 40,
+  "apo_seiyaku": null,
   "uriage": null,
   "chinin": null,
   "members": [
@@ -66,40 +69,45 @@
    "甲斐勇利",
    "篠優",
    "門脇駆"
-  ]
+  ],
+  "clo_seiyaku": 40
  },
  "NEO": {
   "apo": null,
-  "seiyaku": null,
+  "apo_seiyaku": null,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "clo_seiyaku": null
  },
  "アフターホーム株式会社": {
   "apo": null,
-  "seiyaku": null,
+  "apo_seiyaku": null,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "clo_seiyaku": null
  },
  "一興商事株式会社": {
   "apo": 30,
-  "seiyaku": 10,
+  "apo_seiyaku": null,
   "uriage": null,
   "chinin": null,
   "members": [
    "野口英貴",
    "五十嵐聖",
    "高橋崇大"
-  ]
+  ],
+  "clo_seiyaku": 10
  },
  "有限会社イーティー": {
   "apo": null,
-  "seiyaku": null,
+  "apo_seiyaku": null,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "clo_seiyaku": null
  },
  "株式会社ASG": {
   "apo": 100,
-  "seiyaku": 23,
+  "apo_seiyaku": null,
   "uriage": null,
   "chinin": null,
   "members": [
@@ -107,17 +115,19 @@
    "大原颯太",
    "尾関鎮",
    "濵田裕大"
-  ]
+  ],
+  "clo_seiyaku": 23
  },
  "株式会社Birth47": {
   "apo": null,
-  "seiyaku": null,
+  "apo_seiyaku": null,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "clo_seiyaku": null
  },
  "株式会社Corest home": {
   "apo": 35,
-  "seiyaku": 10,
+  "apo_seiyaku": null,
   "uriage": null,
   "chinin": null,
   "members": [
@@ -126,17 +136,19 @@
    "山城輝人",
    "山里泰聖",
    "野村俊介"
-  ]
+  ],
+  "clo_seiyaku": 10
  },
  "株式会社Fit Founder": {
   "apo": null,
-  "seiyaku": null,
+  "apo_seiyaku": null,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "clo_seiyaku": null
  },
  "株式会社ForMe works": {
   "apo": 80,
-  "seiyaku": 10,
+  "apo_seiyaku": null,
   "uriage": null,
   "chinin": null,
   "members": [
@@ -145,17 +157,19 @@
    "河本一樹",
    "落合汐里",
    "藤田千絢"
-  ]
+  ],
+  "clo_seiyaku": 10
  },
  "株式会社JINNOVA": {
   "apo": null,
-  "seiyaku": null,
+  "apo_seiyaku": null,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "clo_seiyaku": null
  },
  "株式会社LIVION partners": {
   "apo": null,
-  "seiyaku": 20,
+  "apo_seiyaku": null,
   "uriage": null,
   "chinin": null,
   "members": [
@@ -164,26 +178,29 @@
    "横田哲士",
    "石川平馬",
    "野中大生"
-  ]
+  ],
+  "clo_seiyaku": 20
  },
  "株式会社LeadMore": {
   "apo": null,
-  "seiyaku": null,
+  "apo_seiyaku": null,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "clo_seiyaku": null
  },
  "株式会社Next Place": {
   "apo": 15,
-  "seiyaku": 10,
+  "apo_seiyaku": null,
   "uriage": null,
   "chinin": null,
   "members": [
    "曽我部千稜"
-  ]
+  ],
+  "clo_seiyaku": 10
  },
  "株式会社STORIA": {
   "apo": 20,
-  "seiyaku": 13,
+  "apo_seiyaku": null,
   "uriage": null,
   "chinin": null,
   "members": [
@@ -192,11 +209,12 @@
    "小島克哉",
    "石橋優翔",
    "篠田直己"
-  ]
+  ],
+  "clo_seiyaku": 13
  },
  "株式会社TRIXIA": {
   "apo": 40,
-  "seiyaku": 12,
+  "apo_seiyaku": null,
   "uriage": null,
   "chinin": null,
   "members": [
@@ -208,11 +226,12 @@
    "豊永心",
    "髙橋翼",
    "齋藤佳輝"
-  ]
+  ],
+  "clo_seiyaku": 12
  },
  "株式会社UNIVA FIT": {
   "apo": 105,
-  "seiyaku": 16,
+  "apo_seiyaku": null,
   "uriage": null,
   "chinin": null,
   "members": [
@@ -221,23 +240,26 @@
    "安冨龍治",
    "後藤晃祐",
    "辻坂修太朗"
-  ]
+  ],
+  "clo_seiyaku": 16
  },
  "株式会社Wiz": {
   "apo": null,
-  "seiyaku": null,
+  "apo_seiyaku": null,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "clo_seiyaku": null
  },
  "株式会社guidance": {
   "apo": null,
-  "seiyaku": null,
+  "apo_seiyaku": null,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "clo_seiyaku": null
  },
  "株式会社ゼニソ": {
   "apo": 36,
-  "seiyaku": 12,
+  "apo_seiyaku": null,
   "uriage": null,
   "chinin": null,
   "members": [
@@ -245,22 +267,24 @@
    "横山藍己",
    "鈴木虎春",
    "長井登和"
-  ]
+  ],
+  "clo_seiyaku": 12
  },
  "株式会社テクノホーム": {
   "apo": null,
-  "seiyaku": 5,
+  "apo_seiyaku": null,
   "uriage": null,
   "chinin": null,
   "members": [
    "小山元気",
    "岡元莉輝",
    "鈴木琉斗"
-  ]
+  ],
+  "clo_seiyaku": 5
  },
  "株式会社ベスティブロ": {
   "apo": 50,
-  "seiyaku": 15,
+  "apo_seiyaku": null,
   "uriage": null,
   "chinin": null,
   "members": [
@@ -271,6 +295,7 @@
    "須藤隆成",
    "髙木達也",
    "齊藤陽成"
-  ]
+  ],
+  "clo_seiyaku": 15
  }
 }

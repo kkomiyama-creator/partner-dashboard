@@ -1595,9 +1595,10 @@ function renderAllTables(){
     {label:'アポ数Δ', num:true, cls:'diffcol', fmt:(v,r)=>deltaCell(v, companyByName.get(r[2]).delta_apo_pct)},
     {label:'目標比(アポ)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).apo_kakutoku, (COMPANY_TARGETS[r[2]]||{}).apo)},
     {label:'アポ成約', num:true},
+    {label:'目標比(アポ成約)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).apo_seiyaku, (COMPANY_TARGETS[r[2]]||{}).apo_seiyaku)},
     {label:'クロ成約', num:true},
     {label:'成約数Δ', num:true, cls:'diffcol', fmt:(v,r)=>deltaCell(v, companyByName.get(r[2]).delta_clo_pct)},
-    {label:'目標比(成約)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).clo_seiyaku, (COMPANY_TARGETS[r[2]]||{}).seiyaku)},
+    {label:'目標比(クロ成約)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).clo_seiyaku, (COMPANY_TARGETS[r[2]]||{}).clo_seiyaku)},
     {label:'売上', num:true, fmt:v=>yen(v)},
     {label:'売上Δ', num:true, cls:'diffcol', fmt:(v,r)=>deltaCell(v, companyByName.get(r[2]).delta_uriage_pct)},
     {label:'目標比(売上)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).uriage, (COMPANY_TARGETS[r[2]]||{}).uriage)},
@@ -1617,8 +1618,10 @@ function renderAllTables(){
       c.rank, c.rank_change, c.company,
       c.apo_kakutoku, c.delta_apo_kakutoku,
       ctRate(c.apo_kakutoku, (COMPANY_TARGETS[c.company]||{}).apo),
-      c.apo_seiyaku, c.clo_seiyaku, c.delta_clo_seiyaku,
-      ctRate(c.clo_seiyaku, (COMPANY_TARGETS[c.company]||{}).seiyaku),
+      c.apo_seiyaku,
+      ctRate(c.apo_seiyaku, (COMPANY_TARGETS[c.company]||{}).apo_seiyaku),
+      c.clo_seiyaku, c.delta_clo_seiyaku,
+      ctRate(c.clo_seiyaku, (COMPANY_TARGETS[c.company]||{}).clo_seiyaku),
       c.uriage, c.delta_uriage,
       ctRate(c.uriage, (COMPANY_TARGETS[c.company]||{}).uriage),
       c.rate, c.delta_rate,
@@ -2031,7 +2034,8 @@ function renderTilesForCompany(d, company){
   const t = COMPANY_TARGETS[company] || {};
   const gauges = [
     kpiGaugeCard('アポ獲得数', cSafe.apo_kakutoku, t.apo, v => (v===null||v===undefined)?'—':v+'件', 'apo'),
-    kpiGaugeCard('成約数', cSafe.clo_seiyaku, t.seiyaku, v => (v===null||v===undefined)?'—':v+'件', 'sei'),
+    kpiGaugeCard('アポ成約数', cSafe.apo_seiyaku, t.apo_seiyaku, v => (v===null||v===undefined)?'—':v+'件', 'apoSei'),
+    kpiGaugeCard('クロ成約数', cSafe.clo_seiyaku, t.clo_seiyaku, v => (v===null||v===undefined)?'—':v+'件', 'sei'),
     kpiGaugeCard('売上', cSafe.uriage, t.uriage, v => (v===null||v===undefined)?'—':yen(v)+'円', 'uri'),
     kpiGaugeCard('稼働人員数', cSafe.headcount, t.chinin, v => (v===null||v===undefined)?'—':v+'名', 'headcount'),
   ].filter(Boolean);
@@ -2691,7 +2695,7 @@ function readTargetForm(){
 }
 
 // ---------- 企業別目標の編集フォーム（2026-08-31追加） ----------
-const COMPANY_TARGET_FIELDS = [['apo','目標アポ数'], ['seiyaku','目標成約数'], ['uriage','目標売上(円)'], ['chinin','目標稼働人員数']];
+const COMPANY_TARGET_FIELDS = [['apo','目標アポ数'], ['apo_seiyaku','目標アポ成約数'], ['clo_seiyaku','目標クロ成約数'], ['uriage','目標売上(円)'], ['chinin','目標稼働人員数']];
 function renderCompanyTargetForm(companies){
   const el = document.getElementById('companyTargetForm');
   const inputCell = (company, key, val) => `<td><input type="number" data-ct-company="${escapeHtml(company)}" data-ct-key="${key}"
@@ -3828,6 +3832,8 @@ function openTileDrillScoped(kind, d, company){
   const SCOPED_DEFS = {
     apo: {title:`${company} アポ獲得数の内訳（担当者別）`, cols:['氏名','アポ獲得数'],
       rows: people.filter(p=>p.apoCount>0).slice().sort((a,b)=>b.apoCount-a.apoCount).map(p=>[p.name, p.apoCount])},
+    apoSei: {title:`${company} アポ成約数の内訳（担当者別）`, cols:['氏名','アポ成約'],
+      rows: people.filter(p=>p.apoSeiyaku>0).slice().sort((a,b)=>b.apoSeiyaku-a.apoSeiyaku).map(p=>[p.name, p.apoSeiyaku])},
     sei: {title:`${company} 成約数の内訳（担当者別・クロ成約基準）`, cols:['氏名','クロ成約'],
       rows: people.filter(p=>p.cloSeiyaku>0).slice().sort((a,b)=>b.cloSeiyaku-a.cloSeiyaku).map(p=>[p.name, p.cloSeiyaku])},
     uri: {title:`${company} 売上の内訳（担当者別）`, cols:['氏名','売上'],
