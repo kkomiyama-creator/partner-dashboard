@@ -2696,14 +2696,20 @@ function renderCompanyTargetForm(companies){
   const el = document.getElementById('companyTargetForm');
   const inputCell = (company, key, val) => `<td><input type="number" data-ct-company="${escapeHtml(company)}" data-ct-key="${key}"
     value="${val===undefined||val===null?'':val}" style="width:100px; padding:5px 6px; border:1px solid var(--border); border-radius:6px; font-family:inherit;"></td>`;
+  // 2026-09-07: 稼働者アンケート(Googleフォーム)の回答から判明した「当月稼働予定者」をバイネームで
+  // 参考表示する列。編集不可(入力欄ではない)・readCompanyTargetForm側で保存時に消えないよう保持する。
+  const membersCell = (members) => `<td class="targetcol" style="max-width:240px; font-size:11.5px; color:var(--text-sub); white-space:normal;" title="${escapeHtml((members||[]).join('、'))}">${escapeHtml((members||[]).join('、')) || '—'}</td>`;
   const rows = companies.map(company => {
     const t = COMPANY_TARGETS[company] || {};
-    return `<tr><td class="name">${escapeHtml(company)}</td>${COMPANY_TARGET_FIELDS.map(([k])=>inputCell(company, k, t[k])).join('')}</tr>`;
+    return `<tr><td class="name">${escapeHtml(company)}</td>${COMPANY_TARGET_FIELDS.map(([k])=>inputCell(company, k, t[k])).join('')}${membersCell(t.members)}</tr>`;
   }).join('');
-  el.innerHTML = `<thead><tr><th>会社名</th>${COMPANY_TARGET_FIELDS.map(([,l])=>`<th>${l}</th>`).join('')}</tr></thead><tbody>${rows}</tbody>`;
+  el.innerHTML = `<thead><tr><th>会社名</th>${COMPANY_TARGET_FIELDS.map(([,l])=>`<th>${l}</th>`).join('')}<th>稼働予定者（参考・フォーム回答）</th></tr></thead><tbody>${rows}</tbody>`;
 }
 function readCompanyTargetForm(){
+  // members等、入力フォームに存在しない既存フィールドを保存時に消さないよう、
+  // 現在のCOMPANY_TARGETSをベースにして数値項目だけ上書きする。
   const t = {};
+  Object.keys(COMPANY_TARGETS).forEach(company => { t[company] = Object.assign({}, COMPANY_TARGETS[company]); });
   document.querySelectorAll('#companyTargetForm input[data-ct-company]').forEach(inp=>{
     const company = inp.dataset.ctCompany, key = inp.dataset.ctKey;
     const v = inp.value === '' ? null : Number(inp.value);

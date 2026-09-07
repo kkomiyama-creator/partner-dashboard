@@ -1,9 +1,35 @@
 {
  "Ambitious株式会社": {
-  "apo": null,
-  "seiyaku": null,
+  "apo": 265,
+  "seiyaku": 55,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "members": [
+   "一ノ瀬文哉",
+   "江崎仁",
+   "大橋飛翔",
+   "春日柚樹也",
+   "三好雄太",
+   "上田洋平",
+   "中川魁人",
+   "久保海飛",
+   "井上務",
+   "伴瑛志郎",
+   "佐藤響",
+   "小林祐真",
+   "山下翔平",
+   "御船正己",
+   "星崎政和",
+   "末吉剛大",
+   "樋田蒼生",
+   "池田康彦",
+   "石井勝己",
+   "福田拓未",
+   "若山峻護",
+   "藤本啓介",
+   "野﨑太志",
+   "鳥海美香"
+  ]
  },
  "D-MAK株式会社": {
   "apo": null,
@@ -18,10 +44,29 @@
   "chinin": null
  },
  "HY株式会社": {
-  "apo": null,
-  "seiyaku": null,
+  "apo": 160,
+  "seiyaku": 40,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "members": [
+   "尾方直樹",
+   "鈴木崇",
+   "冨澤彪",
+   "中野皓雅",
+   "原口慎太郎",
+   "一木亮太",
+   "井本優良",
+   "伊藤圭佑",
+   "佐々木蓮",
+   "佐野允秋",
+   "山口裕馬",
+   "杉山大樹",
+   "楢岡大樹",
+   "由地光輝",
+   "甲斐勇利",
+   "篠優",
+   "門脇駆"
+  ]
  },
  "NEO": {
   "apo": null,
@@ -36,10 +81,15 @@
   "chinin": null
  },
  "一興商事株式会社": {
-  "apo": null,
-  "seiyaku": null,
+  "apo": 30,
+  "seiyaku": 10,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "members": [
+   "野口英貴",
+   "五十嵐聖",
+   "高橋崇大"
+  ]
  },
  "有限会社イーティー": {
   "apo": null,
@@ -48,10 +98,16 @@
   "chinin": null
  },
  "株式会社ASG": {
-  "apo": null,
-  "seiyaku": null,
+  "apo": 100,
+  "seiyaku": 23,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "members": [
+   "伊井大陽",
+   "大原颯太",
+   "尾関鎮",
+   "濵田裕大"
+  ]
  },
  "株式会社Birth47": {
   "apo": null,
@@ -60,10 +116,17 @@
   "chinin": null
  },
  "株式会社Corest home": {
-  "apo": null,
-  "seiyaku": null,
+  "apo": 35,
+  "seiyaku": 10,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "members": [
+   "伊木裕二",
+   "嘉数龍磨",
+   "山城輝人",
+   "山里泰聖",
+   "野村俊介"
+  ]
  },
  "株式会社Fit Founder": {
   "apo": null,
@@ -72,10 +135,17 @@
   "chinin": null
  },
  "株式会社ForMe works": {
-  "apo": null,
-  "seiyaku": null,
+  "apo": 80,
+  "seiyaku": 10,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "members": [
+   "富田健斗",
+   "徳永優太",
+   "河本一樹",
+   "落合汐里",
+   "藤田千絢"
+  ]
  },
  "株式会社JINNOVA": {
   "apo": null,
@@ -85,9 +155,16 @@
  },
  "株式会社LIVION partners": {
   "apo": null,
-  "seiyaku": null,
+  "seiyaku": 20,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "members": [
+   "大塚祝桜",
+   "松岡諒",
+   "横田哲士",
+   "石川平馬",
+   "野中大生"
+  ]
  },
  "株式会社LeadMore": {
   "apo": null,
@@ -96,28 +173,55 @@
   "chinin": null
  },
  "株式会社Next Place": {
-  "apo": null,
-  "seiyaku": null,
+  "apo": 15,
+  "seiyaku": 10,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "members": [
+   "曽我部千稜"
+  ]
  },
  "株式会社STORIA": {
-  "apo": null,
-  "seiyaku": null,
+  "apo": 20,
+  "seiyaku": 13,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "members": [
+   "阿部隆之介",
+   "若井勇人",
+   "小島克哉",
+   "石橋優翔",
+   "篠田直己"
+  ]
  },
  "株式会社TRIXIA": {
-  "apo": null,
-  "seiyaku": null,
+  "apo": 40,
+  "seiyaku": 12,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "members": [
+   "髙慶瑛成",
+   "ボンドアレキサンダー龍",
+   "岸上恵大",
+   "森山貴成",
+   "武田功平",
+   "豊永心",
+   "髙橋翼",
+   "齋藤佳輝"
+  ]
  },
  "株式会社UNIVA FIT": {
-  "apo": null,
-  "seiyaku": null,
+  "apo": 105,
+  "seiyaku": 16,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "members": [
+   "UF佐藤海斗",
+   "佐藤大",
+   "安冨龍治",
+   "後藤晃祐",
+   "辻坂修太朗"
+  ]
  },
  "株式会社Wiz": {
   "apo": null,
@@ -132,27 +236,41 @@
   "chinin": null
  },
  "株式会社ゼニソ": {
-  "apo": null,
-  "seiyaku": null,
+  "apo": 36,
+  "seiyaku": 12,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "members": [
+   "板倉崇晃",
+   "横山藍己",
+   "鈴木虎春",
+   "長井登和"
+  ]
  },
  "株式会社テクノホーム": {
   "apo": null,
-  "seiyaku": null,
+  "seiyaku": 5,
   "uriage": null,
-  "chinin": null
- },
- "株式会社テクノホーム（あま市）": {
-  "apo": null,
-  "seiyaku": null,
-  "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "members": [
+   "小山元気",
+   "岡元莉輝",
+   "鈴木琉斗"
+  ]
  },
  "株式会社ベスティブロ": {
-  "apo": null,
-  "seiyaku": null,
+  "apo": 50,
+  "seiyaku": 15,
   "uriage": null,
-  "chinin": null
+  "chinin": null,
+  "members": [
+   "吉田悠太",
+   "伊藤樹優",
+   "白方誠人",
+   "秋山裕亮",
+   "須藤隆成",
+   "髙木達也",
+   "齊藤陽成"
+  ]
  }
 }

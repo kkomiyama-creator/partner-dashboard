@@ -15,6 +15,8 @@ COMPANY_CANON = {
     "Birth47": "株式会社Birth47",
     "Noble Seed": "Noble Seed株式会社",
     "株式会社GUIDANCE": "株式会社guidance",
+    # 2026-09-02 小宮山さん確認済み: kintone側で名寄せできていなかっただけで実態は同一企業。
+    "株式会社テクノホーム（あま市）": "株式会社テクノホーム",
 }
 def canon(co):
     co = (co or "").strip()
