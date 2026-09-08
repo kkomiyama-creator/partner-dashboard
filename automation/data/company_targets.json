@@ -71,14 +71,14 @@
    "篠優",
    "門脇駆"
   ],
-  "clo_seiyaku": null
+  "clo_seiyaku": 43
  },
  "NEO": {
   "apo": null,
   "apo_seiyaku": 8,
   "uriage": null,
   "chinin": null,
-  "clo_seiyaku": null,
+  "clo_seiyaku": 0,
   "seiyaku": 8
  },
  "アフターホーム株式会社": {
@@ -98,7 +98,7 @@
    "五十嵐聖",
    "高橋崇大"
   ],
-  "clo_seiyaku": null
+  "clo_seiyaku": 0
  },
  "有限会社イーティー": {
   "apo": null,
@@ -119,7 +119,7 @@
    "尾関鎮",
    "濵田裕大"
   ],
-  "clo_seiyaku": null
+  "clo_seiyaku": 0
  },
  "株式会社Birth47": {
   "apo": null,
@@ -140,14 +140,14 @@
    "山里泰聖",
    "野村俊介"
   ],
-  "clo_seiyaku": null
+  "clo_seiyaku": 10
  },
  "株式会社Fit Founder": {
-  "apo": null,
-  "apo_seiyaku": null,
+  "apo": 160,
+  "apo_seiyaku": 30,
   "uriage": null,
   "chinin": null,
-  "clo_seiyaku": null
+  "clo_seiyaku": 32
  },
  "株式会社ForMe works": {
   "apo": 80,
@@ -161,7 +161,7 @@
    "落合汐里",
    "藤田千絢"
   ],
-  "clo_seiyaku": null
+  "clo_seiyaku": 0
  },
  "株式会社JINNOVA": {
   "apo": null,
@@ -201,11 +201,11 @@
   "members": [
    "曽我部千稜"
   ],
-  "clo_seiyaku": null
+  "clo_seiyaku": 0
  },
  "株式会社STORIA": {
   "apo": 20,
-  "apo_seiyaku": 13,
+  "apo_seiyaku": 6,
   "uriage": null,
   "chinin": null,
   "members": [
@@ -215,7 +215,7 @@
    "石橋優翔",
    "篠田直己"
   ],
-  "clo_seiyaku": null
+  "clo_seiyaku": 13
  },
  "株式会社TRIXIA": {
   "apo": 40,
@@ -232,7 +232,7 @@
    "髙橋翼",
    "齋藤佳輝"
   ],
-  "clo_seiyaku": null
+  "clo_seiyaku": 10
  },
  "株式会社UNIVA FIT": {
   "apo": 105,
@@ -254,7 +254,7 @@
   "apo_seiyaku": 5,
   "uriage": null,
   "chinin": null,
-  "clo_seiyaku": null,
+  "clo_seiyaku": 0,
   "seiyaku": 5
  },
  "株式会社guidance": {
@@ -289,7 +289,7 @@
    "岡元莉輝",
    "鈴木琉斗"
   ],
-  "clo_seiyaku": null
+  "clo_seiyaku": 0
  },
  "株式会社ベスティブロ": {
   "apo": 50,
@@ -307,5 +307,19 @@
   ],
   "clo_seiyaku": 10,
   "seiyaku": 10
+ },
+ "込山推進": {
+  "apo": 15,
+  "uriage": null,
+  "chinin": null,
+  "apo_seiyaku": 8,
+  "clo_seiyaku": 0
+ },
+ "株式会社日本建装": {
+  "apo": 7,
+  "uriage": null,
+  "chinin": null,
+  "apo_seiyaku": 3,
+  "clo_seiyaku": 0
  }
 }
