@@ -11,9 +11,16 @@ COMPANY_TARGETS_DEFAULT（目標値・Googleフォーム集計）とPERIODS.mont
   - 着地予想 = 実績 ÷ 経過稼働日数 × 当月稼働日数
   - 信号: 🔵標準以上 / 🟡標準の半分以上・標準未満 / 🔴標準の半分未満 / ⚪目標値未受領
 
+「稼働予定者数(フォーム)」列はGoogleフォーム回答（company_targets.json内のmembers）。
+「実稼働者数」列は2026-09-08 小宮山さん確認済みの仕様変更により「本日」の人数を表示する
+（月間累計ではない）。本日データは build_today_attendance.py で別途生成した
+data/today_attendance.json を読み込む。無い場合は「ー」表示にフォールバックする
+（間違って月間累計を出さないようにするため、フォールバック先はPERIODS.month.headcountにはしない）。
+
 使い方:
   python3 build_partner_kpi_canvas.py                  # 今日の日付で計算
   python3 build_partner_kpi_canvas.py --date 2026-09-08 # 日付を指定して計算（過去の再現用）
+  python3 build_partner_kpi_canvas.py --attendance-json data/today_attendance.json
 
 出力:
   標準進捗率・着地予想などを計算した上で、Canvas用Markdownテーブルと
@@ -113,6 +120,12 @@ def cell(m):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--date", default=None, help="YYYY-MM-DD（省略時は今日）")
+    ap.add_argument(
+        "--attendance-json",
+        default=None,
+        help="build_today_attendance.pyの出力JSON（本日の会社別実働者数）。"
+        "指定が無い場合、実稼働者数は全社ー表示になる（月間累計にフォールバックしない）。",
+    )
     args = ap.parse_args()
 
     today = (
@@ -133,6 +146,11 @@ def main():
     month_data = periods["month"]
     actual_by_co = {c["company"]: c for c in month_data["companies"]}
 
+    today_attendance_counts = {}
+    if args.attendance_json:
+        with open(args.attendance_json, encoding="utf-8") as f:
+            today_attendance_counts = json.load(f).get("counts", {})
+
     for co in KNOWN_PENDING_EXTRA:
         targets.setdefault(co, {})
 
@@ -147,7 +165,7 @@ def main():
         headcount_plan = len(members) if members else None
 
         a = actual_by_co.get(co, {})
-        headcount_actual = a.get("headcount")
+        headcount_actual = today_attendance_counts.get(co)
 
         has_any = any(v is not None for v in [apo_seiyaku_t, clo_seiyaku_t, apo_num_t])
         if not has_any:
@@ -191,7 +209,7 @@ def main():
 
     lines = []
     lines.append(
-        "|会社名|稼働予定者数(フォーム)|実稼働者数(Cyzen出退勤)|"
+        "|会社名|稼働予定者数(フォーム)|本日の実稼働者数(Cyzen出退勤)|"
         "アポ成約実績/目標|進捗率|信号|着地予想|"
         "クロ成約実績/目標|進捗率|信号|着地予想|"
         "(参考)アポ数実績/目標|進捗率|信号|着地予想|"
