@@ -209,10 +209,11 @@ def main():
 
     lines = []
     lines.append(
-        "|会社名|稼働予定者数(フォーム)|本日の実稼働者数(Cyzen出退勤)|"
+        "|会社名|"
         "アポ成約実績/目標|進捗率|信号|着地予想|"
         "クロ成約実績/目標|進捗率|信号|着地予想|"
         "(参考)アポ数実績/目標|進捗率|信号|着地予想|"
+        "稼働予定者数(フォーム)|本日の実稼働者数(Cyzen出退勤)|"
     )
     lines.append("|" + "---|" * 15)
 
@@ -223,7 +224,7 @@ def main():
         hc_actual = f"{r['headcount_actual']}名" if r["headcount_actual"] else "ー"
         if r["pending"]:
             lines.append(
-                f"|{r['co']}|{hc_plan}|{hc_actual}|未受領|ー|⚪|ー|未受領|ー|⚪|ー|未受領|ー|⚪|ー|"
+                f"|{r['co']}|未受領|ー|⚪|ー|未受領|ー|⚪|ー|未受領|ー|⚪|ー|{hc_plan}|{hc_actual}|"
             )
             counts["⚪"] += 1
             continue
@@ -231,7 +232,7 @@ def main():
         a2, p2, s2, l2 = cell(r["clo_seiyaku"])
         a3, p3, s3, l3 = cell(r["apo_num"])
         lines.append(
-            f"|{r['co']}|{hc_plan}|{hc_actual}|{a1}|{p1}|{s1}|{l1}|{a2}|{p2}|{s2}|{l2}|{a3}|{p3}|{s3}|{l3}|"
+            f"|{r['co']}|{a1}|{p1}|{s1}|{l1}|{a2}|{p2}|{s2}|{l2}|{a3}|{p3}|{s3}|{l3}|{hc_plan}|{hc_actual}|"
         )
         # ワースト信号でサマリーカウント（最も悪い1つを代表として数える）
         sigs = [s for s in [s1, s2, s3] if s]
