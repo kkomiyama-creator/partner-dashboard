@@ -35,10 +35,10 @@
  },
  "D-MAK株式会社": {
   "apo": null,
-  "apo_seiyaku": null,
+  "apo_seiyaku": 8,
   "uriage": null,
   "chinin": null,
-  "clo_seiyaku": null
+  "clo_seiyaku": 8
  },
  "G.WORTH株式会社": {
   "apo": null,
@@ -98,7 +98,7 @@
    "五十嵐聖",
    "高橋崇大"
   ],
-  "clo_seiyaku": 0
+  "clo_seiyaku": 2
  },
  "有限会社イーティー": {
   "apo": null,
@@ -119,7 +119,7 @@
    "尾関鎮",
    "濵田裕大"
   ],
-  "clo_seiyaku": 0
+  "clo_seiyaku": 1
  },
  "株式会社Birth47": {
   "apo": null,
@@ -161,14 +161,14 @@
    "落合汐里",
    "藤田千絢"
   ],
-  "clo_seiyaku": 0
+  "clo_seiyaku": 10
  },
  "株式会社JINNOVA": {
   "apo": null,
-  "apo_seiyaku": null,
+  "apo_seiyaku": 10,
   "uriage": null,
   "chinin": null,
-  "clo_seiyaku": null
+  "clo_seiyaku": 20
  },
  "株式会社LIVION partners": {
   "apo": null,
@@ -195,7 +195,7 @@
  },
  "株式会社Next Place": {
   "apo": 15,
-  "apo_seiyaku": 10,
+  "apo_seiyaku": 5,
   "uriage": null,
   "chinin": null,
   "members": [
