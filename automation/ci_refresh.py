@@ -36,8 +36,10 @@ def jst_now():
 
 
 def in_business_window(now):
-    # 平日8:00-20:59 JST のみ実行する(小宮山さんの運用方針に合わせる)。
-    return now.weekday() < 5 and 8 <= now.hour <= 20
+    # 水木金土日8:00-20:59 JST のみ実行する(パートナー稼働日=月・火休みに合わせる。
+    # 2026-09-13 小宮山さん承認: 従来の「平日のみ」判定だと稼働日である土日に
+    # 一切更新されなくなるため、パートナーの実際の稼働日基準に修正)。
+    return now.weekday() not in (0, 1) and 8 <= now.hour <= 20
 
 
 def run(cmd, cwd=None):
@@ -65,12 +67,13 @@ def main():
     print(f"JST now: {now.isoformat()}")
     # 2026-09-01追加: 法人開拓・折衝ログのGoogleフォーム送信時、Apps Scriptが即座に
     # workflow_dispatchでこのパイプラインを起動する仕組みを追加した(数分おきのschedule
-    # 発火を待たずに反映するため)。schedule(5分おきの自動実行)は引き続き平日8-20時のみに
-    # 絞るが、workflow_dispatch(Apps Scriptからの起動・小宮山さんの手動`gh workflow run`
-    # 双方を含む)は「今すぐ反映してほしい」という明示的な意図なので、時間帯に関わらず実行する。
+    # 発火を待たずに反映するため)。schedule(5分おきの自動実行)は引き続きパートナー稼働日
+    # (水木金土日)8-20時のみに絞るが、workflow_dispatch(Apps Scriptからの起動・小宮山さんの
+    # 手動`gh workflow run`双方を含む)は「今すぐ反映してほしい」という明示的な意図なので、
+    # 時間帯に関わらず実行する。
     event_name = os.environ.get("GITHUB_EVENT_NAME", "")
     if event_name != "workflow_dispatch" and not in_business_window(now):
-        print(f"平日8-20時の対象時間外のためスキップします（トリガー: {event_name or '不明'}）。")
+        print(f"パートナー稼働日(水木金土日)8-20時の対象時間外のためスキップします（トリガー: {event_name or '不明'}）。")
         return
 
     today = now.date()
