@@ -41,6 +41,14 @@ INDEX_HTML = "index.html"
 KNOWN_PENDING_EXTRA = ["井上推進", "株式会社ALL CONNECT"]
 EXCLUDE = {"株式会社Fit Founder"}
 
+# 前回実行時点の進捗率スナップショット（日次で上書き・前日比の検出に使う）
+SNAPSHOT_FILE = "automation/data/kpi_snapshot_prev.json"
+METRIC_LABELS = {
+    "apo_seiyaku": "アポ成約",
+    "clo_seiyaku": "クロ成約",
+    "apo_num": "(参考)アポ数",
+}
+
 
 def workdays_in_month(year, month):
     """月・火を除いた日数（祝日は考慮しない単純カレンダー計算）。"""
@@ -115,6 +123,58 @@ def cell(m):
         m["sig"],
         f"{m['landing']}件",
     )
+
+
+def load_snapshot():
+    try:
+        with open(SNAPSHOT_FILE, encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return None
+
+
+def save_snapshot(rows, date_iso):
+    companies = {}
+    for r in rows:
+        if r["pending"]:
+            continue
+        companies[r["co"]] = {
+            key: {"ratio": r[key]["ratio"]} for key in METRIC_LABELS
+        }
+    with open(SNAPSHOT_FILE, "w", encoding="utf-8") as f:
+        json.dump({"date": date_iso, "companies": companies}, f, ensure_ascii=False, indent=1)
+
+
+def find_improvements(rows, prev_snapshot):
+    """前回スナップショットと比べて進捗率が上がった(会社, 指標)を検出する。"""
+    if not prev_snapshot:
+        return None
+    prev_companies = prev_snapshot.get("companies", {})
+    improvements = []
+    for r in rows:
+        if r["pending"]:
+            continue
+        prev = prev_companies.get(r["co"])
+        if not prev:
+            continue
+        for key, label in METRIC_LABELS.items():
+            cur_ratio = r[key]["ratio"]
+            old_ratio = (prev.get(key) or {}).get("ratio")
+            if cur_ratio is None or old_ratio is None:
+                continue
+            delta = cur_ratio - old_ratio
+            if delta > 0:
+                improvements.append(
+                    {
+                        "co": r["co"],
+                        "label": label,
+                        "old": old_ratio * 100,
+                        "new": cur_ratio * 100,
+                        "delta": delta * 100,
+                    }
+                )
+    improvements.sort(key=lambda x: x["delta"], reverse=True)
+    return improvements
 
 
 def main():
@@ -243,10 +303,25 @@ def main():
         elif "🔵" in sigs:
             counts["🔵"] += 1
 
+    prev_snapshot = load_snapshot()
+    improvements = find_improvements(rows, prev_snapshot)
+    save_snapshot(rows, today.isoformat())
+
     print(f"# STD_RATE={std*100:.1f}% WD_MONTH={wd_month} WD_ELAPSED={wd_elapsed} DATE={today.isoformat()}")
     print(f"# SUMMARY 🔵{counts['🔵']}社 🟡{counts['🟡']}社 🔴{counts['🔴']}社 ⚪{counts['⚪']}社")
     print()
     print("\n".join(lines))
+    print()
+    if improvements is None:
+        print("# IMPROVEMENTS_COUNT=0")
+        print("# IMPROVEMENTS_NOTE=前回スナップショットがないため比較不可（次回実行以降から前日比の検出を開始）")
+    else:
+        print(f"# IMPROVEMENTS_COUNT={len(improvements)} PREV_DATE={prev_snapshot.get('date', '不明')}")
+        for imp in improvements:
+            print(
+                f"* {imp['co']}: {imp['label']}進捗率 {imp['old']:.1f}%→{imp['new']:.1f}%"
+                f"（+{imp['delta']:.1f}pt）"
+            )
 
 
 if __name__ == "__main__":
