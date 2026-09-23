@@ -10,6 +10,7 @@
 """
 import csv
 import glob
+import json
 import os
 import re
 import zipfile
@@ -21,7 +22,7 @@ import config
 
 DIRECT = "株式会社Fit Founder"
 DIRECT_STAFF = {"鈴木隆輔", "川上留以", "川上 留以", "横山豪", "伊藤蓮", "百瀬遥輝", "木村瞭太", "吉田龍吾",
-                "橋口航大", "平山沙羅", "恩田哉人", "小野龍一", "上野滉己"}
+                "橋口航大", "平山沙羅", "恩田哉人", "小野龍一", "上野滉己", "原未希斗"}
 
 COMPANY_MAP = {
     "JINNOVA": "株式会社JINNOVA", "Ambitious株式会社": "Ambitious株式会社",
@@ -626,6 +627,111 @@ def aggregate_dow_hour(roster_csv, start, end):
     return {"available": matched_time > 0, "dow_labels": dow_labels,
             "hour_labels": [f"{lo}-{hi}時" for lo, hi in hour_buckets],
             "grid": grid, "total": total, "matched_time": matched_time}
+
+
+def aggregate_apo_report_trends(records_json, start, end):
+    """アポ獲得報告書（Cyzen構造化フォーム）の記載内容から傾向を集計する（2026-09-16追加）。
+    start/end: 'YYYY-MM-DD'（両端含む）。records_jsonは build_apo_report_content_api.py の出力。
+    曜日×時間帯グリッドは aggregate_dow_hour() と同じ形状（dow_labels/hour_labels/grid）で返すため、
+    ロースターに時刻列が無く常時空だったDOW_HOURのフォールバック表示先としてもそのまま使える。
+    """
+    dow_labels = ["月", "火", "水", "木", "金", "土", "日"]
+    hour_buckets = [(10, 12), (12, 14), (14, 16), (16, 18), (18, 20), (20, 22)]
+
+    def bucket_label(h):
+        for lo, hi in hour_buckets:
+            if lo <= h < hi:
+                return f"{lo}-{hi}時"
+        return None
+
+    if not records_json or not os.path.exists(records_json):
+        return {"available": False, "reason": "records未取得",
+                "dow_labels": dow_labels, "hour_labels": [f"{lo}-{hi}時" for lo, hi in hour_buckets],
+                "grid": {dow: {f"{lo}-{hi}時": 0 for lo, hi in hour_buckets} for dow in dow_labels}, "total": 0}
+
+    with open(records_json, encoding="utf-8") as f:
+        rows = json.load(f)
+    rows = [r for r in rows if r.get("date") and start <= r["date"] <= end]
+
+    grid = {dow: {f"{lo}-{hi}時": 0 for lo, hi in hour_buckets} for dow in dow_labels}
+    matched_time = 0
+    aite = defaultdict(int)
+    kazoku_cat = defaultdict(int)
+    all_electric = defaultdict(int)
+    denkidai = defaultdict(int)
+    maker = defaultdict(int)
+    ages = []
+
+    kazoku_single = re.compile(r"独居|一人|1人|単身")
+    kazoku_kids = re.compile(r"子|息子|娘")
+    kazoku_couple = re.compile(r"夫婦|ご夫婦")
+
+    for r in rows:
+        dt_str = r.get("date")
+        h = r.get("hour")
+        if h is not None:
+            try:
+                dt = datetime.strptime(dt_str, "%Y-%m-%d")
+                dow = dow_labels[dt.weekday()]
+                hb = bucket_label(h)
+                if hb:
+                    grid[dow][hb] += 1
+                    matched_time += 1
+            except ValueError:
+                pass
+
+        if r.get("aite"):
+            aite[r["aite"]] += 1
+
+        k = (r.get("kazoku") or "").replace(" ", "").replace("　", "")
+        if not k:
+            cat = "不明・空欄"
+        elif kazoku_single.search(k):
+            cat = "単身"
+        elif kazoku_kids.search(k):
+            cat = "夫婦+子(多世代含む)"
+        elif kazoku_couple.search(k) or k in ("2", "2人"):
+            cat = "夫婦のみ"
+        else:
+            cat = "その他/不明表記"
+        kazoku_cat[cat] += 1
+
+        all_electric[r.get("all_electric") or "不明"] += 1
+        denkidai[r.get("denkidai") or "不明"] += 1
+        if r.get("maker"):
+            maker[r["maker"]] += 1
+        if r.get("age"):
+            ages.append(r["age"])
+
+    age_stats = None
+    if ages:
+        ages_sorted = sorted(ages)
+        n = len(ages_sorted)
+        median = ages_sorted[n // 2] if n % 2 else (ages_sorted[n // 2 - 1] + ages_sorted[n // 2]) / 2
+        buckets = defaultdict(int)
+        for a in ages:
+            if a < 30:
+                buckets["20代以下"] += 1
+            elif a < 40:
+                buckets["30代"] += 1
+            elif a < 50:
+                buckets["40代"] += 1
+            elif a < 60:
+                buckets["50代"] += 1
+            elif a < 70:
+                buckets["60代"] += 1
+            else:
+                buckets["70代以上"] += 1
+        age_stats = {"n": n, "median": median, "mean": round(sum(ages) / n, 1), "buckets": dict(buckets)}
+
+    return {
+        "available": len(rows) > 0,
+        "total": len(rows),
+        "dow_labels": dow_labels, "hour_labels": [f"{lo}-{hi}時" for lo, hi in hour_buckets],
+        "grid": grid, "matched_time": matched_time,
+        "aite": dict(aite), "kazoku": dict(kazoku_cat), "all_electric": dict(all_electric),
+        "denkidai": dict(denkidai), "maker": dict(maker), "age": age_stats,
+    }
 
 
 def prev_range(start, end):

@@ -21,11 +21,15 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from ranking_core import (aggregate, find_latest, aggregate_attendance, resolve_attendance_source,
                            prev_range, merge_diff, suggest_reinforcement, load_company_notes,
                            annotate_rankings, flag_attendance_mismatch,
-                           aggregate_completion, aggregate_dow_hour,
+                           aggregate_completion, aggregate_dow_hour, aggregate_apo_report_trends,
                            load_attendance_alert_master, augment_with_alert_master,
                            company_attendance_alert_counts, aggregate_visits, aggregate_closer_shodan)
-from company_resolver import resolve_company, norm_name
+from company_resolver import resolve_company, norm_name, master_by_company, canon_name
 from build_declining_performers import build as build_declining_performers
+from build_exec_weekly_csv import build as build_exec_weekly_raw
+from build_workrate_apo_crosstab import build as build_workrate_crosstab_raw
+from build_forecast import build_forecast
+from build_camp_analysis import build_camp_analysis
 import config
 
 TEMPLATE = """<!doctype html>
@@ -508,6 +512,8 @@ button.printbtn.active{background:var(--blue); color:#fff; border-color:var(--bl
       <div class="tab" data-panel="p-trend"><span class="tab-ico">📈</span><span class="tab-txt">傾向分析</span></div>
       <div class="tab" data-panel="p-decline"><span class="tab-ico">📉</span><span class="tab-txt">下落メンバー</span></div>
       <div class="tab" data-panel="p-exec"><span class="tab-ico">📋</span><span class="tab-txt">責任者会議</span></div>
+      <div class="tab" data-panel="p-tsuji"><span class="tab-ico">👔</span><span class="tab-txt">辻さん向け週次</span></div>
+      <div class="tab" data-panel="p-camp"><span class="tab-ico">🏕️</span><span class="tab-txt">合宿効果</span></div>
     </div>
     <div class="actionbar">
       <button class="csvbtn" id="csvBtn" title="今表示中のタブをCSVで保存（役員会資料等への連携用）">
@@ -741,6 +747,10 @@ button.printbtn.active{background:var(--blue); color:#fff; border-color:var(--bl
     </div>
     <div id="tenureAnalysisWrap"></div>
 
+    <div class="table-caption" style="margin-top:24px;">⑥ アポ獲得報告書の記載内容分析（2026-09-16追加）</div>
+    <div class="note" id="apoReportMeta" style="margin-bottom:10px;"></div>
+    <div id="apoReportTrendWrap"></div>
+
     <div class="note" style="margin-top:24px; border-left:4px solid var(--warn); background:var(--warn-bg);">
       <b>⚠ 天気・住宅密集度との相関分析について</b>　外部データ（気象・人口密度統計）との組み合わせ分析は現時点では未実装です。実装する場合はClaude Codeが日次更新時に外部データを取得して埋め込む形になります（このダッシュボード自体は外部通信をしない自己完結型のため）。着手が決まり次第このタブに追加します。
     </div>
@@ -803,6 +813,7 @@ button.printbtn.active{background:var(--blue); color:#fff; border-color:var(--bl
     <div id="kawakamiWeeklyCard" style="margin-bottom:20px;"></div>
 
     <h3 style="font-size:14px; margin:0 0 8px;">③ 月末着地予測</h3>
+    <div class="note" id="execForecastMeta" style="margin-bottom:10px;"></div>
     <div class="tiles" id="execForecastTiles" style="margin-bottom:20px;"></div>
 
     <h3 style="font-size:14px; margin:0 0 8px;">④ 月内推移グラフ（成約数・完工数 日次累積）</h3>
@@ -828,6 +839,49 @@ button.printbtn.active{background:var(--blue); color:#fff; border-color:var(--bl
     <h3 style="font-size:14px; margin:0 0 8px;">⑨ 課題×打ち手（AI分析サマリー欄）</h3>
     <div class="card" style="margin-bottom:8px;"><div class="tablewrap"><table id="t-exec-gap"></table></div></div>
     <div class="note">課題の要因分析・打ち手の効果見込みは定性判断を伴うため、ここでは目標とのギャップ数値のみ機械集計しています。文章での分析は data/ai_summary.json（AI分析サマリー）または手動での追記を想定した器です。</div>
+  </div>
+
+  <div id="p-tsuji" class="panel">
+    <div class="note" id="tsujiMeta" style="margin-bottom:14px;">このタブは表示期間（日次/週次/月次）とは連動しない独立集計です。これまで毎週月曜朝に手動でお送りしていた実績CSV7点セットの内容を、日次自動更新のダッシュボードに統合したものです。集計期間は常に「直近の完了済み月曜〜日曜週」（今日がどの曜日でも自動で1つ前の週になります）。</div>
+
+    <h3 style="font-size:14px; margin:0 0 8px;">① 企業別実績</h3>
+    <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-tsuji-company"></table></div></div>
+
+    <h3 style="font-size:14px; margin:0 0 8px;">② アポインター別実績</h3>
+    <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-tsuji-apo"></table></div></div>
+
+    <h3 style="font-size:14px; margin:0 0 8px;">③ クローザー別実績</h3>
+    <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-tsuji-closer"></table></div></div>
+
+    <h3 style="font-size:14px; margin:0 0 8px;">④ 稼働人員数（3指標比較）</h3>
+    <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-tsuji-hc3"></table></div></div>
+
+    <h3 style="font-size:14px; margin:0 0 8px;">⑤ 稼働人員数・会社別（出勤打刻ベース）</h3>
+    <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-tsuji-hc"></table></div></div>
+
+    <h3 style="font-size:14px; margin:0 0 8px;">⑥ 未稼働者一覧（マスタ登録済みだが期間内に出勤打刻なし）</h3>
+    <div class="note" style="margin-bottom:8px;">人数が多い場合は先頭50名のみ表示します。</div>
+    <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-tsuji-unworked"></table></div></div>
+
+    <h3 style="font-size:14px; margin:0 0 8px;">⑦ 稼働×アポ クロス分析（GPSルート自動記録の稼働日数バケット別）</h3>
+    <div class="note" style="margin-bottom:8px;">稼働はGPSルート自動記録ベース（出退勤打刻は押し忘れ・つけっぱなしが混在するため不採用）。対象母集団は期間内にGPS稼働1日以上またはアポ獲得1件以上のいずれかがある人。</div>
+    <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-tsuji-crosstab"></table></div></div>
+
+    <h3 style="font-size:14px; margin:0 0 8px;">⑧ ファネル月次推移（アポ数→商談数→成約数→完工数）</h3>
+    <div class="note" style="margin-bottom:8px;">CCOK数(前確通過)はデータソース未特定のため含みません。商談数は9月〜3月がスケジュール表・4月以降がCyzen予定数。成約数・完工数は浜西さんからの入力値。当月分は進行中の速報値です。</div>
+    <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-tsuji-funnel"></table></div></div>
+  </div>
+
+  <div id="p-camp" class="panel">
+    <div class="note" id="campMeta" style="margin-bottom:14px;"></div>
+
+    <h3 style="font-size:14px; margin:0 0 8px;">① グループ別サマリー（ロットワイラー組/柴犬組/ちわわ組）</h3>
+    <div class="note" style="margin-bottom:8px;">合宿参加前に決めたグループ（6〜8月の生産性上位20%/中間60%/下位20%）ごとに、合宿前後で行動量・成果が変化したかを見ます。「改善者数」は生産性(円/所定稼働日)が前より上がった人数です。</div>
+    <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-camp-groups"></table></div></div>
+
+    <h3 style="font-size:14px; margin:0 0 8px;">② 個人別 合宿前後比較（38名）</h3>
+    <div class="note" style="margin-bottom:8px;">列ヘッダーをクリックすると並べ替えできます。生産性(円/所定稼働日)は入金1件の有無で大きく振れる指標のため、経過日数が浅いうちは参考程度に見てください。</div>
+    <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-camp-members"></table></div></div>
   </div>
 
   <div class="note">
@@ -881,6 +935,10 @@ const ROUTE_HISTORY = __ROUTE_HISTORY_JSON__;
 const TREND = __TREND_JSON__;
 const AI_SUMMARY = __AI_SUMMARY_JSON__;
 const COMPLETION = __COMPLETION_JSON__;
+// 月末着地予測（2026-09-21追加・build_forecast.py が算出）。従来の単純日割りを置き換える。
+const FORECAST = __FORECAST_JSON__;
+// 山中湖合宿(2026/09/14)前後比較（2026-09-22追加・build_camp_analysis.pyが算出）。
+const CAMP_ANALYSIS = __CAMP_ANALYSIS_JSON__;
 const URGENT_TARGETS = __URGENT_TARGETS_JSON__;
 const TRAINING = __TRAINING_JSON__;
 // 役員会（SH役職者定例）で正式決定した急落・下降ターゲット32名（2026-08-04追加）。氏名の表記ゆれを
@@ -893,6 +951,9 @@ const TENURE = __TENURE_JSON__;
 const TENURE_BY_NAME = new Map(
   Object.entries(TENURE.people || {}).map(([name, t]) => [normNameJs(name), t])
 );
+const TSUJI_WEEKLY = __TSUJI_WEEKLY_JSON__;
+const TSUJI_CROSSTAB = __TSUJI_CROSSTAB_JSON__;
+const FUNNEL_MONTHLY = __FUNNEL_MONTHLY_JSON__;
 function tenureBucketLabel(bucket){
   return bucket === 'new' ? '🌱新人' : (bucket === 'mid' ? '中堅' : (bucket === 'veteran' ? 'ベテラン' : '—'));
 }
@@ -2211,7 +2272,7 @@ function renderKawakamiWeeklyCard(){
   el.innerHTML = `<div class="note"><b>${escapeHtml(w.label)} 川上さん日報からの抽出サマリー</b><div style="margin-top:6px;">${cards}</div></div>`;
 }
 
-const TAB_LABELS = {'p-company':'企業別ランキング','p-apo':'アポインターランキング','p-soutiku':'創蓄アポインターランキング','p-closer':'クローザーランキング','p-naihan':'直販メンバー','p-topics':'Slackトピックス','p-outreach':'開拓先パートナー','p-route':'行動分析','p-trend':'傾向分析','p-exec':'責任者会議'};
+const TAB_LABELS = {'p-company':'企業別ランキング','p-apo':'アポインターランキング','p-soutiku':'創蓄アポインターランキング','p-closer':'クローザーランキング','p-naihan':'直販メンバー','p-topics':'Slackトピックス','p-outreach':'開拓先パートナー','p-route':'行動分析','p-trend':'傾向分析','p-decline':'下落メンバー','p-exec':'責任者会議','p-tsuji':'辻さん向け週次','p-camp':'合宿効果'};
 
 function priorityPill(p){
   const cls = {'S':'good','A':'mid','B':'flat','C':'low'}[p] || 'flat';
@@ -2515,25 +2576,62 @@ function renderExecWeekly(){
   table.innerHTML = thead + tbody;
 }
 
+// 着地予測タイルに出すKPIと、FORECAST.metrics のキー・目標値の対応。
+// 完工数はモデル対象外（完工は成約から遅れて発生するストック型で、日次の発生プロファイルが
+// 成約と別物のため。データが揃うまで単純日割りのまま据え置く）。
+const FORECAST_TILES = [
+  {key:'seiyaku',      target:()=>TARGETS.monthly.seiyaku, unit:'件'},
+  {key:'uriage',       target:()=>TARGETS.monthly.uriage,  unit:'円', fmt:yen},
+  {key:'apo',          target:()=>TARGETS.monthly.apo,     unit:'件'},
+  {key:'seiyaku_rate', target:()=>null,                    unit:'%'},
+  {key:'workforce',    target:()=>TARGETS.monthly.chinin,  unit:'名'},
+  {key:'apo_achiever', target:()=>null,                    unit:'名'},
+];
+
 function renderExecForecast(){
-  const rows = execKpiRows().filter(r=>r.primary);
   const el = document.getElementById('execForecastTiles');
-  el.innerHTML = rows.map(r=>{
-    if(r.actual===null||r.actual===undefined){
-      return `<div class="tile"><div class="label">${escapeHtml(r.label)}</div><div class="value">—</div><div class="sub">データ未取得</div></div>`;
+  const meta = document.getElementById('execForecastMeta');
+  if(!FORECAST || !FORECAST.metrics){
+    el.innerHTML = '<div class="topic-empty">着地予測データが未取得です。</div>';
+    if(meta) meta.textContent = '';
+    return;
+  }
+  if(meta){
+    const mdl = FORECAST.model || {};
+    meta.innerHTML = `基準日 <b>${escapeHtml(FORECAST.asof)}</b>（${FORECAST.elapsed_days}/${FORECAST.days_in_month}日経過）。` +
+      `曜日ごとの稼働量の差が大きい事業特性に合わせ、<b>経過分の実績はそのまま確定値として使い、残り日数に「その日の区分（平日／土日／祝日／火曜）の過去${mdl.train_window_months}ヶ月平均」を加算する</b>方式で算出しています。` +
+      `従来の単純日割り（実績÷経過日数×月日数）は過去15ヶ月の実データで平均9〜15%外していたため置き換えました。` +
+      `<span style="color:var(--warn);">「参考値」表示の指標は、元データの蓄積月数が足りず精度検証ができていないものです。</span>`;
+  }
+  el.innerHTML = FORECAST_TILES.map(t=>{
+    const m = FORECAST.metrics[t.key];
+    if(!m || !m.available){
+      const label = m ? m.label : t.key;
+      return `<div class="tile"><div class="label">${escapeHtml(label)} 着地予測</div><div class="value">—</div>` +
+        `<div class="sub">${escapeHtml((m && m.reason) || 'データ未取得')}</div></div>`;
     }
-    const forecast = Math.round(r.actual / r.elapsed * r.total);
-    const hasTarget = r.target!==null && r.target!==undefined;
-    const diff = hasTarget ? forecast - r.target : null;
-    const fmt = v => r.fmt ? r.fmt(v) : v.toLocaleString('ja-JP');
-    const diffTxt = diff===null ? '—' : `${diff>=0?'+':''}${fmt(diff)}${r.unit}`;
-    const diffCls = diff===null ? '' : (diff>=0?'delta-up':'delta-down');
-    const gaugePct = hasTarget && r.target ? (forecast/r.target*100) : null;
+    const fmt = v => t.fmt ? t.fmt(v) : v.toLocaleString('ja-JP');
+    const target = t.target();
+    const hasTarget = target!==null && target!==undefined;
+    const diff = hasTarget ? m.forecast - target : null;
+    const diffTxt = diff===null ? '' : `　差分 <span class="${diff>=0?'delta-up':'delta-down'}">${diff>=0?'+':''}${fmt(diff)}${t.unit}</span>`;
+    const gaugePct = hasTarget && target ? (m.forecast/target*100) : null;
+    // ストック型（人数）は backtest を持たないので、verified だけで判定せず存在チェックする
+    const bt = m.backtest;
+    const badge = !m.verified
+      ? `<span class="pill mid" style="margin-left:6px;">参考値</span>`
+      : (bt ? `<span class="pill good" style="margin-left:6px;">検証済 誤差±${bt.mape}%</span>`
+            : `<span class="pill good" style="margin-left:6px;">検証済</span>`);
+    const note = !m.verified
+      ? (m.note || '精度未検証')
+      : (bt ? `過去${bt.n_months}ヶ月で検証（平均絶対誤差${bt.mape}%・最大${bt.max_error}%）`
+            : `過去${m.n_train_months}ヶ月の到達率（月末値の${Math.round(m.completion_ratio*100)}%が${FORECAST.elapsed_days}日時点で確定する傾向）から算出`);
     return `<div class="tile" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-      <div>
-        <div class="label">${escapeHtml(r.label)} 着地予測</div>
-        <div class="value">${fmt(forecast)}<span class="unit">${r.unit}</span></div>
-        <div class="sub">目標 ${hasTarget?fmt(r.target)+r.unit:'未設定'}　差分 <span class="${diffCls}">${diffTxt}</span></div>
+      <div style="min-width:0;">
+        <div class="label">${escapeHtml(m.label)} 着地予測${badge}</div>
+        <div class="value">${fmt(m.forecast)}<span class="unit">${t.unit}</span></div>
+        <div class="sub">実績 ${fmt(m.actual)}${t.unit}　目標 ${hasTarget?fmt(target)+t.unit:'未設定'}${diffTxt}</div>
+        <div class="reason-text">${escapeHtml(note)}</div>
       </div>
       ${gaugePct!==null?gaugeRing(gaugePct, {size:52, stroke:5}):''}
     </div>`;
@@ -2914,6 +3012,7 @@ function renderTrend(){
   renderTrendTop();
   renderTrainingEffect();
   renderTenureAnalysis();
+  renderApoReportTrend();
 }
 
 // ---------- ⑤ 在籍期間別の成績分析（2026-08-31追加） ----------
@@ -3182,6 +3281,172 @@ function renderTrendTop(){
     </table></div></div>
     <div class="note" style="margin-top:10px;">好成績者: ${t.top_names.map(escapeHtml).join('、')}</div>
   `;
+}
+
+function renderApoReportTrend(){
+  const rt = TREND.apo_report_trends;
+  const meta = document.getElementById('apoReportMeta');
+  const wrap = document.getElementById('apoReportTrendWrap');
+  if(!rt || !rt.available){
+    meta.textContent = 'アポ獲得報告書の記載データがまだありません（--apo-report-json未取得）。';
+    wrap.innerHTML = '';
+    return;
+  }
+  meta.innerHTML = `Cyzenの「アポ獲得報告」フォーム記載内容（蓄積開始以降の全期間・${rt.total.toLocaleString('ja-JP')}件）から集計。獲得履歴シートには時刻情報が無いため、この報告書の「訪問時の対面時刻」を時間帯分析の一次情報源としています。`;
+
+  const barRows = (obj, order) => {
+    const total = Object.values(obj).reduce((a,b)=>a+b, 0) || 1;
+    const keys = order ? order.filter(k=>k in obj).concat(Object.keys(obj).filter(k=>!order.includes(k))) : Object.keys(obj).sort((a,b)=>obj[b]-obj[a]);
+    return keys.map(k=>{
+      const v = obj[k] || 0;
+      const pct = Math.round(v/total*1000)/10;
+      return `<div style="margin-bottom:8px;">
+        <div style="display:flex; justify-content:space-between; gap:8px; font-size:12px; margin-bottom:3px;">
+          <span>${escapeHtml(k)}</span><span style="color:var(--text-sub); white-space:nowrap;">${v}件（${pct}%）</span>
+        </div>
+        <div style="background:var(--blue-pale); border-radius:4px; overflow:hidden; height:6px;">
+          <div style="background:var(--blue); height:100%; width:${pct}%;"></div>
+        </div>
+      </div>`;
+    }).join('');
+  };
+  const miniTable = (title, obj, order) => `
+    <div style="flex:1; min-width:240px;">
+      <div style="font-weight:700; font-size:12.5px; margin-bottom:8px;">${title}</div>
+      ${barRows(obj, order)}
+    </div>`;
+
+  const ageBlock = rt.age ? `
+    <div style="flex:1; min-width:240px;">
+      <div style="font-weight:700; font-size:12.5px; margin-bottom:8px;">対面者の年齢（中央値${rt.age.median}歳・平均${rt.age.mean}歳・n=${rt.age.n}）</div>
+      ${barRows(rt.age.buckets, ['20代以下','30代','40代','50代','60代','70代以上'])}
+    </div>` : '';
+
+  wrap.innerHTML = `
+    <div class="card" style="margin-bottom:16px; padding:14px 18px;">
+      <div style="font-weight:700; font-size:12.5px; margin-bottom:8px;">曜日×時間帯（対面時刻ベース・アポ獲得報告${rt.matched_time.toLocaleString('ja-JP')}件）</div>
+      ${heatmapGrid(rt.dow_labels, rt.hour_labels, rt.grid, {cell:30})}
+    </div>
+    <div class="card" style="padding:14px 18px; display:flex; flex-wrap:wrap; gap:24px;">
+      ${miniTable('会話相手', rt.aite, ['ご主人','奥さん','その他'])}
+      ${miniTable('家族構成（簡易分類）', rt.kazoku, ['夫婦のみ','夫婦+子(多世代含む)','単身','その他/不明表記','不明・空欄'])}
+      ${miniTable('オール電化かどうか', rt.all_electric, ['はい','いいえ','不明'])}
+      ${miniTable('月の電気代（目安・聞き取り）', rt.denkidai)}
+      ${miniTable('名乗りメーカー', rt.maker)}
+      ${ageBlock}
+    </div>
+    <div class="note" style="margin-top:10px;">家族構成・電気代は未記入率が高め（記載件数が少ない項目は参考程度に）。年齢は10〜100歳の範囲外の入力ミスと思われる値を除外しています。</div>
+  `;
+}
+
+function renderTsuji(){
+  const meta = document.getElementById('tsujiMeta');
+  if(TSUJI_WEEKLY.start){
+    meta.innerHTML = `このタブは表示期間（日次/週次/月次）とは連動しない独立集計です。これまで毎週月曜朝に手動でお送りしていた実績CSV7点セットの内容を、日次自動更新のダッシュボードに統合したものです。集計期間は常に「直近の完了済み月曜〜日曜週」＝<b>${escapeHtml(TSUJI_WEEKLY.start)}〜${escapeHtml(TSUJI_WEEKLY.end)}</b>（今日がどの曜日でも自動で1つ前の週になります）。`;
+  }
+  if(TSUJI_WEEKLY.error){
+    meta.innerHTML += `<br><span style="color:var(--danger, #c0392b);">⚠ 週次データの生成中にエラーが発生しました: ${escapeHtml(TSUJI_WEEKLY.error)}</span>`;
+  }
+
+  renderTable('t-tsuji-company', [
+    {label:'会社名'}, {label:'アポ獲得数', num:true}, {label:'アポ成約数', num:true},
+    {label:'クロ成約数', num:true}, {label:'売上(円)', num:true, fmt:v=>yen(v)},
+    {label:'成約率(%)', num:true, fmt:v=>(v===''||v===null||v===undefined)?'—':v+'%'},
+  ], TSUJI_WEEKLY.company || [], {defaultSort:3});
+
+  renderTable('t-tsuji-apo', [
+    {label:'順位', num:true}, {label:'氏名'}, {label:'所属会社'},
+    {label:'アポ成約数', num:true}, {label:'アポ獲得数', num:true},
+  ], TSUJI_WEEKLY.apo || [], {defaultSort:0, });
+
+  renderTable('t-tsuji-closer', [
+    {label:'順位', num:true}, {label:'氏名'}, {label:'所属会社'},
+    {label:'クロ成約数', num:true}, {label:'売上(円)', num:true, fmt:v=>yen(v)},
+  ], TSUJI_WEEKLY.closer || [], {defaultSort:0});
+
+  renderTable('t-tsuji-hc3', [
+    {label:'会社名'}, {label:'マスタ登録人数', num:true}, {label:'出勤打刻あり', num:true},
+    {label:'スポット作成あり', num:true}, {label:'ルート自動記録あり', num:true},
+  ], TSUJI_WEEKLY.hc3 || [], {defaultSort:1});
+
+  renderTable('t-tsuji-hc', [
+    {label:'会社名'}, {label:'マスタ登録人数', num:true}, {label:'稼働人員数(出勤打刻あり)', num:true},
+    {label:'稼働率(%)', num:true, fmt:v=>(v===''||v===null||v===undefined)?'—':v+'%'},
+  ], TSUJI_WEEKLY.hc || [], {defaultSort:1});
+
+  const unworkedAll = TSUJI_WEEKLY.unworked || [];
+  renderTable('t-tsuji-unworked', [
+    {label:'氏名'}, {label:'所属会社'},
+  ], unworkedAll.slice(0, 50), {defaultSort:1});
+
+  renderTable('t-tsuji-crosstab', [
+    {label:'稼働日数(GPS・7日間中)'}, {label:'人数', num:true}, {label:'アポ獲得者数', num:true},
+    {label:'アポゼロ人数', num:true}, {label:'アポ獲得合計', num:true}, {label:'1人あたり平均', num:true},
+  ], TSUJI_CROSSTAB || [], {defaultSort:1});
+
+  const months = FUNNEL_MONTHLY.months || [];
+  const pct = (a,b) => (!a) ? '—' : (b/a*100).toFixed(1)+'%';
+  const funnelRows = months.map(m => [
+    m.label, m.apo, m.shodan, m.seiyaku, m.kanko,
+    pct(m.apo, m.shodan), pct(m.shodan, m.seiyaku), pct(m.seiyaku, m.kanko), pct(m.apo, m.kanko),
+  ]);
+  renderTable('t-tsuji-funnel', [
+    {label:'年月'}, {label:'アポ数', num:true}, {label:'商談数', num:true}, {label:'成約数', num:true},
+    {label:'完工数', num:true}, {label:'アポ→商談'}, {label:'商談→成約'}, {label:'成約→完工'}, {label:'アポ→完工(総合)'},
+  ], funnelRows, {defaultSort:0});
+}
+
+function renderCamp(){
+  const meta = document.getElementById('campMeta');
+  const c = CAMP_ANALYSIS;
+  if(!c || !c.available){
+    meta.innerHTML = '合宿分析データが未取得です（--camp-roster-json未指定）。';
+    document.getElementById('t-camp-groups').innerHTML = '';
+    document.getElementById('t-camp-members').innerHTML = '';
+    return;
+  }
+  const bw = c.before_window, aw = c.after_window;
+  meta.innerHTML = `<b>${escapeHtml(c.title)}</b>（38名）。${escapeHtml(c.grouping_method)}<br>` +
+    `合宿前後を同じ日数の窓で比較しています: <b>合宿前 ${bw.start}〜${bw.end}</b>（所定稼働${bw.scheduled_workdays}日）　vs　` +
+    `<b>合宿後 ${aw.start}〜${aw.end}</b>（所定稼働${aw.scheduled_workdays}日・合宿から${c.elapsed_days_since_camp}日経過）。` +
+    `<span style="color:var(--warn);">合宿からまだ${c.elapsed_days_since_camp}日しか経っていないため、個人の生産性は入金1件の有無で大きく振れます。判断は日数が積み上がってからにしてください。</span>` +
+    (c.note ? `<br>${escapeHtml(c.note)}` : '');
+
+  const GROUP_ORDER = ['ロットワイラー組', '柴犬組', 'ちわわ組'];
+  const groupRows = GROUP_ORDER.filter(g=>c.groups[g]).map(g=>{
+    const gr = c.groups[g];
+    return [g, gr.n, gr.apo_before, gr.apo_after, gr.seiyaku_before, gr.seiyaku_after,
+      gr.avg_productivity_before, gr.avg_productivity_after,
+      gr.improved_rate===null ? null : `${gr.improved_count}/${gr.n_with_delta}名（${gr.improved_rate}%）`];
+  });
+  renderTable('t-camp-groups', [
+    {label:'グループ'}, {label:'人数', num:true},
+    {label:'アポ(前)', num:true}, {label:'アポ(後)', num:true},
+    {label:'成約(前)', num:true}, {label:'成約(後)', num:true},
+    {label:'平均生産性(前)', num:true, fmt:v=>v===null?'—':yen(v)+'円/日'},
+    {label:'平均生産性(後)', num:true, fmt:v=>v===null?'—':yen(v)+'円/日'},
+    {label:'改善者数', cls:'name'},
+  ], groupRows, {defaultSort:0});
+
+  const memberRows = c.members.map(m=>[
+    m.name, m.company, m.group,
+    m.before.apo, m.after.apo, m.before.seiyaku, m.after.seiyaku,
+    m.before.uriage, m.after.uriage,
+    m.productivity_before, m.productivity_after, m.productivity_delta,
+  ]);
+  renderTable('t-camp-members', [
+    {label:'氏名', cls:'name'}, {label:'会社'}, {label:'グループ'},
+    {label:'アポ(前)', num:true}, {label:'アポ(後)', num:true},
+    {label:'成約(前)', num:true}, {label:'成約(後)', num:true},
+    {label:'売上(前)', num:true, fmt:v=>yen(v)+'円'}, {label:'売上(後)', num:true, fmt:v=>yen(v)+'円'},
+    {label:'生産性(前)', num:true, fmt:v=>v===null?'—':yen(v)+'円/日'},
+    {label:'生産性(後)', num:true, fmt:v=>v===null?'—':yen(v)+'円/日'},
+    {label:'変化', num:true, fmt:v=>{
+      if(v===null||v===undefined) return '—';
+      const cls = v>0?'delta-up':(v<0?'delta-down':'');
+      return `<span class="${cls}">${v>=0?'+':''}${yen(v)}円/日</span>`;
+    }},
+  ], memberRows, {defaultSort:2});
 }
 
 let DECLINE_ROLE_FILTER = 'all'; // 'all' | 'apo' | 'clo'
@@ -3721,9 +3986,21 @@ document.querySelectorAll('.tab').forEach(tab=>{
     if(tab.dataset.panel === 'p-route') renderRoute();
     if(tab.dataset.panel === 'p-trend') renderTrend();
     if(tab.dataset.panel === 'p-decline') renderDecline();
+    if(tab.dataset.panel === 'p-tsuji') renderTsuji();
+    if(tab.dataset.panel === 'p-camp') renderCamp();
     updateTitleForActiveTab();
+    // URLの#以降を現在のタブに合わせておく（ブラウザ履歴は増やさない）。
+    // これにより「.../#p-camp」のようなリンクで特定タブへ直接遷移できるようになる（2026-09-23追加）。
+    if(history.replaceState) history.replaceState(null, '', '#' + tab.dataset.panel);
   });
 });
+// 初期表示時、URLに#p-campのようなタブ指定があればそのタブを開く（無ければ既定のp-companyのまま）。
+(function openTabFromHash(){
+  const id = location.hash.slice(1);
+  if(id && document.querySelector(`.tab[data-panel="${id}"]`)){
+    document.querySelector(`.tab[data-panel="${id}"]`).click();
+  }
+})();
 
 document.getElementById('printBtn').addEventListener('click', ()=>{
   const btn = document.getElementById('printBtn');
@@ -4267,17 +4544,22 @@ def _top_performer_patterns(roster_csv, closing_csv, route_history, top_n=10):
     }
 
 
-def _trend_analysis(roster_csv, closing_csv, route_history, end_dt, lookback_months=6):
+def _trend_analysis(roster_csv, closing_csv, route_history, end_dt, lookback_months=6, apo_report_json=None):
+    if apo_report_json:
+        apo_report_trends = aggregate_apo_report_trends(apo_report_json, "2020-01-01", end_dt.strftime("%Y-%m-%d"))
+    else:
+        apo_report_trends = {"available": False, "reason": "records未取得"}
     return {
         "weekend_comparison": _weekend_comparison(roster_csv, closing_csv, end_dt, lookback_months),
         "area_time_grid": _route_area_time_grid(route_history),
         "top_performer_patterns": _top_performer_patterns(roster_csv, closing_csv, route_history),
+        "apo_report_trends": apo_report_trends,
     }
 
 
 def _period_data(roster_csv, closing_csv, start, end, attendance_csv=None, status_notes=None,
                   prev_start=None, prev_end=None, alert_master=None, company_alert_counts=None,
-                  spot_csv=None, closer_shodan_dir=None):
+                  spot_csv=None, closer_shodan_dir=None, apo_report_json=None):
     """1期間分の集計結果に、稼働人員数（attendance_csvがあれば）・前期間比・状態タグ等の運用列・取材候補をマージして返す。
     start/end は 'YYYY/MM/DD'（roster/closing用）。attendance側は内部で 'YYYY-MM-DD' に変換する。
     prev_start/prev_end を明示的に渡すと、それを前期間として使う（週次＝水〜日ターム用。前週の同じ水〜日と比較したいため、
@@ -4427,6 +4709,15 @@ def _period_data(roster_csv, closing_csv, start, end, attendance_csv=None, statu
         data["apo_ranking"] = [list(r) + [None, None, None, None, None, None] for r in data["apo_ranking"]]
         data["soutiku_ranking"] = [list(r) + [None, None, None, None, None, None] for r in data["soutiku_ranking"]]
 
+    # アポ獲得報告書の記載内容による傾向分析（2026-09-16追加）: --apo-report-json省略時は空。
+    # ロースターCSVの'獲得日'は'YYYY/MM/DD'表記のため、レコードJSON側の'YYYY-MM-DD'に変換する。
+    if apo_report_json:
+        ar_start = start.replace("/", "-")
+        ar_end = end.replace("/", "-")
+        data["apo_report_trends"] = aggregate_apo_report_trends(apo_report_json, ar_start, ar_end)
+    else:
+        data["apo_report_trends"] = {"available": False, "reason": "records未取得"}
+
     return data
 
 
@@ -4436,7 +4727,7 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
           route_history_json=None, closer_shodan_dir=None,
           urgent_targets_json=None, training_json=None, shift_status_json=None,
           clockout_csv=None, shodan_json=None, tenure_json=None, company_targets_json=None,
-          houjin_crm_json=None, houjin_writeback_url=None):
+          houjin_crm_json=None, houjin_writeback_url=None, apo_report_json=None, camp_roster_json=None):
     end_dt = datetime.strptime(end, "%Y/%m/%d")
     start_dt = datetime.strptime(start, "%Y/%m/%d")
     day_start = end_dt.strftime("%Y/%m/%d")
@@ -4481,7 +4772,8 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
         ds = d.strftime("%Y/%m/%d")
         daily_periods[ds] = _period_data(roster_csv, closing_csv, ds, ds, attendance_csv, status_notes,
                                           alert_master=alert_master, company_alert_counts=company_alert_counts,
-                                          spot_csv=spot_csv, closer_shodan_dir=closer_shodan_dir)
+                                          spot_csv=spot_csv, closer_shodan_dir=closer_shodan_dir,
+                                          apo_report_json=apo_report_json)
         d += timedelta(days=1)
 
     # 週次ピッカー用: 各タームを個別に集計（前週比較は同日数の直前期間ではなく、正確に7日前の同タームと比較）
@@ -4495,7 +4787,8 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
                                             attendance_csv, status_notes,
                                             prev_start=prev_w_start, prev_end=prev_w_end,
                                             alert_master=alert_master, company_alert_counts=company_alert_counts,
-                                            spot_csv=spot_csv, closer_shodan_dir=closer_shodan_dir)
+                                            spot_csv=spot_csv, closer_shodan_dir=closer_shodan_dir,
+                                            apo_report_json=apo_report_json)
         weekly_period_list.append({
             "key": key, "start": key, "end": w_end_dt.strftime("%Y/%m/%d"),
             "label": f"第{week_no}週 ({w_start_dt.strftime('%m/%d')}〜{w_end_dt.strftime('%m/%d')})",
@@ -4540,6 +4833,7 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
             company_alert_counts=company_alert_counts if is_current else None,
             spot_csv=spot_csv,
             closer_shodan_dir=closer_shodan_dir,
+            apo_report_json=apo_report_json,
         )
         monthly_period_list.append({
             "key": key, "start": m_start, "end": m_end,
@@ -4576,7 +4870,15 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
         completion = {"available": False, "month": None, "weekly": {}, "daily_cumulative": []}
 
     # 曜日×時間帯ヒートマップ（アポ獲得件数）。ロースターCSVに時刻列が無ければ available=False。
+    # 2026-09-16: ロースター側が恒常的にavailable=Falseだったため、アポ獲得報告書の「訪問時の対面時刻」
+    # （--apo-report-json）が取得できていればそちらにフォールバックする。
     dow_hour = aggregate_dow_hour(roster_csv, start, end)
+    if not dow_hour.get("available") and apo_report_json:
+        ar_start = start.replace("/", "-")
+        ar_end = end.replace("/", "-")
+        fallback = aggregate_apo_report_trends(apo_report_json, ar_start, ar_end)
+        if fallback.get("available"):
+            dow_hour = {**fallback, "reason": "アポ獲得報告書の対面時刻ベース（ロースターに時刻列が無いため代替）"}
 
     # 責任者会議フォーマットの目標値デフォルト（targets.json）。ユーザーがUIで編集した値は
     # localStorageに保存され、そちらが優先される（JS側の実装。ここではデフォルト値のみ埋め込む）。
@@ -4590,7 +4892,8 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
         "week": weekly_periods[latest_week_key],
         "month": _period_data(roster_csv, closing_csv, start, end, attendance_csv, status_notes,
                                alert_master=alert_master, company_alert_counts=company_alert_counts,
-                               spot_csv=spot_csv, closer_shodan_dir=closer_shodan_dir),
+                               spot_csv=spot_csv, closer_shodan_dir=closer_shodan_dir,
+                               apo_report_json=apo_report_json),
     }
 
     slack_topics = []
@@ -4618,7 +4921,27 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
 
     # 傾向分析タブ用（2026-08-02追加）: 月初土日の月次比較・エリア×時間帯のアポ獲得傾向・好成績者の動き方傾向。
     # いずれも表示期間（日次/週次/月次）とは連動しない独立集計（開拓先パートナー・行動分析タブと同じ設計）。
-    trend = _trend_analysis(roster_csv, closing_csv, route_history, end_dt)
+    trend = _trend_analysis(roster_csv, closing_csv, route_history, end_dt, apo_report_json=apo_report_json)
+
+    # 月末着地予測（2026-09-21追加）。従来の単純日割り（JS側でactual/elapsed*total）を置き換える。
+    # モデルの詳細と検証結果は build_forecast.py のdocstringを参照。
+    # 失敗してもダッシュボード全体は止めない（タイルが「データ未取得」表示になるだけ）。
+    try:
+        forecast = build_forecast(roster_csv, closing_csv, attendance_csv, end)
+    except Exception as e:  # noqa: BLE001
+        print(f"[forecast] 着地予測の算出に失敗しました: {e}", file=sys.stderr)
+        forecast = {"metrics": {}, "error": str(e)}
+
+    # 山中湖合宿（2026/09/14）前後比較（2026-09-22追加）。--camp-roster-json省略時は空。
+    if camp_roster_json and os.path.exists(camp_roster_json):
+        try:
+            camp_analysis = build_camp_analysis(roster_csv, closing_csv, camp_roster_json, end)
+            camp_analysis["available"] = True
+        except Exception as e:  # noqa: BLE001
+            print(f"[camp] 合宿分析の算出に失敗しました: {e}", file=sys.stderr)
+            camp_analysis = {"available": False, "error": str(e)}
+    else:
+        camp_analysis = {"available": False}
 
     ai_summary = None
     if ai_summary_json and os.path.exists(ai_summary_json):
@@ -4646,6 +4969,48 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
     if tenure_json and os.path.exists(tenure_json):
         with open(tenure_json, encoding="utf-8") as f:
             tenure = json.load(f)
+
+    # 辻さん向けレポート（2026-09-15追加）: 毎週月曜に手動送付していた実績CSV7点セットを
+    # ダッシュボードに統合し、送付作業を不要にする。表示期間ピッカーとは連動しない独立ビュー
+    # （開拓先パートナー・行動分析タブと同じ設計）。期間は「直近の完了済み月〜日週」に固定
+    # （今日がどの曜日でも、直近に終わった月曜〜日曜の週を指す）。
+    this_monday = end_dt - timedelta(days=end_dt.weekday())
+    tsuji_week_start = this_monday - timedelta(days=7)
+    tsuji_week_end = this_monday - timedelta(days=1)
+    tsuji_start_s = tsuji_week_start.strftime("%Y-%m-%d")
+    tsuji_end_s = tsuji_week_end.strftime("%Y-%m-%d")
+
+    tsuji_weekly = {"start": tsuji_start_s, "end": tsuji_end_s, "company": [], "apo": [],
+                     "closer": [], "hc3": [], "hc": [], "unworked": []}
+    tsuji_crosstab = []
+    if attendance_csv and spot_csv:
+        try:
+            exec_result = build_exec_weekly_raw(
+                roster_csv, closing_csv, tsuji_start_s, tsuji_end_s,
+                attendance_csv, spot_csv, route_history_json)
+            tsuji_weekly.update({
+                "start": tsuji_start_s, "end": tsuji_end_s,
+                "company": exec_result["company"], "apo": exec_result["apo"],
+                "closer": exec_result["closer"], "hc3": exec_result["hc3"],
+                "hc": exec_result["hc"], "unworked": exec_result["unworked"],
+            })
+        except Exception as e:
+            tsuji_weekly["error"] = str(e)
+        try:
+            tsuji_crosstab = build_workrate_crosstab_raw(
+                roster_csv, closing_csv, tsuji_start_s, tsuji_end_s, route_history_json)
+        except Exception as e:
+            tsuji_crosstab = []
+
+    # ファネル月次推移（2026-09-15追加・辻さんの月次経営会議資料と同じ「アポ数→商談数→成約数→完工数」）。
+    # hamakomi数値まとめGoogleシートの内容を静的JSONとして事前生成したもの（build_dashboard.py実行時に
+    # 都度Sheets APIを叩くのではなく、日次更新フロー側でシートを更新した後にこのJSONも書き出す運用）。
+    funnel_monthly = {"months": [], "note": ""}
+    funnel_monthly_json_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                                             "data", "funnel_monthly.json")
+    if os.path.exists(funnel_monthly_json_path):
+        with open(funnel_monthly_json_path, encoding="utf-8") as f:
+            funnel_monthly = json.load(f)
 
     # 企業別の月次目標値（2026-08-31追加）。2026/8/31の打ち合わせで「パートナー企業単位でまず実装」と
     # 合意。実際の目標値は各パートナーから9月分を回収中（未回収の会社はnullのまま＝「未設定」表示）。
@@ -4738,6 +5103,8 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
     html_out = html_out.replace("__MONTHLY_PERIODS_JSON__", json.dumps(monthly_periods, ensure_ascii=False))
     html_out = html_out.replace("__MONTHLY_PERIOD_LIST_JSON__", json.dumps(monthly_period_list, ensure_ascii=False))
     html_out = html_out.replace("__TREND_JSON__", json.dumps(trend, ensure_ascii=False))
+    html_out = html_out.replace("__FORECAST_JSON__", json.dumps(forecast, ensure_ascii=False))
+    html_out = html_out.replace("__CAMP_ANALYSIS_JSON__", json.dumps(camp_analysis, ensure_ascii=False))
     html_out = html_out.replace("__CONFIG_JSON__", json.dumps(config_for_js, ensure_ascii=False))
     html_out = html_out.replace("__SLACK_TOPICS_JSON__", json.dumps(slack_topics, ensure_ascii=False))
     html_out = html_out.replace("__OUTREACH_JSON__", json.dumps(outreach, ensure_ascii=False))
@@ -4758,6 +5125,9 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
          "recent_start": week_start.replace("/", "-"), "recent_end": week_end.replace("/", "-"),
          "rows": declining_performers}, ensure_ascii=False))
     html_out = html_out.replace("__TENURE_JSON__", json.dumps(tenure, ensure_ascii=False))
+    html_out = html_out.replace("__TSUJI_WEEKLY_JSON__", json.dumps(tsuji_weekly, ensure_ascii=False))
+    html_out = html_out.replace("__TSUJI_CROSSTAB_JSON__", json.dumps(tsuji_crosstab, ensure_ascii=False))
+    html_out = html_out.replace("__FUNNEL_MONTHLY_JSON__", json.dumps(funnel_monthly, ensure_ascii=False))
     html_out = html_out.replace("__COMPANY_TARGETS_JSON__", json.dumps(company_targets_default, ensure_ascii=False))
 
     with open(out_path, "w", encoding="utf-8") as f:
@@ -4793,6 +5163,8 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
         "status_csv": status_csv, "slack_topics_json": slack_topics_json, "outreach_json": outreach_json,
         "completion": completion["month"] if completion["available"] else None,
         "dow_hour_available": dow_hour["available"],
+        "forecast": {k: {"forecast": v.get("forecast"), "verified": v.get("verified")}
+                     for k, v in (forecast.get("metrics") or {}).items() if v.get("available")},
         "targets_json": targets_json,
         "attendance_alert_csv": attendance_alert_csv,
         "attendance_alert_summary": attendance_alert_for_js,
@@ -4862,6 +5234,13 @@ def main():
     ap.add_argument("--houjin-writeback-url", default=None,
                      help="折衝ログの「対応済」チェックをダッシュボードから書き込むためのApps Script "
                           "WebアプリURL。省略時はチェック操作が無効になる（表示のみ）")
+    ap.add_argument("--apo-report-json", default=None,
+                     help="アポ獲得報告書の記載内容レコード（data/apo_report_records.json・"
+                          "build_apo_report_content_api.pyの出力）。省略時は傾向分析タブの"
+                          "アポ獲得報告書セクションが空になる")
+    ap.add_argument("--camp-roster-json", default=None,
+                     help="山中湖合宿(2026/09/14)参加者名簿（data/camp_20260914_roster.json）。"
+                          "省略時は合宿効果タブが空になる")
     ap.add_argument("--start", default=None)
     ap.add_argument("--end", default=None)
     ap.add_argument("--out", default=os.path.expanduser("~/Desktop/partner_dashboard.html"))
@@ -4897,7 +5276,9 @@ def main():
                      tenure_json=args.tenure_json,
                      company_targets_json=args.company_targets_json,
                      houjin_crm_json=args.houjin_crm_json,
-                     houjin_writeback_url=args.houjin_writeback_url)
+                     houjin_writeback_url=args.houjin_writeback_url,
+                     apo_report_json=args.apo_report_json,
+                     camp_roster_json=args.camp_roster_json)
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
 

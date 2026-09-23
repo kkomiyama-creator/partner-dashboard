@@ -3,9 +3,10 @@ import csv
 import os
 import sys
 
-# 2026-08-24: ユーザーマスタの取得元をローカルCSV(GitHub Actions環境には存在せず常に空辞書
-# フォールバックだった)からCyzen連携API(/users)直接取得に切り替えた。CI環境には
-# CYZEN_DASHBOARD_TOKENがSecretsとして既に設定済みのため、そのままAPI取得に利用できる。
+# 2026-08-24: ユーザーマスタの取得元をローカルCSV(ブラウザ手動エクスポート・更新が不定期で
+# 新規登録者が反映されないことがあった)からCyzen連携API(/users)直接取得に切り替えた。
+# 手動エクスポートファイルはもう読まないが、パス自体は他スクリプトが参照している場合に
+# 備えて残してある(現状は未使用)。
 CYZEN_MASTER = "/Users/fitfounderkomiyamakyousuke/Desktop/Cyzenからのエクスポートデータ/ユーザーマスター（営業担当者の情報）.csv"
 
 COMPANY_CANON = {
@@ -77,8 +78,13 @@ def canon_name(raw_name):
     return n.replace("髙", "高").replace("濵", "濱")
 
 def _load_master_from_api():
-    """Cyzen連携API(/users)からライブのユーザーマスタを取得する。同姓同名が複数会社に
-    またがる場合はaccount_status=1(有効)を優先し、無ければ無効アカウントにフォールバックする。"""
+    """Cyzen連携API(/users)からライブのユーザーマスタを取得する。
+
+    同姓同名が複数会社にまたがって存在するケース(退職済み・移籍済みアカウントが残っている等)
+    があるため、account_status=1(有効)のアカウントを優先する。有効なアカウントが無い名前は
+    無効(0)のものにフォールバックする(以前の挙動＝解決できるだけ試みる、を維持するため)。
+    2026-08-24: ローカル手動エクスポートCSVだと新規登録者が反映されないタイムラグがあり、
+    実際に新規メンバー7名の状態を誤判定した実例を受けて、こちらのAPI直接取得に切り替えた。"""
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     from cyzen_api_client import CyzenAPIClient  # noqa: E402
 
@@ -86,6 +92,7 @@ def _load_master_from_api():
     users = client.get_all("users", key="users", field="all")
 
     m, m_inactive = {}, {}
+    by_company = {}
     for u in users:
         name = (u.get("user_name") or "").strip()
         if not name:
@@ -95,27 +102,37 @@ def _load_master_from_api():
         if not comps:
             continue
         key = norm_name(name)
+        company = canon(comps[0])
         target = m if u.get("account_status") == 1 else m_inactive
-        target[key] = canon(comps[0])
+        target[key] = company
+        if u.get("account_status") == 1:
+            by_company.setdefault(company, []).append(canon_name(name))
 
     for key, company in m_inactive.items():
         m.setdefault(key, company)
-    return m
+    return m, by_company
 
 
 def load_master():
-    # トークン未設定・API障害時は空辞書にフォールバックする(2026-08-20対応と同じ思想)。
-    # company_of()の優先順位が1段階弱まる(ロースター多数決/Slack送信者パース/直販スタッフ判定に
-    # フォールバック)だけで、クラッシュはしない。
     try:
         return _load_master_from_api()
     except Exception as e:  # noqa: BLE001
+        # トークン未設定(CI等)・API障害時は、空辞書にフォールバックする(2026-08-20対応と同じ思想)。
+        # company_of()の優先順位が1段階弱まるだけでクラッシュはしない。
         print(f"[company_resolver] API経由のユーザーマスタ取得に失敗、空辞書で継続します: {e}",
               file=sys.stderr)
-        return {}
+        return {}, {}
 
 
-MASTER = load_master()
+MASTER, MASTER_BY_COMPANY = load_master()
+
+
+def master_by_company():
+    """{会社名: [表示名, ...]}（有効アカウントのみ）を返す。build_exec_weekly_csv.pyの
+    稼働人員数・未稼働者一覧が使う「マスタ登録人数」の唯一の取得元(2026-08-24・API化に伴い
+    ここへ集約。以前は呼び出し側がCYZEN_MASTERファイルを直接読んでいて、company_resolver.MASTER
+    をAPI化した後もそちらだけ古いデータを見続けるという不整合があった)。"""
+    return MASTER_BY_COMPANY
 
 def resolve_company(raw_name, roster_votes=None, sender_map=None, direct_staff=None):
     """会社解決の優先順位: Cyzenユーザーマスタ(厳密一致) > 手動fuzzy補正 > ロースター多数決 > Slack送信者パース > 直販スタッフ判定"""

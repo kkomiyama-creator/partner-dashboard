@@ -141,6 +141,10 @@ def main():
         with open(writeback_url_file) as f:
             houjin_writeback_url = f.read().strip() or None
 
+    # 山中湖合宿(2026/09/14)前後比較(2026-09-23追加)。参加者名簿は人手管理の静的ファイル
+    # (company_targets.json等と同じくgit管理・毎回チェックアウトされる。CIが生成するものではない)。
+    camp_roster_json = os.path.join(AUTOMATION_DIR, "data", "camp_20260914_roster.json")
+
     print("--- build_dashboard.py ---")
     out_html = os.path.join(DATA_DIR, "partner_dashboard_latest_raw.html")
     build_dashboard_cmd = ["python3", os.path.join(AUTOMATION_DIR, "build_dashboard.py"),
@@ -150,6 +154,7 @@ def main():
          "--attendance-alert-csv", attendance_alert_csv, "--shodan-json", shodan_json,
          "--tenure-json", tenure_json, "--company-targets-json", company_targets_json,
          "--houjin-crm-json", houjin_crm_json,
+         "--camp-roster-json", camp_roster_json,
          "--out", out_html]
     if houjin_writeback_url:
         build_dashboard_cmd += ["--houjin-writeback-url", houjin_writeback_url]
