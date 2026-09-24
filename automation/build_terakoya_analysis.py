@@ -103,6 +103,45 @@ def _load_monthly(roster_csv, closing_csv):
     return per_person
 
 
+def _load_daily(roster_csv, closing_csv):
+    """{norm_name: {"YYYY-MM-DD": {"apo":n,"apo_seiyaku":n,"clo_seiyaku":n,"uriage":n}}}"""
+    per_person = defaultdict(lambda: defaultdict(lambda: {"apo": 0, "apo_seiyaku": 0, "clo_seiyaku": 0, "uriage": 0}))
+
+    with open(roster_csv, encoding="utf-8-sig", errors="replace") as f:
+        r = csv.reader(f)
+        idx = {h: i for i, h in enumerate(next(r))}
+        for row in r:
+            name = row[idx["アポインター"]].strip()
+            d = row[idx["獲得日"]].strip()
+            if not name or not d:
+                continue
+            try:
+                datetime.datetime.strptime(d, "%Y/%m/%d")
+            except ValueError:
+                continue
+            key = norm_name(canon_name(name))
+            per_person[key][d.replace("/", "-")]["apo"] += 1
+
+    with open(closing_csv, encoding="utf-8-sig", errors="replace") as f:
+        r = csv.reader(f)
+        idx = {h: i for i, h in enumerate(next(r))}
+        for row in r:
+            ts = row[idx["タイムスタンプ"]].strip()
+            if not ts:
+                continue
+            d = ts.split(" ")[0].replace("/", "-")
+            price = parse_price(row[idx["販売価格"]])
+            apo_name = row[idx["アポインター名"]].strip()
+            clo_name = row[idx["クローザー名"]].strip()
+            if apo_name:
+                per_person[norm_name(canon_name(apo_name))][d]["apo_seiyaku"] += 1
+            if clo_name:
+                per_person[norm_name(canon_name(clo_name))][d]["clo_seiyaku"] += 1
+                per_person[norm_name(canon_name(clo_name))][d]["uriage"] += price
+
+    return per_person
+
+
 def build_terakoya_analysis(roster_csv, closing_csv, roster_json, asof):
     """asof: 'YYYY/MM/DD'。"""
     with open(roster_json, encoding="utf-8") as f:
@@ -120,12 +159,21 @@ def build_terakoya_analysis(roster_csv, closing_csv, roster_json, asof):
     month_labels = [f"{y}-{m:02d}" for y, m in months]
 
     monthly_data = _load_monthly(roster_csv, closing_csv)
+    daily_data = _load_daily(roster_csv, closing_csv)
 
     # 月ごとの営業日数（当月はasofまで）
     biz_days_by_month = {}
     for (y, m) in months:
         start, end = month_bounds(y, m, as_of=asof_date)
         biz_days_by_month[f"{y}-{m:02d}"] = business_days(start, end)
+
+    # 個人詳細ドリルダウン用の全期間日別カレンダー（baseline_month初日〜asof、ゼロ埋め）。
+    range_start = datetime.date(months[0][0], months[0][1], 1)
+    all_dates = []
+    d = range_start
+    while d <= asof_date:
+        all_dates.append(d.isoformat())
+        d += datetime.timedelta(days=1)
 
     members_out = []
     for m in roster["members"]:
@@ -173,11 +221,18 @@ def build_terakoya_analysis(roster_csv, closing_csv, roster_json, asof):
         if latest_label in monthly:
             seiyaku_latest = monthly[latest_label]["apo_seiyaku"] + monthly[latest_label]["clo_seiyaku"]
 
+        person_daily = daily_data.get(key, {})
+        daily_list = []
+        for date_str in all_dates:
+            v = person_daily.get(date_str, {"apo": 0, "apo_seiyaku": 0, "clo_seiyaku": 0, "uriage": 0})
+            daily_list.append([date_str, v["apo"], v["apo_seiyaku"], v["clo_seiyaku"], v["uriage"]])
+
         members_out.append({
             "name": m["name"],
             "company": m["company"] or "（不明）",
             "sessions": m["sessions"],
             "monthly": monthly,
+            "daily": daily_list,
             "has_any_data": has_any_data,
             "personal_baseline_month": pb_label,
             "baseline_apo_avg": baseline_avg,

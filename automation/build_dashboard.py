@@ -3485,7 +3485,7 @@ function renderTerakoya(){
     `<span class="note">「傾向」は個人ごとの初回参加月の前月（ベースライン）と直近月（${t.months[t.months.length-1]}）の1営業日あたりアポ数を比較したものです（研修回によって参加開始時期が違うため全員一律の日付では比較できません）。</span>`;
 
   tilesEl.innerHTML = `
-    <div class="tile"><div class="label">参加者数（累計）</div><div class="value">${t.n_total}<span class="unit">名</span></div></div>
+    <div class="tile clickable" data-terakoya-tile="all"><div class="label">参加者数（累計）</div><div class="value">${t.n_total}<span class="unit">名</span></div></div>
     <div class="tile clickable" data-terakoya-tile="up"><div class="label">📈 伸びている</div><div class="value">${t.improved_count}<span class="unit">名</span></div><div class="sub">ベースライン比+10%超</div></div>
     <div class="tile clickable" data-terakoya-tile="flat"><div class="label">→ 横ばい</div><div class="value">${t.flat_count}<span class="unit">名</span></div></div>
     <div class="tile clickable" data-terakoya-tile="down"><div class="label">📉 下がっている</div><div class="value">${t.declined_count}<span class="unit">名</span></div><div class="sub">ベースライン比-10%超</div></div>
@@ -3495,7 +3495,7 @@ function renderTerakoya(){
   renderTable('t-terakoya-overall', t.months.map(lbl=>({label:lbl, num:true, fmt:v=>v===null?'—':`${v}件/日`})),
     overallRow, {});
 
-  const TREND_LABEL = {up:'📈伸びている', down:'📉下がっている', flat:'→横ばい'};
+  const TREND_LABEL = {all:'全員', up:'📈伸びている', down:'📉下がっている', flat:'→横ばい'};
   const TREND_CLS = {up:'delta-up', down:'delta-down', flat:''};
 
   const memberCols = [
@@ -3516,30 +3516,52 @@ function renderTerakoya(){
     m.trend,
   ]);
   renderTable('t-terakoya-members', memberCols, memberRows,
-    {defaultSort: memberCols.length - 1, rowClick: r=>openPersonDetail(r[0])});
+    {defaultSort: memberCols.length - 1, rowClick: r=>openTerakoyaPersonDetail(r[0])});
 
   tilesEl.querySelectorAll('[data-terakoya-tile]').forEach(tile=>{
     tile.addEventListener('click', ()=>{
       const kind = tile.dataset.terakoyaTile;
-      const people = t.members.filter(m=>m.trend===kind);
+      const people = kind==='all' ? t.members : t.members.filter(m=>m.trend===kind);
       document.getElementById('drillTitle').textContent = `寺子屋参加者 ${TREND_LABEL[kind]||kind}`;
       document.getElementById('drillSub').textContent = `${people.length}名／個人ベースライン月 vs 直近月(${t.months[t.months.length-1]})の1営業日あたりアポ数比較`;
-      const cols = ['氏名','会社','ベースライン(件/日)','直近月(件/日)'];
+      const cols = ['氏名','会社','参加回','ベースライン(件/日)','直近月(件/日)','傾向'];
       const table = document.getElementById('drillTable');
       const thead = '<thead><tr>' + cols.map((c,i)=>`<th class="${i===0?'':'num'}">${escapeHtml(c)}</th>`).join('') + '</tr></thead>';
       const tbody = '<tbody>' + (people.length ? people.map(m=>
         `<tr><td class="name clickable-name" data-name="${escapeHtml(m.name)}">${escapeHtml(m.name)}</td>` +
         `<td>${escapeHtml(m.company)}</td>` +
+        `<td>${m.sessions.map(s=>`<span class="pill flat">${escapeHtml(s)}</span>`).join(' ')}</td>` +
         `<td class="num">${m.baseline_apo_avg===null?'—':m.baseline_apo_avg}</td>` +
-        `<td class="num">${m.latest_apo_avg===null?'—':m.latest_apo_avg}</td></tr>`
+        `<td class="num">${m.latest_apo_avg===null?'—':m.latest_apo_avg}</td>` +
+        `<td>${m.trend ? `<span class="${TREND_CLS[m.trend]}">${TREND_LABEL[m.trend]}</span>` : '<span class="note">データ不足</span>'}</td></tr>`
       ).join('') : `<tr><td colspan="${cols.length}" style="text-align:center;color:var(--text-sub);">該当者なし</td></tr>`) + '</tbody>';
       table.innerHTML = thead + tbody;
       table.querySelectorAll('.clickable-name').forEach(td=>{
-        td.addEventListener('click', ()=> openPersonDetail(td.dataset.name));
+        td.addEventListener('click', ()=> openTerakoyaPersonDetail(td.dataset.name));
       });
       document.getElementById('drillModal').classList.add('show');
     });
   });
+}
+
+function openTerakoyaPersonDetail(name){
+  const m = TERAKOYA_ANALYSIS.members.find(x=>x.name===name);
+  if(!m) return;
+  document.getElementById('drillTitle').textContent = m.name;
+  const totalApo = m.daily.reduce((s,r)=>s+r[1], 0);
+  const totalApoSeiyaku = m.daily.reduce((s,r)=>s+r[2], 0);
+  const totalCloSeiyaku = m.daily.reduce((s,r)=>s+r[3], 0);
+  const first = m.daily[0][0], last = m.daily[m.daily.length-1][0];
+  document.getElementById('drillSub').innerHTML =
+    escapeHtml(`${m.company}／参加回: ${m.sessions.join('・')}／${first}〜${last} 日別実績（累計: アポ${totalApo}件・アポ成約${totalApoSeiyaku}件・クロ成約${totalCloSeiyaku}件）`);
+  const table = document.getElementById('drillTable');
+  const cols = ['日付','アポ数','アポ成約','クロ成約','売上'];
+  const thead = '<thead><tr>' + cols.map(c=>`<th class="${c==='日付'?'':'num'}">${c}</th>`).join('') + '</tr></thead>';
+  const tbody = '<tbody>' + m.daily.map(r=>
+    `<tr><td>${r[0]}</td><td class="num">${r[1]}</td><td class="num">${r[2]}</td><td class="num">${r[3]}</td><td class="num">${yen(r[4])}</td></tr>`
+  ).join('') + '</tbody>';
+  table.innerHTML = thead + tbody;
+  document.getElementById('drillModal').classList.add('show');
 }
 
 let DECLINE_ROLE_FILTER = 'all'; // 'all' | 'apo' | 'clo'
