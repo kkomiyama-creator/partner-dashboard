@@ -28,6 +28,7 @@ from collections import defaultdict
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from company_resolver import canon_name, norm_name  # noqa: E402
 from ranking_core import parse_price  # noqa: E402
+from build_camp_analysis import _scheduled_workdays  # noqa: E402  所定稼働日数(火曜非稼働)の定義を再利用
 
 
 def business_days(start, end):
@@ -140,6 +141,87 @@ def _load_daily(roster_csv, closing_csv):
                 per_person[norm_name(canon_name(clo_name))][d]["uriage"] += price
 
     return per_person
+
+
+def _sum_range(daily_by_date, start_str, end_str):
+    """daily_by_date: {"YYYY-MM-DD": {...}}。start/end: 'YYYY-MM-DD'（両端含む）。"""
+    apo = apo_seiyaku = clo_seiyaku = uriage = 0
+    for d, v in daily_by_date.items():
+        if start_str <= d <= end_str:
+            apo += v["apo"]
+            apo_seiyaku += v["apo_seiyaku"]
+            clo_seiyaku += v["clo_seiyaku"]
+            uriage += v["uriage"]
+    return {"apo": apo, "apo_seiyaku": apo_seiyaku, "clo_seiyaku": clo_seiyaku, "uriage": uriage}
+
+
+def _session_breakdown(roster, daily_data, asof_date):
+    """開催回ごとに、その回の参加者だけを対象にした前後比較（前7日間 vs 開催日〜次回前日 or asof）を返す。"""
+    sessions_sorted = sorted(roster["sessions"], key=lambda s: s["date"])
+    out = []
+    for i, s in enumerate(sessions_sorted):
+        session_date = datetime.date.fromisoformat(s["date"])
+        before_end = session_date - datetime.timedelta(days=1)
+        before_start = session_date - datetime.timedelta(days=7)
+        next_dates = [datetime.date.fromisoformat(s2["date"]) for s2 in sessions_sorted[i + 1:]]
+        is_latest = not next_dates
+        after_end = (min(next_dates) - datetime.timedelta(days=1)) if next_dates else asof_date
+        after_end = min(after_end, asof_date)
+        after_start = session_date
+
+        before_start_s, before_end_s = before_start.isoformat(), before_end.isoformat()
+        after_start_s, after_end_s = after_start.isoformat(), after_end.isoformat()
+        elapsed_days = max((after_end - after_start).days + 1, 0)
+
+        before_workdays = _scheduled_workdays(before_start.strftime("%Y/%m/%d"), before_end.strftime("%Y/%m/%d")) \
+            if before_end >= before_start else 0
+        after_workdays = _scheduled_workdays(after_start.strftime("%Y/%m/%d"), after_end.strftime("%Y/%m/%d")) \
+            if after_end >= after_start else 0
+
+        attendees = []
+        for m in roster["members"]:
+            if s["label"] not in m["sessions"]:
+                continue
+            key = norm_name(canon_name(m["name"]))
+            person_daily = daily_data.get(key, {})
+            before = _sum_range(person_daily, before_start_s, before_end_s)
+            after = _sum_range(person_daily, after_start_s, after_end_s) if elapsed_days > 0 else \
+                {"apo": 0, "apo_seiyaku": 0, "clo_seiyaku": 0, "uriage": 0}
+            avg_before = round(before["apo"] / before_workdays, 3) if before_workdays else None
+            avg_after = round(after["apo"] / after_workdays, 3) if after_workdays else None
+            if avg_before is not None and avg_after is not None:
+                if avg_before == 0 and avg_after == 0:
+                    trend = "flat"
+                elif avg_before == 0:
+                    trend = "up"
+                else:
+                    delta_pct = (avg_after - avg_before) / avg_before * 100
+                    trend = "up" if delta_pct > 10 else ("down" if delta_pct < -10 else "flat")
+            else:
+                trend = None
+            attendees.append({
+                "name": m["name"], "company": m["company"] or "（不明）",
+                "other_sessions": [x for x in m["sessions"] if x != s["label"]],
+                "before": before, "after": after,
+                "avg_apo_before": avg_before, "avg_apo_after": avg_after,
+                "trend": trend,
+            })
+
+        attendees.sort(key=lambda a: (a["trend"] is None,
+                                       {"down": 0, "flat": 1, "up": 2, None: 3}.get(a["trend"], 3), a["name"]))
+        with_trend = [a for a in attendees if a["trend"] is not None]
+        out.append({
+            "label": s["label"], "date": s["date"],
+            "before_window": {"start": before_start_s, "end": before_end_s, "workdays": before_workdays},
+            "after_window": {"start": after_start_s, "end": after_end_s, "workdays": after_workdays,
+                              "elapsed_days": elapsed_days, "in_progress": is_latest},
+            "n_attendees": len(attendees),
+            "improved_count": sum(1 for a in with_trend if a["trend"] == "up"),
+            "declined_count": sum(1 for a in with_trend if a["trend"] == "down"),
+            "flat_count": sum(1 for a in with_trend if a["trend"] == "flat"),
+            "attendees": attendees,
+        })
+    return out
 
 
 def build_terakoya_analysis(roster_csv, closing_csv, roster_json, asof):
@@ -257,6 +339,8 @@ def build_terakoya_analysis(roster_csv, closing_csv, roster_json, asof):
                 if members_out_m["monthly"][lbl]["apo_avg_per_bizday"] is not None]
         overall_by_month[lbl] = round(sum(vals) / len(vals), 3) if vals else None
 
+    sessions_breakdown = _session_breakdown(roster, daily_data, asof_date)
+
     return {
         "asof": asof,
         "sessions": sessions,
@@ -271,6 +355,7 @@ def build_terakoya_analysis(roster_csv, closing_csv, roster_json, asof):
         "flat_count": flat,
         "overall_avg_apo_by_month": overall_by_month,
         "members": members_out,
+        "sessions_breakdown": sessions_breakdown,
     }
 
 
