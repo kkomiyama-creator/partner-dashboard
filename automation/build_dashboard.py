@@ -30,6 +30,7 @@ from build_exec_weekly_csv import build as build_exec_weekly_raw
 from build_workrate_apo_crosstab import build as build_workrate_crosstab_raw
 from build_forecast import build_forecast
 from build_camp_analysis import build_camp_analysis
+from build_terakoya_analysis import build_terakoya_analysis
 import config
 
 TEMPLATE = """<!doctype html>
@@ -514,6 +515,7 @@ button.printbtn.active{background:var(--blue); color:#fff; border-color:var(--bl
       <div class="tab" data-panel="p-exec"><span class="tab-ico">📋</span><span class="tab-txt">責任者会議</span></div>
       <div class="tab" data-panel="p-tsuji"><span class="tab-ico">👔</span><span class="tab-txt">辻さん向け週次</span></div>
       <div class="tab" data-panel="p-camp"><span class="tab-ico">🏕️</span><span class="tab-txt">合宿効果</span></div>
+      <div class="tab" data-panel="p-terakoya"><span class="tab-ico">🎓</span><span class="tab-txt">寺子屋参加者</span></div>
     </div>
     <div class="actionbar">
       <button class="csvbtn" id="csvBtn" title="今表示中のタブをCSVで保存（役員会資料等への連携用）">
@@ -884,6 +886,20 @@ button.printbtn.active{background:var(--blue); color:#fff; border-color:var(--bl
     <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-camp-members"></table></div></div>
   </div>
 
+  <div id="p-terakoya" class="panel">
+    <div class="note" id="terakoyaMeta" style="margin-bottom:14px;"></div>
+    <div class="tiles" id="terakoyaTiles" style="margin-bottom:16px;"></div>
+
+    <h3 style="font-size:14px; margin:0 0 8px;">月別平均アポ数の推移（全参加者平均・1営業日あたり）</h3>
+    <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-terakoya-overall"></table></div></div>
+
+    <h3 style="font-size:14px; margin:0 0 8px;">個人別 実績推移</h3>
+    <div class="note" style="margin-bottom:8px;">
+      「傾向」は各自の初回参加月の前月（個人ベースライン）と直近月を比べたもの（研修回によって参加開始時期が違うため、全員一律の日付では比較できません）。列ヘッダーをクリックすると並べ替えできます。氏名クリックで日別実績を確認できます。
+    </div>
+    <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-terakoya-members"></table></div></div>
+  </div>
+
   <div class="note">
     <b>集計方法</b>　アポ獲得数=「アポインター獲得履歴」の獲得日ベース行数（キャンセル含む）。成約数・売上=「獲得報告データ」のタイムスタンプ日ベース（アポインター名／クローザー名それぞれの所属会社に集計）。稼働人員数=Cyzen出勤報告（対象期間内に1回でも出勤打刻をした人数、同日複数回打刻は1名として重複排除・行動履歴の実移動確認は未実施の簡易集計）。会社名はCyzenユーザーマスタを一次ソースに解決。直販（株式会社Fit Founder）を含む全社版。<br>
     <b>達成者数について</b>　アポ達成者数=期間内に1件以上アポを獲得した人数（重複なし）。成約達成者数=アポインター視点・クローザー視点いずれかで1件以上成約した人数（重複なし・和集合）。稼働人員数（Cyzen出勤打刻）より達成者数の方が多くなるのは通常です——2026-07-28に実データで確認したところ、当月アポ獲得達成者のうち約4割（16社に分散、直販含む）がCyzenの「出勤」打刻を一度もしていませんでした。つまり稼働人員数はCyzen打刻ベースの過小カウントで、実際の稼働人数把握には達成者数の方が実態に近いと考えられます。<br>
@@ -939,6 +955,8 @@ const COMPLETION = __COMPLETION_JSON__;
 const FORECAST = __FORECAST_JSON__;
 // 山中湖合宿(2026/09/14)前後比較（2026-09-22追加・build_camp_analysis.pyが算出）。
 const CAMP_ANALYSIS = __CAMP_ANALYSIS_JSON__;
+// FF寺子屋（隔週アポインター向け研修）累計参加者の月次実績推移（2026-09-24追加・build_terakoya_analysis.pyが算出）。
+const TERAKOYA_ANALYSIS = __TERAKOYA_ANALYSIS_JSON__;
 const URGENT_TARGETS = __URGENT_TARGETS_JSON__;
 const TRAINING = __TRAINING_JSON__;
 // 役員会（SH役職者定例）で正式決定した急落・下降ターゲット32名（2026-08-04追加）。氏名の表記ゆれを
@@ -2272,7 +2290,7 @@ function renderKawakamiWeeklyCard(){
   el.innerHTML = `<div class="note"><b>${escapeHtml(w.label)} 川上さん日報からの抽出サマリー</b><div style="margin-top:6px;">${cards}</div></div>`;
 }
 
-const TAB_LABELS = {'p-company':'企業別ランキング','p-apo':'アポインターランキング','p-soutiku':'創蓄アポインターランキング','p-closer':'クローザーランキング','p-naihan':'直販メンバー','p-topics':'Slackトピックス','p-outreach':'開拓先パートナー','p-route':'行動分析','p-trend':'傾向分析','p-decline':'下落メンバー','p-exec':'責任者会議','p-tsuji':'辻さん向け週次','p-camp':'合宿効果'};
+const TAB_LABELS = {'p-company':'企業別ランキング','p-apo':'アポインターランキング','p-soutiku':'創蓄アポインターランキング','p-closer':'クローザーランキング','p-naihan':'直販メンバー','p-topics':'Slackトピックス','p-outreach':'開拓先パートナー','p-route':'行動分析','p-trend':'傾向分析','p-decline':'下落メンバー','p-exec':'責任者会議','p-tsuji':'辻さん向け週次','p-camp':'合宿効果','p-terakoya':'寺子屋参加者'};
 
 function priorityPill(p){
   const cls = {'S':'good','A':'mid','B':'flat','C':'low'}[p] || 'flat';
@@ -3449,6 +3467,81 @@ function renderCamp(){
   ], memberRows, {defaultSort:2});
 }
 
+function renderTerakoya(){
+  const meta = document.getElementById('terakoyaMeta');
+  const tilesEl = document.getElementById('terakoyaTiles');
+  const t = TERAKOYA_ANALYSIS;
+  if(!t || !t.members || !t.members.length){
+    meta.innerHTML = '寺子屋参加者データが未取得です（--terakoya-json未指定）。';
+    tilesEl.innerHTML = '';
+    document.getElementById('t-terakoya-overall').innerHTML = '';
+    document.getElementById('t-terakoya-members').innerHTML = '';
+    return;
+  }
+  const sessionList = t.sessions.map(s=>`${escapeHtml(s.label)}(${s.date})`).join('・');
+  meta.innerHTML = `隔週開催のFF寺子屋、累計${t.sessions.length}回の参加者${t.n_total}名の月次実績推移です（開催: ${sessionList}）。` +
+    `講師は含みません。${t.n_no_data ? `<span style="color:var(--warn);">うち${t.n_no_data}名はロースターに実績データが見つかりません（表記ゆれ、または他事業部所属等でこのデータソースに存在しない可能性があります）。</span>` : ''}<br>` +
+    (t.note ? `<span class="note">${escapeHtml(t.note)}</span><br>` : '') +
+    `<span class="note">「傾向」は個人ごとの初回参加月の前月（ベースライン）と直近月（${t.months[t.months.length-1]}）の1営業日あたりアポ数を比較したものです（研修回によって参加開始時期が違うため全員一律の日付では比較できません）。</span>`;
+
+  tilesEl.innerHTML = `
+    <div class="tile"><div class="label">参加者数（累計）</div><div class="value">${t.n_total}<span class="unit">名</span></div></div>
+    <div class="tile clickable" data-terakoya-tile="up"><div class="label">📈 伸びている</div><div class="value">${t.improved_count}<span class="unit">名</span></div><div class="sub">ベースライン比+10%超</div></div>
+    <div class="tile clickable" data-terakoya-tile="flat"><div class="label">→ 横ばい</div><div class="value">${t.flat_count}<span class="unit">名</span></div></div>
+    <div class="tile clickable" data-terakoya-tile="down"><div class="label">📉 下がっている</div><div class="value">${t.declined_count}<span class="unit">名</span></div><div class="sub">ベースライン比-10%超</div></div>
+  `;
+
+  const overallRow = [t.months.map(lbl=>t.overall_avg_apo_by_month[lbl])];
+  renderTable('t-terakoya-overall', t.months.map(lbl=>({label:lbl, num:true, fmt:v=>v===null?'—':`${v}件/日`})),
+    overallRow, {});
+
+  const TREND_LABEL = {up:'📈伸びている', down:'📉下がっている', flat:'→横ばい'};
+  const TREND_CLS = {up:'delta-up', down:'delta-down', flat:''};
+
+  const memberCols = [
+    {label:'氏名', cls:'name'},
+    {label:'会社'},
+    {label:'参加回', fmt:(v)=>v.map(s=>`<span class="pill flat">${escapeHtml(s)}</span>`).join(' ')},
+    ...t.months.map(lbl=>({label:lbl, num:true, fmt:v=>v===null?'—':`${v}`})),
+    {label:'直近月成約数(アポ+クロ)', num:true},
+    {label:'傾向', fmt:v=>{
+      if(!v) return '<span class="note">データ不足</span>';
+      return `<span class="${TREND_CLS[v]}">${TREND_LABEL[v]}</span>`;
+    }},
+  ];
+  const memberRows = t.members.map(m=>[
+    m.name, m.company, m.sessions,
+    ...t.months.map(lbl=>m.monthly[lbl].apo_avg_per_bizday),
+    m.seiyaku_latest === null || m.seiyaku_latest === undefined ? null : m.seiyaku_latest,
+    m.trend,
+  ]);
+  renderTable('t-terakoya-members', memberCols, memberRows,
+    {defaultSort: memberCols.length - 1, rowClick: r=>openPersonDetail(r[0])});
+
+  tilesEl.querySelectorAll('[data-terakoya-tile]').forEach(tile=>{
+    tile.addEventListener('click', ()=>{
+      const kind = tile.dataset.terakoyaTile;
+      const people = t.members.filter(m=>m.trend===kind);
+      document.getElementById('drillTitle').textContent = `寺子屋参加者 ${TREND_LABEL[kind]||kind}`;
+      document.getElementById('drillSub').textContent = `${people.length}名／個人ベースライン月 vs 直近月(${t.months[t.months.length-1]})の1営業日あたりアポ数比較`;
+      const cols = ['氏名','会社','ベースライン(件/日)','直近月(件/日)'];
+      const table = document.getElementById('drillTable');
+      const thead = '<thead><tr>' + cols.map((c,i)=>`<th class="${i===0?'':'num'}">${escapeHtml(c)}</th>`).join('') + '</tr></thead>';
+      const tbody = '<tbody>' + (people.length ? people.map(m=>
+        `<tr><td class="name clickable-name" data-name="${escapeHtml(m.name)}">${escapeHtml(m.name)}</td>` +
+        `<td>${escapeHtml(m.company)}</td>` +
+        `<td class="num">${m.baseline_apo_avg===null?'—':m.baseline_apo_avg}</td>` +
+        `<td class="num">${m.latest_apo_avg===null?'—':m.latest_apo_avg}</td></tr>`
+      ).join('') : `<tr><td colspan="${cols.length}" style="text-align:center;color:var(--text-sub);">該当者なし</td></tr>`) + '</tbody>';
+      table.innerHTML = thead + tbody;
+      table.querySelectorAll('.clickable-name').forEach(td=>{
+        td.addEventListener('click', ()=> openPersonDetail(td.dataset.name));
+      });
+      document.getElementById('drillModal').classList.add('show');
+    });
+  });
+}
+
 let DECLINE_ROLE_FILTER = 'all'; // 'all' | 'apo' | 'clo'
 
 function renderDecline(){
@@ -3988,6 +4081,7 @@ document.querySelectorAll('.tab').forEach(tab=>{
     if(tab.dataset.panel === 'p-decline') renderDecline();
     if(tab.dataset.panel === 'p-tsuji') renderTsuji();
     if(tab.dataset.panel === 'p-camp') renderCamp();
+    if(tab.dataset.panel === 'p-terakoya') renderTerakoya();
     updateTitleForActiveTab();
     // URLの#以降を現在のタブに合わせておく（ブラウザ履歴は増やさない）。
     // これにより「.../#p-camp」のようなリンクで特定タブへ直接遷移できるようになる（2026-09-23追加）。
@@ -4727,7 +4821,8 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
           route_history_json=None, closer_shodan_dir=None,
           urgent_targets_json=None, training_json=None, shift_status_json=None,
           clockout_csv=None, shodan_json=None, tenure_json=None, company_targets_json=None,
-          houjin_crm_json=None, houjin_writeback_url=None, apo_report_json=None, camp_roster_json=None):
+          houjin_crm_json=None, houjin_writeback_url=None, apo_report_json=None, camp_roster_json=None,
+          terakoya_json=None):
     end_dt = datetime.strptime(end, "%Y/%m/%d")
     start_dt = datetime.strptime(start, "%Y/%m/%d")
     day_start = end_dt.strftime("%Y/%m/%d")
@@ -4943,6 +5038,17 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
     else:
         camp_analysis = {"available": False}
 
+    # FF寺子屋（隔週アポインター向け研修）累計参加者の月次実績推移（2026-09-24追加）。
+    # --terakoya-json省略時は空（寺子屋参加者タブが空になる）。
+    if terakoya_json and os.path.exists(terakoya_json):
+        try:
+            terakoya_analysis = build_terakoya_analysis(roster_csv, closing_csv, terakoya_json, end)
+        except Exception as e:  # noqa: BLE001
+            print(f"[terakoya] 寺子屋参加者分析の算出に失敗しました: {e}", file=sys.stderr)
+            terakoya_analysis = {"members": []}
+    else:
+        terakoya_analysis = {"members": []}
+
     ai_summary = None
     if ai_summary_json and os.path.exists(ai_summary_json):
         with open(ai_summary_json, encoding="utf-8") as f:
@@ -5105,6 +5211,7 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
     html_out = html_out.replace("__TREND_JSON__", json.dumps(trend, ensure_ascii=False))
     html_out = html_out.replace("__FORECAST_JSON__", json.dumps(forecast, ensure_ascii=False))
     html_out = html_out.replace("__CAMP_ANALYSIS_JSON__", json.dumps(camp_analysis, ensure_ascii=False))
+    html_out = html_out.replace("__TERAKOYA_ANALYSIS_JSON__", json.dumps(terakoya_analysis, ensure_ascii=False))
     html_out = html_out.replace("__CONFIG_JSON__", json.dumps(config_for_js, ensure_ascii=False))
     html_out = html_out.replace("__SLACK_TOPICS_JSON__", json.dumps(slack_topics, ensure_ascii=False))
     html_out = html_out.replace("__OUTREACH_JSON__", json.dumps(outreach, ensure_ascii=False))
@@ -5241,6 +5348,9 @@ def main():
     ap.add_argument("--camp-roster-json", default=None,
                      help="山中湖合宿(2026/09/14)参加者名簿（data/camp_20260914_roster.json）。"
                           "省略時は合宿効果タブが空になる")
+    ap.add_argument("--terakoya-json", default=None,
+                     help="FF寺子屋(隔週アポインター向け研修)累計参加者名簿（data/terakoya_roster.json）。"
+                          "省略時は寺子屋参加者タブが空になる")
     ap.add_argument("--start", default=None)
     ap.add_argument("--end", default=None)
     ap.add_argument("--out", default=os.path.expanduser("~/Desktop/partner_dashboard.html"))
@@ -5278,7 +5388,8 @@ def main():
                      houjin_crm_json=args.houjin_crm_json,
                      houjin_writeback_url=args.houjin_writeback_url,
                      apo_report_json=args.apo_report_json,
-                     camp_roster_json=args.camp_roster_json)
+                     camp_roster_json=args.camp_roster_json,
+                     terakoya_json=args.terakoya_json)
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
 

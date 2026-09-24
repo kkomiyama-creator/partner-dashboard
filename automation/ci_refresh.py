@@ -145,6 +145,10 @@ def main():
     # (company_targets.json等と同じくgit管理・毎回チェックアウトされる。CIが生成するものではない)。
     camp_roster_json = os.path.join(AUTOMATION_DIR, "data", "camp_20260914_roster.json")
 
+    # FF寺子屋（隔週アポインター向け研修）累計参加者名簿（2026-09-24追加）。camp_roster_jsonと同じく
+    # 人手管理の静的ファイル（新しい回の参加者が確定したら追記して更新する。CIが生成するものではない）。
+    terakoya_json = os.path.join(AUTOMATION_DIR, "data", "terakoya_roster.json")
+
     print("--- build_dashboard.py ---")
     out_html = os.path.join(DATA_DIR, "partner_dashboard_latest_raw.html")
     build_dashboard_cmd = ["python3", os.path.join(AUTOMATION_DIR, "build_dashboard.py"),
@@ -155,6 +159,7 @@ def main():
          "--tenure-json", tenure_json, "--company-targets-json", company_targets_json,
          "--houjin-crm-json", houjin_crm_json,
          "--camp-roster-json", camp_roster_json,
+         "--terakoya-json", terakoya_json,
          "--out", out_html]
     if houjin_writeback_url:
         build_dashboard_cmd += ["--houjin-writeback-url", houjin_writeback_url]

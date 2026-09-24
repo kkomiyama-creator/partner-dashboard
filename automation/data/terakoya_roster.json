@@ -1,0 +1,313 @@
+{
+ "sessions": [
+  {
+   "label": "第1回",
+   "date": "2026-08-19"
+  },
+  {
+   "label": "第2回",
+   "date": "2026-09-02"
+  },
+  {
+   "label": "第3回",
+   "date": "2026-09-24"
+  }
+ ],
+ "note": "隔週開催のFF寺子屋（アポインター向け研修）累計参加者名簿。講師(伊藤蓮)は除く。'濵田'(9/24参加、真之介/裕大どちらか特定できず)は未収録・要確認。",
+ "members": [
+  {
+   "name": "上野滉己",
+   "company": "株式会社Fit Founder",
+   "sessions": [
+    "第1回"
+   ]
+  },
+  {
+   "name": "五十嵐聖",
+   "company": "一興商事株式会社",
+   "sessions": [
+    "第1回"
+   ]
+  },
+  {
+   "name": "佐藤海斗",
+   "company": "D-MAK株式会社",
+   "sessions": [
+    "第1回",
+    "第2回"
+   ]
+  },
+  {
+   "name": "冨澤彪",
+   "company": "HY株式会社",
+   "sessions": [
+    "第1回",
+    "第3回"
+   ]
+  },
+  {
+   "name": "原口慎太郎",
+   "company": "HY株式会社",
+   "sessions": [
+    "第1回",
+    "第2回",
+    "第3回"
+   ]
+  },
+  {
+   "name": "大谷勇斗",
+   "company": "株式会社JINNOVA",
+   "sessions": [
+    "第1回",
+    "第3回"
+   ]
+  },
+  {
+   "name": "山里泰聖",
+   "company": "株式会社Corest home",
+   "sessions": [
+    "第1回",
+    "第3回"
+   ]
+  },
+  {
+   "name": "平山沙羅",
+   "company": "株式会社Fit Founder",
+   "sessions": [
+    "第1回",
+    "第3回"
+   ]
+  },
+  {
+   "name": "後藤晃祐",
+   "company": "株式会社UNIVA FIT",
+   "sessions": [
+    "第1回",
+    "第2回"
+   ]
+  },
+  {
+   "name": "恩田哉人",
+   "company": "株式会社Fit Founder",
+   "sessions": [
+    "第1回",
+    "第2回"
+   ]
+  },
+  {
+   "name": "我妻拓馬",
+   "company": "株式会社JINNOVA",
+   "sessions": [
+    "第1回"
+   ]
+  },
+  {
+   "name": "森井桃花",
+   "company": "アフターホーム株式会社",
+   "sessions": [
+    "第1回",
+    "第2回"
+   ]
+  },
+  {
+   "name": "角谷成映",
+   "company": "株式会社JINNOVA",
+   "sessions": [
+    "第1回"
+   ]
+  },
+  {
+   "name": "長谷川拓耶",
+   "company": "株式会社JINNOVA",
+   "sessions": [
+    "第1回",
+    "第3回"
+   ]
+  },
+  {
+   "name": "一木亮太",
+   "company": "HY株式会社",
+   "sessions": [
+    "第2回",
+    "第3回"
+   ]
+  },
+  {
+   "name": "伊藤圭佑",
+   "company": "HY株式会社",
+   "sessions": [
+    "第2回",
+    "第3回"
+   ]
+  },
+  {
+   "name": "佐野允秋",
+   "company": "HY株式会社",
+   "sessions": [
+    "第2回",
+    "第3回"
+   ]
+  },
+  {
+   "name": "吉田龍吾",
+   "company": "株式会社Fit Founder",
+   "sessions": [
+    "第2回",
+    "第3回"
+   ]
+  },
+  {
+   "name": "安冨龍治",
+   "company": "株式会社UNIVA FIT",
+   "sessions": [
+    "第2回",
+    "第3回"
+   ]
+  },
+  {
+   "name": "尾方直樹",
+   "company": "HY株式会社",
+   "sessions": [
+    "第2回",
+    "第3回"
+   ]
+  },
+  {
+   "name": "川上留以",
+   "company": "株式会社Fit Founder",
+   "sessions": [
+    "第2回"
+   ]
+  },
+  {
+   "name": "是枝桃果",
+   "company": "",
+   "sessions": [
+    "第2回"
+   ]
+  },
+  {
+   "name": "木村瞭太",
+   "company": "株式会社Fit Founder",
+   "sessions": [
+    "第2回",
+    "第3回"
+   ]
+  },
+  {
+   "name": "杉山大樹",
+   "company": "HY株式会社",
+   "sessions": [
+    "第2回"
+   ]
+  },
+  {
+   "name": "楢岡大樹",
+   "company": "HY株式会社",
+   "sessions": [
+    "第2回"
+   ]
+  },
+  {
+   "name": "横山豪",
+   "company": "株式会社Fit Founder",
+   "sessions": [
+    "第2回"
+   ]
+  },
+  {
+   "name": "甲斐勇利",
+   "company": "HY株式会社",
+   "sessions": [
+    "第2回"
+   ]
+  },
+  {
+   "name": "白方誠人",
+   "company": "株式会社ベスティブロ",
+   "sessions": [
+    "第2回"
+   ]
+  },
+  {
+   "name": "百瀬遥輝",
+   "company": "株式会社Fit Founder",
+   "sessions": [
+    "第2回",
+    "第3回"
+   ]
+  },
+  {
+   "name": "石橋優翔",
+   "company": "株式会社STORIA",
+   "sessions": [
+    "第2回",
+    "第3回"
+   ]
+  },
+  {
+   "name": "茄子川天津",
+   "company": "",
+   "sessions": [
+    "第2回"
+   ]
+  },
+  {
+   "name": "鈴木崇",
+   "company": "HY株式会社",
+   "sessions": [
+    "第2回",
+    "第3回"
+   ]
+  },
+  {
+   "name": "門脇駆",
+   "company": "HY株式会社",
+   "sessions": [
+    "第2回"
+   ]
+  },
+  {
+   "name": "須藤隆成",
+   "company": "株式会社ベスティブロ",
+   "sessions": [
+    "第2回"
+   ]
+  },
+  {
+   "name": "ボンドアレキサンダー龍",
+   "company": "株式会社TRIXIA",
+   "sessions": [
+    "第3回"
+   ]
+  },
+  {
+   "name": "中野皓雅",
+   "company": "HY株式会社",
+   "sessions": [
+    "第3回"
+   ]
+  },
+  {
+   "name": "佐々木阿要",
+   "company": "株式会社Fit Founder",
+   "sessions": [
+    "第3回"
+   ]
+  },
+  {
+   "name": "武田功平",
+   "company": "株式会社TRIXIA",
+   "sessions": [
+    "第3回"
+   ]
+  },
+  {
+   "name": "由地光輝",
+   "company": "HY株式会社",
+   "sessions": [
+    "第3回"
+   ]
+  }
+ ]
+}
