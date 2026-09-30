@@ -1,5 +1,16 @@
 {
- "counts": {},
- "unmatched_names": [],
- "total_people": 0
+ "counts": {
+  "Ambitious株式会社": 4,
+  "株式会社Fit Founder": 7,
+  "株式会社JINNOVA": 1,
+  "株式会社LeadMore": 1,
+  "株式会社UNIVA FIT": 1,
+  "HY株式会社": 1,
+  "株式会社guidance": 1
+ },
+ "unmatched_names": [
+  "佐々木阿要",
+  "大井俊樹"
+ ],
+ "total_people": 18
 }
