@@ -987,6 +987,7 @@ function tenureCell(name){
 }
 const COMPANY_TARGETS_DEFAULT = __COMPANY_TARGETS_JSON__;
 const COMPANY_TARGETS_LOCK = __COMPANY_TARGETS_LOCK__;
+const COMPANY_TARGETS_BY_MONTH = __COMPANY_TARGETS_BY_MONTH__;
 const COMPANY_TARGETS_STORAGE_KEY = 'partnerDashboardCompanyTargets_v1';
 function loadCompanyTargets(){
   let t = null;
@@ -1000,6 +1001,15 @@ function saveCompanyTargets(t){
   localStorage.setItem(COMPANY_TARGETS_STORAGE_KEY, JSON.stringify(t));
 }
 let COMPANY_TARGETS = loadCompanyTargets();
+// 進捗率の計算に使う目標。月次ピッカーでその月を選んだときだけ、その月の目標を返す
+// （当月＝COMPANY_TARGETS、過去月＝COMPANY_TARGETS_BY_MONTH）。日次・週次・カスタム期間は目標が月単位のため空（未設定表示）。
+function companyTargetFor(company){
+  if(CURRENT_PERIOD !== 'month') return {};
+  const latest = MONTHLY_PERIOD_LIST[MONTHLY_PERIOD_LIST.length - 1].key;
+  if(CURRENT_MONTH_KEY === latest) return COMPANY_TARGETS[company] || {};
+  const m = COMPANY_TARGETS_BY_MONTH[CURRENT_MONTH_KEY];
+  return (m && m[company]) || {};
+}
 function targetAchieveCell(actual, target){
   if(target === null || target === undefined || target === '') return '<span class="pill flat">未設定</span>';
   const a = actual || 0;
@@ -1681,19 +1691,19 @@ function renderAllTables(){
     {label:'企業名'},
     {label:'アポ獲得数', num:true},
     {label:'アポ数Δ', num:true, cls:'diffcol', fmt:(v,r)=>deltaCell(v, companyByName.get(r[2]).delta_apo_pct)},
-    {label:'目標比(アポ)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).apo_kakutoku, (COMPANY_TARGETS[r[2]]||{}).apo)},
+    {label:'目標比(アポ)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).apo_kakutoku, companyTargetFor(r[2]).apo)},
     {label:'アポ成約', num:true},
-    {label:'目標比(アポ成約)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).apo_seiyaku, (COMPANY_TARGETS[r[2]]||{}).apo_seiyaku)},
+    {label:'目標比(アポ成約)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).apo_seiyaku, companyTargetFor(r[2]).apo_seiyaku)},
     {label:'クロ成約', num:true},
     {label:'成約数Δ', num:true, cls:'diffcol', fmt:(v,r)=>deltaCell(v, companyByName.get(r[2]).delta_clo_pct)},
-    {label:'目標比(クロ成約)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).clo_seiyaku, (COMPANY_TARGETS[r[2]]||{}).clo_seiyaku)},
+    {label:'目標比(クロ成約)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).clo_seiyaku, companyTargetFor(r[2]).clo_seiyaku)},
     {label:'売上', num:true, fmt:v=>yen(v)},
     {label:'売上Δ', num:true, cls:'diffcol', fmt:(v,r)=>deltaCell(v, companyByName.get(r[2]).delta_uriage_pct)},
-    {label:'目標比(売上)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).uriage, (COMPANY_TARGETS[r[2]]||{}).uriage)},
+    {label:'目標比(売上)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).uriage, companyTargetFor(r[2]).uriage)},
     {label:'成約率', num:true, fmt:v=>ratePill(v)},
     {label:'成約率Δ', num:true, cls:'diffcol', fmt:v=>deltaRateCell(v)},
     {label:'稼働人員数', num:true, fmt:v=>headcountCell(v)},
-    {label:'目標比(稼働)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).headcount, (COMPANY_TARGETS[r[2]]||{}).chinin)},
+    {label:'目標比(稼働)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).headcount, companyTargetFor(r[2]).chinin)},
     {label:'アポ達成者数', num:true, fmt:v=>headcountCell(v)},
     {label:'成約達成者数', num:true, fmt:v=>headcountCell(v)},
     {label:'要対応', num:true, cls:'attn-needsaction', fmt:v=>headcountCell(v)},
@@ -1705,16 +1715,16 @@ function renderAllTables(){
   ], d.companies.map(c=>[
       c.rank, c.rank_change, c.company,
       c.apo_kakutoku, c.delta_apo_kakutoku,
-      ctRate(c.apo_kakutoku, (COMPANY_TARGETS[c.company]||{}).apo),
+      ctRate(c.apo_kakutoku, companyTargetFor(c.company).apo),
       c.apo_seiyaku,
-      ctRate(c.apo_seiyaku, (COMPANY_TARGETS[c.company]||{}).apo_seiyaku),
+      ctRate(c.apo_seiyaku, companyTargetFor(c.company).apo_seiyaku),
       c.clo_seiyaku, c.delta_clo_seiyaku,
-      ctRate(c.clo_seiyaku, (COMPANY_TARGETS[c.company]||{}).clo_seiyaku),
+      ctRate(c.clo_seiyaku, companyTargetFor(c.company).clo_seiyaku),
       c.uriage, c.delta_uriage,
-      ctRate(c.uriage, (COMPANY_TARGETS[c.company]||{}).uriage),
+      ctRate(c.uriage, companyTargetFor(c.company).uriage),
       c.rate, c.delta_rate,
       c.headcount,
-      ctRate(c.headcount, (COMPANY_TARGETS[c.company]||{}).chinin),
+      ctRate(c.headcount, companyTargetFor(c.company).chinin),
       c.apo_achiever_count, c.seiyaku_achiever_count,
       c.attendance_alert_needsaction, c.attendance_alert_noclockin, c.attendance_alert_ok,
       c.status_tag, c.cause, c.next_action,
@@ -2119,7 +2129,7 @@ function renderTiles(){
 function renderTilesForCompany(d, company){
   const c = d.companies.find(x => x.company === company);
   const cSafe = c || {};
-  const t = COMPANY_TARGETS[company] || {};
+  const t = companyTargetFor(company);
   const gauges = [
     kpiGaugeCard('アポ獲得数', cSafe.apo_kakutoku, t.apo, v => (v===null||v===undefined)?'—':v+'件', 'apo'),
     kpiGaugeCard('アポ成約数', cSafe.apo_seiyaku, t.apo_seiyaku, v => (v===null||v===undefined)?'—':v+'件', 'apoSei'),
@@ -5261,6 +5271,9 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
     # 2026-10-05: "_locked_month"（例 "2026-10"）が入っていて、それがビルド時点(JST)の当月と一致する間は
     # 目標値フォームを読み取り専用にする（月替わりで自動的に解除）。JSには会社別目標だけを渡す。
     _locked_month = company_targets_default.pop("_locked_month", None)
+    # 2026-10-05: 過去月の目標（{"YYYY/MM": {会社名: {...}}}）。月次ピッカーでその月を選んだとき、
+    # 当月ではなくその月の目標で進捗率を出すために使う。
+    company_targets_by_month = company_targets_default.pop("_by_month", {})
     _now_month = datetime.now(timezone(timedelta(hours=9))).strftime("%Y-%m")
     company_targets_lock = {"locked": bool(_locked_month) and _locked_month == _now_month,
                             "month": _locked_month or ""}
@@ -5376,6 +5389,7 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
     html_out = html_out.replace("__FUNNEL_MONTHLY_JSON__", json.dumps(funnel_monthly, ensure_ascii=False))
     html_out = html_out.replace("__COMPANY_TARGETS_JSON__", json.dumps(company_targets_default, ensure_ascii=False))
     html_out = html_out.replace("__COMPANY_TARGETS_LOCK__", json.dumps(company_targets_lock))
+    html_out = html_out.replace("__COMPANY_TARGETS_BY_MONTH__", json.dumps(company_targets_by_month, ensure_ascii=False))
 
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(html_out)
