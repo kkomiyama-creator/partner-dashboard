@@ -1,0 +1,4814 @@
+{
+ "generated_at": "2026-10-05T10:24:05",
+ "as_of": "2026-10-05",
+ "new_hire_days": 90,
+ "mid_days": 365,
+ "people": {
+  "佐竹拓人": {
+   "company": "株式会社TRIXIA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-10-04",
+   "tenure_days": 1,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "佐藤圭将": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-10-04",
+   "tenure_days": 1,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "鈴木恭平": {
+   "company": "株式会社TRIXIA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-10-02",
+   "tenure_days": 3,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "志間優志郎": {
+   "company": "株式会社HEARTORA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-10-02",
+   "tenure_days": 3,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "中島健人": {
+   "company": "株式会社ASG",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-10-01",
+   "tenure_days": 4,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "藤井萌実": {
+   "company": "株式会社LeadMore",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-10-01",
+   "tenure_days": 4,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "平井俊介": {
+   "company": "株式会社JINNOVA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-10-01",
+   "tenure_days": 4,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "XiM アポ取得用": {
+   "company": "株式会社Xim",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-10-01",
+   "tenure_days": 4,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "田代めぐみ": {
+   "company": "株式会社Xim",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-09-27",
+   "tenure_days": 8,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "森俊貴": {
+   "company": "株式会社Xim",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-09-27",
+   "tenure_days": 8,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "龍崎響": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-09-22",
+   "tenure_days": 13,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "奥村亮介": {
+   "company": "一興商事株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-09-18",
+   "tenure_days": 17,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "大井俊樹": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-09-15",
+   "tenure_days": 20,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "守屋一聖": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-09-14",
+   "tenure_days": 21,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "元丸啓一": {
+   "company": "兼高推進",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-09-13",
+   "tenure_days": 22,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "畔上裕也": {
+   "company": "兼高推進",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-09-13",
+   "tenure_days": 22,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "兼高主税": {
+   "company": "兼高推進",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-09-13",
+   "tenure_days": 22,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "新美ゆかり": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-09-12",
+   "tenure_days": 23,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "宍戸玲央": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-09-12",
+   "tenure_days": 23,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "大城翔太": {
+   "company": "ティーダサポート株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-09-12",
+   "tenure_days": 23,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "丹生誠人": {
+   "company": "合同会社HighLight",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-09-10",
+   "tenure_days": 25,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "駿河快": {
+   "company": "合同会社HighLight",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-09-10",
+   "tenure_days": 25,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "井田勝海": {
+   "company": "株式会社日本建装",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-09-05",
+   "tenure_days": 30,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "渕上聖樹": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-09-05",
+   "tenure_days": 30,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "佐々木阿要": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-09-04",
+   "tenure_days": 31,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "吉田聖矢": {
+   "company": "株式会社TRIXIA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-08-28",
+   "tenure_days": 38,
+   "bucket": "new",
+   "account_status": 0
+  },
+  "高慶瑛成": {
+   "company": "株式会社TRIXIA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-08-28",
+   "tenure_days": 38,
+   "bucket": "new",
+   "account_status": 0
+  },
+  "小林巧": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-08-28",
+   "tenure_days": 38,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "矢野雅季": {
+   "company": "株式会社LIVION partners",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-08-27",
+   "tenure_days": 39,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "粟津美咲": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-08-22",
+   "tenure_days": 44,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "中野皓雅": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-08-21",
+   "tenure_days": 45,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "込山大貴": {
+   "company": "込山推進",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-08-20",
+   "tenure_days": 46,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "JI佐藤健太": {
+   "company": "株式会社JINNOVA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-08-20",
+   "tenure_days": 46,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "尾方直樹": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-08-20",
+   "tenure_days": 46,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "野口英貴": {
+   "company": "一興商事株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-08-20",
+   "tenure_days": 46,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "鈴木拓摩": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-08-19",
+   "tenure_days": 47,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "大橋飛翔": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-08-14",
+   "tenure_days": 52,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "山下圭吾": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-08-11",
+   "tenure_days": 55,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "鳥海美香": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-08-11",
+   "tenure_days": 55,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "岸上恵大": {
+   "company": "株式会社TRIXIA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-08-10",
+   "tenure_days": 56,
+   "bucket": "new",
+   "account_status": 0
+  },
+  "鈴木琉斗": {
+   "company": "株式会社テクノホーム",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-08-09",
+   "tenure_days": 57,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "井上太治朗": {
+   "company": "井上推進",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-08-09",
+   "tenure_days": 57,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "塚本静菜": {
+   "company": "NEO",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-08-07",
+   "tenure_days": 59,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "前野隼也": {
+   "company": "合同会社紡",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-08-03",
+   "tenure_days": 63,
+   "bucket": "new",
+   "account_status": 0
+  },
+  "鈴木崇": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-31",
+   "tenure_days": 66,
+   "bucket": "new",
+   "account_status": 0
+  },
+  "草苅祐太": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "入江航平": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-31",
+   "tenure_days": 66,
+   "bucket": "new",
+   "account_status": 0
+  },
+  "前田龍馬": {
+   "company": "株式会社 ALL CONNECT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-31",
+   "tenure_days": 66,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "玉城守都": {
+   "company": "株式会社 ALL CONNECT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-31",
+   "tenure_days": 66,
+   "bucket": "new",
+   "account_status": 0
+  },
+  "山本涼斗": {
+   "company": "株式会社日本建装",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-31",
+   "tenure_days": 66,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "濱田真之介": {
+   "company": "株式会社日本建装",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-31",
+   "tenure_days": 66,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "阿部隆之介": {
+   "company": "株式会社STORIA",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-07-30",
+   "tenure_days": 67,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "小宮大空": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-29",
+   "tenure_days": 68,
+   "bucket": "new",
+   "account_status": 0
+  },
+  "岩田空": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-29",
+   "tenure_days": 68,
+   "bucket": "new",
+   "account_status": 0
+  },
+  "江尻竜馬": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-29",
+   "tenure_days": 68,
+   "bucket": "new",
+   "account_status": 0
+  },
+  "足立遼哉": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-29",
+   "tenure_days": 68,
+   "bucket": "new",
+   "account_status": 0
+  },
+  "大滝慧南": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-29",
+   "tenure_days": 68,
+   "bucket": "new",
+   "account_status": 0
+  },
+  "齋藤佳輝": {
+   "company": "株式会社TRIXIA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-29",
+   "tenure_days": 68,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "豊永心": {
+   "company": "株式会社TRIXIA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-29",
+   "tenure_days": 68,
+   "bucket": "new",
+   "account_status": 0
+  },
+  "高橋翼": {
+   "company": "株式会社TRIXIA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-29",
+   "tenure_days": 68,
+   "bucket": "new",
+   "account_status": 0
+  },
+  "柴田陸空": {
+   "company": "株式会社TRIXIA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-29",
+   "tenure_days": 68,
+   "bucket": "new",
+   "account_status": 0
+  },
+  "森山貴成": {
+   "company": "株式会社TRIXIA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-29",
+   "tenure_days": 68,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "ボンドアレキサンダー龍": {
+   "company": "株式会社TRIXIA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-29",
+   "tenure_days": 68,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "鷲田智拓": {
+   "company": "株式会社TRIXIA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-29",
+   "tenure_days": 68,
+   "bucket": "new",
+   "account_status": 0
+  },
+  "武田功平": {
+   "company": "株式会社TRIXIA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-29",
+   "tenure_days": 68,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "倉住昇吾": {
+   "company": "株式会社JINNOVA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-26",
+   "tenure_days": 71,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "落水田匡平": {
+   "company": "株式会社JINNOVA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-26",
+   "tenure_days": 71,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "吉里翔馬": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-18",
+   "tenure_days": 79,
+   "bucket": "new",
+   "account_status": 0
+  },
+  "宮澤大介": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-15",
+   "tenure_days": 82,
+   "bucket": "new",
+   "account_status": 0
+  },
+  "原未希斗": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-15",
+   "tenure_days": 82,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "佐藤響": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-15",
+   "tenure_days": 82,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "日比野琉成": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-14",
+   "tenure_days": 83,
+   "bucket": "new",
+   "account_status": 0
+  },
+  "渡邊雅広": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-10",
+   "tenure_days": 87,
+   "bucket": "new",
+   "account_status": 0
+  },
+  "佐野允秋": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-10",
+   "tenure_days": 87,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "石橋優翔": {
+   "company": "株式会社STORIA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-10",
+   "tenure_days": 87,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "後藤陽太": {
+   "company": "株式会社JINNOVA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-07",
+   "tenure_days": 90,
+   "bucket": "new",
+   "account_status": 0
+  },
+  "鈴木隆一": {
+   "company": "有限会社イーティー",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-05",
+   "tenure_days": 92,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "クートユー　ウィスット": {
+   "company": "有限会社イーティー",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-05",
+   "tenure_days": 92,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "福島幸也": {
+   "company": "NEO",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-04",
+   "tenure_days": 93,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "大塚祝桜": {
+   "company": "株式会社LIVION partners",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-07-01",
+   "tenure_days": 96,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "吉田龍吾": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-30",
+   "tenure_days": 97,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "才所希": {
+   "company": "株式会社 ALL CONNECT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-27",
+   "tenure_days": 100,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "細山彩七": {
+   "company": "株式会社 ALL CONNECT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-27",
+   "tenure_days": 100,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "谷本将騎": {
+   "company": "株式会社 ALL CONNECT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-27",
+   "tenure_days": 100,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "黒田創大": {
+   "company": "株式会社 ALL CONNECT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-25",
+   "tenure_days": 102,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "福岡涼真": {
+   "company": "株式会社 ALL CONNECT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-25",
+   "tenure_days": 102,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "近藤祐太": {
+   "company": "株式会社 ALL CONNECT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-25",
+   "tenure_days": 102,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "高市雄飛": {
+   "company": "株式会社 ALL CONNECT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-25",
+   "tenure_days": 102,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "栗須平": {
+   "company": "株式会社 ALL CONNECT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-25",
+   "tenure_days": 102,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "小原翔太": {
+   "company": "株式会社 ALL CONNECT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-25",
+   "tenure_days": 102,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "増田正人": {
+   "company": "株式会社 ALL CONNECT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-25",
+   "tenure_days": 102,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "坂原亘": {
+   "company": "株式会社 ALL CONNECT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-25",
+   "tenure_days": 102,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "細山勇気": {
+   "company": "株式会社 ALL CONNECT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-25",
+   "tenure_days": 102,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "親川真実": {
+   "company": "株式会社 ALL CONNECT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-25",
+   "tenure_days": 102,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "安永真一郎": {
+   "company": "株式会社 ALL CONNECT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-25",
+   "tenure_days": 102,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "久保木秀一": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-24",
+   "tenure_days": 103,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "渡辺萌香": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-06-18",
+   "tenure_days": 109,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "松岡諒": {
+   "company": "株式会社LIVION partners",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-18",
+   "tenure_days": 109,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "関山俊輝": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-17",
+   "tenure_days": 110,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "山里泰聖": {
+   "company": "株式会社Corest home",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-11",
+   "tenure_days": 116,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "岡元莉輝": {
+   "company": "株式会社テクノホーム",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-10",
+   "tenure_days": 117,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "吉留康政": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-09",
+   "tenure_days": 118,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "佐藤海斗": {
+   "company": "株式会社UNIVA FIT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "高橋夢月": {
+   "company": "株式会社LIVION partners",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-06",
+   "tenure_days": 121,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "植村忠司": {
+   "company": "株式会社ベスティブロ",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-04",
+   "tenure_days": 123,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "恩田哉人": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-04",
+   "tenure_days": 123,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "亀井夏偉斗": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-06-02",
+   "tenure_days": 125,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "小宮山 京介": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-06-01",
+   "tenure_days": 126,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "小西健太": {
+   "company": "株式会社ASG",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-05-29",
+   "tenure_days": 129,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "松本大世": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-05-28",
+   "tenure_days": 130,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "鈴木虎春": {
+   "company": "株式会社ゼニソ",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-05-28",
+   "tenure_days": 130,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "大谷勇斗": {
+   "company": "株式会社JINNOVA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-05-27",
+   "tenure_days": 131,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "金子敦史": {
+   "company": "株式会社Birth47",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-05-25",
+   "tenure_days": 133,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "辻坂修太朗": {
+   "company": "株式会社UNIVA FIT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-05-22",
+   "tenure_days": 136,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "甲斐勇利": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-05-17",
+   "tenure_days": 141,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "後藤あゆみ": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-05-15",
+   "tenure_days": 143,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "小鷹威武希": {
+   "company": "小鷹推進",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-05-14",
+   "tenure_days": 144,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "寺垣快人": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-05-13",
+   "tenure_days": 145,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "福田拓未": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-05-13",
+   "tenure_days": 145,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "鎮守灯": {
+   "company": "株式会社JINNOVA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-05-10",
+   "tenure_days": 148,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "海野智康": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-05-08",
+   "tenure_days": 150,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "平野勇馬": {
+   "company": "一興商事株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-05-08",
+   "tenure_days": 150,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "河本一樹": {
+   "company": "株式会社ForMe works",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-05-07",
+   "tenure_days": 151,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "長谷地巧海": {
+   "company": "NEO",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-05-02",
+   "tenure_days": 156,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "水谷智哉": {
+   "company": "株式会社LeadMore",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-05-01",
+   "tenure_days": 157,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "小林勇良": {
+   "company": "奏建ハウス株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-30",
+   "tenure_days": 158,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "由地光輝": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-30",
+   "tenure_days": 158,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "佐々木蓮": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-04-30",
+   "tenure_days": 158,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "佐藤朋生": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-30",
+   "tenure_days": 158,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "春木涼佑": {
+   "company": "K.K168",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-30",
+   "tenure_days": 158,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "曽我部千稜": {
+   "company": "株式会社Next Place",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-27",
+   "tenure_days": 161,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "平山沙羅": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-27",
+   "tenure_days": 161,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "青木翔也": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-23",
+   "tenure_days": 165,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "角屋龍太": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-23",
+   "tenure_days": 165,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "渡邉唯斗": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-22",
+   "tenure_days": 166,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "シャザード明歩": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-22",
+   "tenure_days": 166,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "韮澤大成": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-22",
+   "tenure_days": 166,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "米田叡付": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-20",
+   "tenure_days": 168,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "村山智哉": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-20",
+   "tenure_days": 168,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "松永勇樹": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-18",
+   "tenure_days": 170,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "山城輝人": {
+   "company": "株式会社Corest home",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-18",
+   "tenure_days": 170,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "野村俊介": {
+   "company": "株式会社Corest home",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-18",
+   "tenure_days": 170,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "嘉数龍磨": {
+   "company": "株式会社Corest home",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-04-18",
+   "tenure_days": 170,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "伊木裕二": {
+   "company": "株式会社Corest home",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-04-18",
+   "tenure_days": 170,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "野田煌暉": {
+   "company": "株式会社Birth47",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-16",
+   "tenure_days": 172,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "中野雅生": {
+   "company": "株式会社Birth47",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-16",
+   "tenure_days": 172,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "浅野和広": {
+   "company": "株式会社ベスティブロ",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-16",
+   "tenure_days": 172,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "松本裕民": {
+   "company": "株式会社ForMe works",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-15",
+   "tenure_days": 173,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "向井佳央": {
+   "company": "株式会社 LIBERA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-12",
+   "tenure_days": 176,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "樋口浩翔": {
+   "company": "株式会社ゼニソ",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-06",
+   "tenure_days": 182,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "小澤拓也": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-04",
+   "tenure_days": 184,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "上野滉己": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-03",
+   "tenure_days": 185,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "霜田一純": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-04-02",
+   "tenure_days": 186,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "武本遼": {
+   "company": "株式会社guidance",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-31",
+   "tenure_days": 188,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "長井紗綾香": {
+   "company": "株式会社guidance",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-31",
+   "tenure_days": 188,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "田邊芽": {
+   "company": "株式会社guidance",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-31",
+   "tenure_days": 188,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "早川晃平": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-27",
+   "tenure_days": 192,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "光明優輝": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-27",
+   "tenure_days": 192,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "吉田悠太": {
+   "company": "株式会社ベスティブロ",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-25",
+   "tenure_days": 194,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "岡輝剛": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-25",
+   "tenure_days": 194,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "土岐将也": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-25",
+   "tenure_days": 194,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "上原太一": {
+   "company": "株式会社LeadMore",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-25",
+   "tenure_days": 194,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "山口陽生": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-22",
+   "tenure_days": 197,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "冨澤彪": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-22",
+   "tenure_days": 197,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "岩下真人": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-22",
+   "tenure_days": 197,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "石田一徹": {
+   "company": "株式会社 LIBERA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-22",
+   "tenure_days": 197,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "森井桃花": {
+   "company": "アフターホーム株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-22",
+   "tenure_days": 197,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "望月暖生": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-18",
+   "tenure_days": 201,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "南波勇希": {
+   "company": "株式会社ワン・ミニット",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-17",
+   "tenure_days": 202,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "友田裕作": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-16",
+   "tenure_days": 203,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "金子雄虎": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-16",
+   "tenure_days": 203,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "梅本福祝": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-15",
+   "tenure_days": 204,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "加納智哉": {
+   "company": "NEO",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-15",
+   "tenure_days": 204,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "柏原幸生": {
+   "company": "K.K168",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-03-14",
+   "tenure_days": 205,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "杣川征夫": {
+   "company": "K.K168",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-03-14",
+   "tenure_days": 205,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "大西拓也": {
+   "company": "株式会社Birth47",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-14",
+   "tenure_days": 205,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "守屋誠": {
+   "company": "株式会社Birth47",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-14",
+   "tenure_days": 205,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "原田紳平": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-13",
+   "tenure_days": 206,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "平本絃": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-12",
+   "tenure_days": 207,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "関脩貴": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-12",
+   "tenure_days": 207,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "茂串恭介": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-12",
+   "tenure_days": 207,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "河相光太郎": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-11",
+   "tenure_days": 208,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "木下雅基": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-03-09",
+   "tenure_days": 210,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "土居祐己": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-03-09",
+   "tenure_days": 210,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "駒沢大斗": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-03-09",
+   "tenure_days": 210,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "平山柊斗": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-09",
+   "tenure_days": 210,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "大内颯太朗": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-03-09",
+   "tenure_days": 210,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "木田晴真": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-08",
+   "tenure_days": 211,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "猿渡航太": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-08",
+   "tenure_days": 211,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "岩佐綾矢伽": {
+   "company": "株式会社Face to Faith",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-06",
+   "tenure_days": 213,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "貴兄アニタ": {
+   "company": "株式会社Face to Faith",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-06",
+   "tenure_days": 213,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "山田竜友将": {
+   "company": "株式会社LeadMore",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-06",
+   "tenure_days": 213,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "山中真偉人": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-06",
+   "tenure_days": 213,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "島力斗": {
+   "company": "株式会社ワン・ミニット",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-05",
+   "tenure_days": 214,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "青木憲信": {
+   "company": "株式会社ワン・ミニット",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-05",
+   "tenure_days": 214,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "坂元禎久": {
+   "company": "株式会社ワン・ミニット",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-03-05",
+   "tenure_days": 214,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "矢野俊輔": {
+   "company": "株式会社ワン・ミニット",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-03-05",
+   "tenure_days": 214,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "石井勝己": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-05",
+   "tenure_days": 214,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "長村一輝": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-04",
+   "tenure_days": 215,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "船本大貴": {
+   "company": "合同会社La Fin",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-04",
+   "tenure_days": 215,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "西田勇海": {
+   "company": "株式会社LIVION partners",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-02",
+   "tenure_days": 217,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "神谷貴則": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-03-01",
+   "tenure_days": 218,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "野村優仁": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-27",
+   "tenure_days": 220,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "松井伶央弥": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-27",
+   "tenure_days": 220,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "春日柚樹也": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-27",
+   "tenure_days": 220,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "一ノ瀬文哉": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-27",
+   "tenure_days": 220,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "高橋雄多": {
+   "company": "株式会社Wiz",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-26",
+   "tenure_days": 221,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "南部健太": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-13",
+   "tenure_days": 234,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "吉川智明": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-13",
+   "tenure_days": 234,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "小笠原速杜": {
+   "company": "株式会社ベスティブロ",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-13",
+   "tenure_days": 234,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "高木亨樹": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-11",
+   "tenure_days": 236,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "西村太一": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-11",
+   "tenure_days": 236,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "前田彩香": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-11",
+   "tenure_days": 236,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "中西優太": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-11",
+   "tenure_days": 236,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "小林謙杜": {
+   "company": "株式会社ASG",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-11",
+   "tenure_days": 236,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "原口慎太郎": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-11",
+   "tenure_days": 236,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "伊井大陽": {
+   "company": "株式会社ASG",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-11",
+   "tenure_days": 236,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "服部礼華": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-10",
+   "tenure_days": 237,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "工藤洸寿": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "増田剛斗": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "藤森吉崇": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "富井悠介": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "宇野辰重": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "生田智也": {
+   "company": "株式会社ASG",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "臼井颯": {
+   "company": "株式会社ASG",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "原田悠人": {
+   "company": "奏建ハウス株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "原田凪斗": {
+   "company": "奏建ハウス株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "岸野龍馬": {
+   "company": "株式会社STORIA",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "篠田直己": {
+   "company": "株式会社STORIA",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "若井勇人": {
+   "company": "株式会社STORIA",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "小島克哉": {
+   "company": "株式会社STORIA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "中道健太": {
+   "company": "アフターホーム株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "寺地海意": {
+   "company": "株式会社テクノホーム",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "藤原大希": {
+   "company": "株式会社guidance",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "嶺山創太": {
+   "company": "株式会社guidance",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "濱口海": {
+   "company": "NEO",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "浅野歩": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "藤成年弘": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "鹿沼蓮": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "陸田直毅": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "五十嵐聖": {
+   "company": "一興商事株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "倉掛 鷹斗": {
+   "company": "株式会社ゼニソ",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "坂柳 凪": {
+   "company": "株式会社ゼニソ",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-08",
+   "tenure_days": 239,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "津崎涼": {
+   "company": "株式会社JINNOVA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-06",
+   "tenure_days": 241,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "神戸良介": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-06",
+   "tenure_days": 241,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "森木太陽": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-06",
+   "tenure_days": 241,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "田中 太喜": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-06",
+   "tenure_days": 241,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "江崎 仁": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-06",
+   "tenure_days": 241,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "山元 大樹": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-06",
+   "tenure_days": 241,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "前出陽菜": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-02-06",
+   "tenure_days": 241,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "濱西俊介": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-02-05",
+   "tenure_days": 242,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "岩﨑大地": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-02-05",
+   "tenure_days": 242,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "藤井一心": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-27",
+   "tenure_days": 251,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "樋田蒼生": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-26",
+   "tenure_days": 252,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "中村譲": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "cyzenクロ男": {
+   "company": "（不明）",
+   "roles": [
+    "クローザー"
+   ],
+   "created_at": "2026-01-21",
+   "tenure_days": 257,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "cyzenアポ子": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "cyzen説明会": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "辻貴雅": {
+   "company": "（不明）",
+   "roles": [],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "八賀晋太朗": {
+   "company": "（不明）",
+   "roles": [],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "門脇駆": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "小野龍一": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "北原剛": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "山村健仁": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "前田駿虎": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "金井祐一郎": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "荒井雅": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "早川豪紀": {
+   "company": "株式会社LIVION partners",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "石川平馬": {
+   "company": "株式会社LIVION partners",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "齊藤陽成": {
+   "company": "株式会社ベスティブロ",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "西椋太": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "佐藤大": {
+   "company": "株式会社UNIVA FIT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "安冨龍治": {
+   "company": "株式会社UNIVA FIT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "佐藤健太": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "高橋拓也": {
+   "company": "株式会社アイファドーズ",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "藤田優貴": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "後藤晃祐": {
+   "company": "株式会社UNIVA FIT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "山村凰太": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "我妻拓馬": {
+   "company": "株式会社JINNOVA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "清水圭輝": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "田中柊羽": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "森田偉心": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "神保慧道": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "椛島大生": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "田端悠久": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "君嶋健斗": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "角谷成映": {
+   "company": "株式会社JINNOVA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "栗山裕仁": {
+   "company": "株式会社JINNOVA",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "浅井詩音": {
+   "company": "アフターホーム株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "河野大輝": {
+   "company": "アフターホーム株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "岩本顕": {
+   "company": "アフターホーム株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "中田友二": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "佐藤光希": {
+   "company": "株式会社Face to Faith",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "中山寛": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "下島貢一": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "落合汐里": {
+   "company": "株式会社ForMe works",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "藤田千絢": {
+   "company": "株式会社ForMe works",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "富田健斗": {
+   "company": "株式会社ForMe works",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "徳永優太": {
+   "company": "株式会社ForMe works",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "高林大夢": {
+   "company": "株式会社LeadMore",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "福田渉": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "三宅祐太": {
+   "company": "株式会社guidance",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "胡木真吾": {
+   "company": "株式会社guidance",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "中尾和土": {
+   "company": "株式会社guidance",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "宮井翔太郎": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "岩池一真": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "秋元幸助": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "山﨑涼介": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "小礒慎二郎": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "松崎竜也": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "園田健太郎": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "安心院隼翔": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "高橋元汰": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "山内勇貴": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "中塚勇一": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "宮田太智": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "大澤宗史": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "女鹿翔栄": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "渡邉直也": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "武村皓": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "岡未蘭": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "富永大士": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "水野友裕": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "南浦敏": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "福本優星": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "秋山裕一": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "赤津輝樹": {
+   "company": "吉川推進",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "吉川泰生": {
+   "company": "吉川推進",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "安藤大晃": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "大野直哉": {
+   "company": "株式会社LeadMore",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "水野裕也": {
+   "company": "株式会社LeadMore",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "大城太希": {
+   "company": "株式会社LeadMore",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "熊谷康佑": {
+   "company": "株式会社LeadMore",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "板倉崇晃": {
+   "company": "株式会社ゼニソ",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "中島将暢": {
+   "company": "株式会社JINNOVA",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "吉田マイルズ": {
+   "company": "株式会社ASG",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "横井源希": {
+   "company": "株式会社ASG",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "濱田裕大": {
+   "company": "株式会社ASG",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "大原颯太": {
+   "company": "株式会社ASG",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "林竜希": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "佐山冬樹": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "二瓶真那斗": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "伊東翔太": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "望月優衣": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "藁科雅也": {
+   "company": "奏建ハウス株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "小山元気": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "木下幸輝": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "遠田健人": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "長谷川景英": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "古川昇平": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "戸松巧": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "古田昌平": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "中尾彰秀": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "石山大河": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "山田成世": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "中川良太": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "長谷部理志": {
+   "company": "株式会社UNIVA FIT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "春日大輝": {
+   "company": "株式会社UNIVA FIT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "河合智勝": {
+   "company": "株式会社UNIVA FIT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "大賀隼人": {
+   "company": "合同会社インクライン",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "山田敦也": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "富田聡一郎": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "久保田祥大": {
+   "company": "株式会社LeadMore",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "小林周平": {
+   "company": "株式会社LeadMore",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "安藤壮吾": {
+   "company": "株式会社LeadMore",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "間瀬楓大": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "伊藤樹優": {
+   "company": "株式会社ベスティブロ",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "金田涼": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "伊藤優作": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "横山藍己": {
+   "company": "株式会社ゼニソ",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "中北航生": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "長井登和": {
+   "company": "株式会社ゼニソ",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "長谷川拓耶": {
+   "company": "株式会社JINNOVA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "阿部竜": {
+   "company": "合同会社KARMA",
+   "roles": [
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "小林太一": {
+   "company": "合同会社KARMA",
+   "roles": [
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "徳山直樹": {
+   "company": "合同会社KARMA",
+   "roles": [
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "井本優良": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "山口裕馬": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "梅村智志": {
+   "company": "株式会社LeadMore",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "白方誠人": {
+   "company": "株式会社ベスティブロ",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "斉藤優介": {
+   "company": "株式会社アイファドーズ",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "尾関鎮": {
+   "company": "株式会社ASG",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "上村直樹": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "森田直也": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "小田真広": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "山崎奏来": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "平井健嗣": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "亀田夏輝": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "村上拓也": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "小寺茉友": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "林起基": {
+   "company": "G.WORTH株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "山﨑隆正": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "塚田瑛司": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "信國謙太朗": {
+   "company": "株式会社LeadMore",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "内山翔太": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "西畑拓": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "大原大悟": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "本城慎也": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "平良一真": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "仲田恭": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "村上真太郎": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "楢岡大樹": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "古閑将仁": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "一木亮太": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "砥綿星輝": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "篠優": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "麻生恭平": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "杉山大樹": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "伊藤圭佑": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "平原健悠": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "石原智巳": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "須藤隆成": {
+   "company": "株式会社ベスティブロ",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "秋山裕亮": {
+   "company": "株式会社ベスティブロ",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "井澤宏太": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "高木達也": {
+   "company": "株式会社ベスティブロ",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "仲本賢斗": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "千葉拓哉": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "大吉浩": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "横田哲士": {
+   "company": "株式会社LIVION partners",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "野中大生": {
+   "company": "株式会社LIVION partners",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "畠山毅": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "伊賀茂義": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "川島滉斗": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "高橋崇大": {
+   "company": "一興商事株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "秋田琉樹": {
+   "company": "合同会社La Fin",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "久保裕人": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "柴田優": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "亀山優雅": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "遠田至悠": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "小林透己": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "藤川象太郎": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "宇山優衣": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "奥津華凛": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "細田琉貴": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "山重彩寿": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "池田康彦": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "小林祐真": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "星崎政和": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "御船正己": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "井上務": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "野﨑太志": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "早川遼": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "末吉剛大": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "山下翔平": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "鈴木秀哉": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "藤本啓介": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "若山峻護": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "堀智紀": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "北林勇哉": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "三好雄太": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "中川魁人": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "渡邉嘉人": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "伴瑛志郎": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "三ツ俣大樹": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "上田洋平": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "久保海飛": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "百瀬遥輝": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "田島健太郎": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "山田椋太": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "上平哲大": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "橋口航大": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "伊藤蓮": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "丸山歩武": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "中玉利洋成": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "池田優己": {
+   "company": "（不明）",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "嶺本渚": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "神崎奨太": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 0
+  },
+  "相原省一": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "木村瞭太": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "横山豪": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "鈴木隆輔": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  },
+  "川上留以": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター",
+    "クローザー"
+   ],
+   "created_at": "2026-01-20",
+   "tenure_days": 258,
+   "bucket": "mid",
+   "account_status": 1
+  }
+ }
+}

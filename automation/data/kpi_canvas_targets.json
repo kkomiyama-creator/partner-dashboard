@@ -1,0 +1,125 @@
+{
+ "month": "2026-10",
+ "note": "10月計画値。原則は「10月の各パートナーごとのKPI計画値」(1_N1njhySYXwrYT9omf1Kfsfh7h7KdiCpXe7zSQJq3t0) の案値だが、パートナー稼働者アンケート（1noeKxt2IBAyHCnI2qaEENcZghG7rNV0tvnzZTZ5KYmw）で本人提出があった社は提出値に差替済み（2026-10-02反映: Ambitious株式会社・HY株式会社・一興商事株式会社・株式会社ASG・株式会社Corest home・株式会社guidance・株式会社Next Place・株式会社TRIXIA／2026-10-03追加反映: 株式会社ベスティブロ／2026-10-05追加反映（10/4回答分）: 株式会社LeadMore・株式会社ForMe works・株式会社STORIA。株式会社LIVION partnersは提出値が実績を下回る不自然な値のため保留し案値のまま）",
+ "targets": {
+  "株式会社テクノホーム": {
+   "apo_seiyaku": 8,
+   "clo_seiyaku": null,
+   "apo": 39
+  },
+  "株式会社LeadMore": {
+   "apo_seiyaku": 9,
+   "clo_seiyaku": 15,
+   "apo": 60
+  },
+  "Ambitious株式会社": {
+   "apo_seiyaku": 62,
+   "clo_seiyaku": 70,
+   "apo": 280
+  },
+  "HY株式会社": {
+   "apo_seiyaku": 40,
+   "clo_seiyaku": 43,
+   "apo": 100
+  },
+  "株式会社JINNOVA": {
+   "apo_seiyaku": 5,
+   "clo_seiyaku": 13,
+   "apo": 18
+  },
+  "株式会社ベスティブロ": {
+   "apo_seiyaku": 20,
+   "clo_seiyaku": 10,
+   "apo": 50
+  },
+  "株式会社ゼニソ": {
+   "apo_seiyaku": 0,
+   "clo_seiyaku": 0,
+   "apo": 0
+  },
+  "株式会社ForMe works": {
+   "apo_seiyaku": 10,
+   "clo_seiyaku": 10,
+   "apo": 60
+  },
+  "NEO": {
+   "apo_seiyaku": 3,
+   "clo_seiyaku": null,
+   "apo": 34
+  },
+  "込山推進": {
+   "apo_seiyaku": 3,
+   "clo_seiyaku": null,
+   "apo": 10
+  },
+  "株式会社Corest home": {
+   "apo_seiyaku": 7,
+   "clo_seiyaku": 10,
+   "apo": 25
+  },
+  "株式会社Next Place": {
+   "apo_seiyaku": 4,
+   "clo_seiyaku": 0,
+   "apo": 5
+  },
+  "株式会社UNIVA FIT": {
+   "apo_seiyaku": 5,
+   "clo_seiyaku": null,
+   "apo": 67
+  },
+  "D-MAK株式会社": {
+   "apo_seiyaku": 2,
+   "clo_seiyaku": 2,
+   "apo": 13
+  },
+  "株式会社STORIA": {
+   "apo_seiyaku": 5,
+   "clo_seiyaku": 10,
+   "apo": 15
+  },
+  "株式会社TRIXIA": {
+   "apo_seiyaku": 8,
+   "clo_seiyaku": 3,
+   "apo": 25
+  },
+  "株式会社LIVION partners": {
+   "apo_seiyaku": 4,
+   "clo_seiyaku": 43,
+   "apo": 18
+  },
+  "一興商事株式会社": {
+   "apo_seiyaku": 13,
+   "clo_seiyaku": 2,
+   "apo": 35
+  },
+  "株式会社ASG": {
+   "apo_seiyaku": 23,
+   "clo_seiyaku": 0,
+   "apo": 90
+  },
+  "株式会社Wiz": {
+   "apo_seiyaku": 5,
+   "clo_seiyaku": null,
+   "apo": 250
+  },
+  "株式会社guidance": {
+   "apo_seiyaku": 10,
+   "clo_seiyaku": 3,
+   "apo": 60
+  },
+  "株式会社日本建装": {
+   "apo_seiyaku": 0,
+   "clo_seiyaku": null,
+   "apo": 2
+  }
+ },
+ "reference_rows": {
+  "株式会社Fit Founder": {
+   "label": "（参考）株式会社Fit Founder（直販）",
+   "apo_seiyaku": 35,
+   "clo_seiyaku": 40,
+   "apo": 176
+  }
+ },
+ "reference_note": "直販の10月目標は「10月の各パートナーごとのKPI計画値」シートの直販行（直販の提示資料：アポ成約35・クロ成約40・後確通過176）。並び順・信号サマリーの対象外の参考行。"
+}

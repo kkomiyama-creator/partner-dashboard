@@ -43,6 +43,11 @@ EXCLUDE = {"株式会社Fit Founder"}
 
 # 前回実行時点の進捗率スナップショット（日次で上書き・前日比の検出に使う）
 SNAPSHOT_FILE = "automation/data/kpi_snapshot_prev.json"
+
+# 月次のCanvas用目標値（2026-10-01 小宮山さん指示）。"month"が当月と一致する場合のみ、
+# index.htmlのCOMPANY_TARGETS_DEFAULT（前月のフォーム集計）の代わりにこちらを使う。
+# 月が変わったら自動的に無効になり、index.html側の目標値に戻る。
+CANVAS_TARGETS_FILE = "automation/data/kpi_canvas_targets.json"
 METRIC_LABELS = {
     "apo_seiyaku": "アポ成約",
     "clo_seiyaku": "クロ成約",
@@ -203,16 +208,30 @@ def main():
     html = load_html()
     periods = extract_balanced_json(html, "const PERIODS = ")
     targets = extract_balanced_json(html, "const COMPANY_TARGETS_DEFAULT = ")
+    override = None
+    try:
+        with open(CANVAS_TARGETS_FILE, encoding="utf-8") as f:
+            override = json.load(f)
+    except FileNotFoundError:
+        pass
+    use_override = bool(override) and override.get("month") == f"{year:04d}-{month:02d}"
+    if use_override:
+        targets = override["targets"]
     month_data = periods["month"]
     actual_by_co = {c["company"]: c for c in month_data["companies"]}
 
     today_attendance_counts = {}
     if args.attendance_json:
         with open(args.attendance_json, encoding="utf-8") as f:
-            today_attendance_counts = json.load(f).get("counts", {})
+            raw_counts = json.load(f).get("counts", {})
+        # 出退勤側の会社名に「（あま市）」などの括弧注記が付く場合があるので外して突合する
+        for k, v in raw_counts.items():
+            base = re.sub(r"[（(].*?[）)]$", "", k)
+            today_attendance_counts[base] = today_attendance_counts.get(base, 0) + v
 
-    for co in KNOWN_PENDING_EXTRA:
-        targets.setdefault(co, {})
+    if not use_override:
+        for co in KNOWN_PENDING_EXTRA:
+            targets.setdefault(co, {})
 
     rows = []
     for co, t in targets.items():
@@ -267,6 +286,22 @@ def main():
 
     rows.sort(key=sort_key, reverse=True)
 
+    # 参考行（2026-10-05 小宮山さん指示）：直販（株式会社Fit Founder）の実績を一覧の最下部に載せる。
+    # パートナーではないため、並び順・信号サマリー・前日比改善の対象には含めない。
+    reference_rows = []
+    if use_override:
+        for co, t in (override.get("reference_rows") or {}).items():
+            a = actual_by_co.get(co, {})
+            reference_rows.append(
+                {
+                    "co": t.get("label", co),
+                    "headcount_actual": today_attendance_counts.get(co),
+                    "apo_seiyaku": metric(a.get("apo_seiyaku", 0) or 0, t.get("apo_seiyaku"), std, factor),
+                    "clo_seiyaku": metric(a.get("clo_seiyaku", 0) or 0, t.get("clo_seiyaku"), std, factor),
+                    "apo_num": metric(a.get("apo_kakutoku", 0) or 0, t.get("apo"), std, factor),
+                }
+            )
+
     lines = []
     lines.append(
         "|会社名|"
@@ -303,10 +338,20 @@ def main():
         elif "🔵" in sigs:
             counts["🔵"] += 1
 
+    for r in reference_rows:
+        hc_actual = f"{r['headcount_actual']}名" if r["headcount_actual"] else "ー"
+        a1, p1, s1, l1 = cell(r["apo_seiyaku"])
+        a2, p2, s2, l2 = cell(r["clo_seiyaku"])
+        a3, p3, s3, l3 = cell(r["apo_num"])
+        lines.append(
+            f"|{r['co']}|{a1}|{p1}|{s1}|{l1}|{a2}|{p2}|{s2}|{l2}|{a3}|{p3}|{s3}|{l3}|ー|{hc_actual}|"
+        )
+
     prev_snapshot = load_snapshot()
     improvements = find_improvements(rows, prev_snapshot)
     save_snapshot(rows, today.isoformat())
 
+    print(f"# TARGETS={'override:' + CANVAS_TARGETS_FILE if use_override else 'index.html'}")
     print(f"# STD_RATE={std*100:.1f}% WD_MONTH={wd_month} WD_ELAPSED={wd_elapsed} DATE={today.isoformat()}")
     print(f"# SUMMARY 🔵{counts['🔵']}社 🟡{counts['🟡']}社 🔴{counts['🔴']}社 ⚪{counts['⚪']}社")
     print()
