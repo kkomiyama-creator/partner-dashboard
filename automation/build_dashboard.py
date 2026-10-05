@@ -2828,6 +2828,8 @@ function renderCompanyTargetForm(companies){
   // 2026-09-07: 稼働者アンケート(Googleフォーム)の回答から判明した「当月稼働予定者」をバイネームで
   // 参考表示する列。編集不可(入力欄ではない)・readCompanyTargetForm側で保存時に消えないよう保持する。
   const membersCell = (members) => `<td class="targetcol" style="max-width:240px; font-size:11.5px; color:var(--text-sub); white-space:normal;" title="${escapeHtml((members||[]).join('、'))}">${escapeHtml((members||[]).join('、')) || '—'}</td>`;
+  // ロック中は目標が登録済みの会社だけを表示する（離脱した会社など目標対象外の会社を出さない）
+  if(COMPANY_TARGETS_LOCK.locked) companies = companies.filter(c => Object.prototype.hasOwnProperty.call(COMPANY_TARGETS_DEFAULT, c));
   const rows = companies.map(company => {
     const t = COMPANY_TARGETS[company] || {};
     return `<tr><td class="name">${escapeHtml(company)}</td>${COMPANY_TARGET_FIELDS.map(([k])=>inputCell(company, k, t[k])).join('')}${membersCell(t.members)}</tr>`;
