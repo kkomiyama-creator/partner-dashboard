@@ -1107,18 +1107,18 @@ function renderOverallLanding(){
   const std = standardProgressFor(fm, FORECAST.asof);
   const stretch = k => Object.values(COMPANY_TARGETS_DEFAULT).reduce((s, v) => s + ((v && v[k]) || 0), 0);
   const items = [
-    {label: 'アポ獲得数', key: 'apo', target: stretch('apo') || null,
-     note: '目標＝各社ストレッチ目標の合算'},
+    {label: 'アポ獲得数', key: 'apo', target: stretch('apo') || null, reference: true,
+     note: '参考値：全体のアポ目標は設けておらず、各社ストレッチ目標の合算を目安として表示'},
     {label: '成約数', key: 'seiyaku', target: (OVERALL_TARGETS.month === fm ? OVERALL_TARGETS.seiyaku : null),
      note: `目標＝全体目標（${OVERALL_TARGETS.note}）／各社ストレッチ目標の合算は${stretch('clo_seiyaku')}件`},
   ];
   const rows = items.map(it => {
     const m = FORECAST.metrics[it.key];
     if(!m) return '';
-    const sig = signalFor(m.actual, it.target, std);
+    const sig = it.reference ? null : signalFor(m.actual, it.target, std);
     const prog = it.target ? (m.actual / it.target * 100).toFixed(1) + '%' : '—';
     const land = it.target ? (m.forecast / it.target * 100).toFixed(0) + '%' : '—';
-    const diff = it.target ? m.forecast - it.target : null;
+    const diff = (it.target && !it.reference) ? m.forecast - it.target : null;
     const diffTxt = diff === null ? '' : (diff >= 0 ? `（目標を約${diff}件上回る見込み）` : `（目標に約${-diff}件届かない見込み）`);
     const badge = m.verified
       ? `<span class="pill good" title="過去${(m.backtest||{}).n_months}か月でバックテスト">検証済 誤差±${(m.backtest||{}).mape}%</span>`
@@ -1126,9 +1126,9 @@ function renderOverallLanding(){
     return `<tr>
       <td class="name">${it.label}<div style="font-size:11px; color:var(--text-sub); font-weight:400;">${it.note}</div></td>
       <td class="num">${m.actual.toLocaleString()}件</td>
-      <td class="num">${it.target ? it.target.toLocaleString() + '件' : '未設定'}</td>
+      <td class="num">${it.target ? it.target.toLocaleString() + '件' + (it.reference ? '（参考）' : '') : '未設定'}</td>
       <td class="num">${prog}</td>
-      <td>${signalPill(sig, '標準進捗率に対する達成度')}</td>
+      <td>${it.reference ? '<span class="pill flat" title="全体のアポ目標がないため信号は出しません">— 参考</span>' : signalPill(sig, '標準進捗率に対する達成度')}</td>
       <td class="num"><b>${m.forecast.toLocaleString()}件</b> <span style="color:var(--text-sub); font-size:11px;">（目標比${land}）${diffTxt}</span></td>
       <td>${badge}</td>
     </tr>`;
