@@ -593,7 +593,7 @@ button.printbtn.active{background:var(--blue); color:#fff; border-color:var(--bl
         <span class="pill" style="background:#e3eefe; color:#1e40af; font-weight:700;">🔵 好調</span>
         <span class="pill" style="background:#fff3c4; color:#92400e; font-weight:700;">🟡 要注意</span>
         <span class="pill" style="background:#fddcdc; color:#991b1b; font-weight:700;">🔴 要テコ入れ</span>
-        <span style="color:var(--text-sub);">（標準進捗率＝経過稼働日÷当月稼働日。アポ・アポ成約・クロ成約のうち最も悪いもので判定／月次表示のみ）</span></div>
+        <span style="color:var(--text-sub);">（標準進捗率＝経過稼働日÷当月稼働日。アポ成約数・クロ成約数のうち良い方で判定／月次表示のみ）</span></div>
       <div class="card"><div class="tablewrap"><table id="t-company"></table></div></div>
       <div class="note" style="margin-top:10px;">企業名をクリックすると、その企業の目標進捗ゲージがページ上部に表示され、メンバー別内訳の表示に切り替わります（ダッシュボード上部のKPIタイルもその会社の値に切り替わります。他のランキングタブは全社表示のまま変わりません）。</div>
     </div>
@@ -1056,6 +1056,11 @@ function worstSignal(list){
   if(!ls.length) return null;
   return ls.sort((a, b) => SIGNAL_RANK[a] - SIGNAL_RANK[b])[0];
 }
+function bestSignal(list){
+  const ls = list.filter(Boolean);
+  if(!ls.length) return null;
+  return ls.sort((a, b) => SIGNAL_RANK[b] - SIGNAL_RANK[a])[0];
+}
 function signalPill(s, title){
   const m = {
     blue:   ['🔵 好調',       '#dbeafe', '#1e40af'],
@@ -1106,13 +1111,14 @@ function companySignalValue(c){
   const ctx = companyPeriodContext();
   if(ctx.mode !== 'month') return null;
   const t = companyTargetFor(c.company);
-  return worstSignal([signalFor(c.apo_kakutoku, t.apo, ctx.std), signalFor(c.apo_seiyaku, t.apo_seiyaku, ctx.std), signalFor(c.clo_seiyaku, t.clo_seiyaku, ctx.std)]);
+  // 評価対象はアポ成約数・クロ成約数のうち「良い方」（アポ獲得数は評価に含めない・2026-10-05変更）
+  return bestSignal([signalFor(c.apo_seiyaku, t.apo_seiyaku, ctx.std), signalFor(c.clo_seiyaku, t.clo_seiyaku, ctx.std)]);
 }
 function companySignalCell(v, c){
   const ctx = companyPeriodContext();
   if(ctx.mode !== 'month') return '<span class="pill flat">—</span>';
   const std = ctx.std === null ? '—' : Math.round(ctx.std * 1000) / 10 + '%';
-  return signalPill(v, `標準進捗率${std}に対する達成度（アポ・アポ成約・クロ成約のうち最も悪いもの）`);
+  return signalPill(v, `標準進捗率${std}に対する達成度（アポ成約・クロ成約のうち良い方）`);
 }
 function contribPct(c, metric, tkey){
   const ctx = companyPeriodContext();
