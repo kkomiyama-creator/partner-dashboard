@@ -232,6 +232,13 @@ tbody tr:last-child td{border-bottom:none;}
 tbody tr:hover{background:var(--blue-pale);}
 tbody tr.direct{background:var(--warn-bg);}
 tbody tr.direct:hover{background:var(--warn-bg);}
+/* 企業別ランキングの行の塗り分け（青=好調／黄=要注意／赤=要テコ入れ・2026-10-05追加）。直販行の黄色より優先する */
+tbody tr.sig-blue, tbody tr.direct.sig-blue{background:#e3eefe;}
+tbody tr.sig-yellow, tbody tr.direct.sig-yellow{background:#fff3c4;}
+tbody tr.sig-red, tbody tr.direct.sig-red{background:#fddcdc;}
+tbody tr.sig-blue:hover{background:#cfe0fc;}
+tbody tr.sig-yellow:hover{background:#ffeaa0;}
+tbody tr.sig-red:hover{background:#fbc6c6;}
 td.rank{color:var(--text-sub); font-weight:700; width:40px;}
 td.name{font-weight:600; color:var(--text);}
 td.company{color:var(--text-sub);}
@@ -390,6 +397,9 @@ button.printbtn.active{background:var(--blue); color:#fff; border-color:var(--bl
   .card, .tile{ box-shadow:none; border:1px solid #ccc; break-inside:avoid; }
   thead th{ background:#EFF4FF !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; position:static; }
   tbody tr.direct{ background:#FFFBEB !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  tbody tr.sig-blue{ background:#e3eefe !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  tbody tr.sig-yellow{ background:#fff3c4 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  tbody tr.sig-red{ background:#fddcdc !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   .pill{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   .tabbar{ display:none; }
   .panel{ display:none !important; }
@@ -579,6 +589,11 @@ button.printbtn.active{background:var(--blue); color:#fff; border-color:var(--bl
           </div>
         </div>
       </details>
+      <div id="companySignalLegend" class="note" style="margin-bottom:8px; display:none;">行の色＝目標に対する今の状況：
+        <span class="pill" style="background:#e3eefe; color:#1e40af; font-weight:700;">🔵 好調</span>
+        <span class="pill" style="background:#fff3c4; color:#92400e; font-weight:700;">🟡 要注意</span>
+        <span class="pill" style="background:#fddcdc; color:#991b1b; font-weight:700;">🔴 要テコ入れ</span>
+        <span style="color:var(--text-sub);">（標準進捗率＝経過稼働日÷当月稼働日。アポ・アポ成約・クロ成約のうち最も悪いもので判定／月次表示のみ）</span></div>
       <div class="card"><div class="tablewrap"><table id="t-company"></table></div></div>
       <div class="note" style="margin-top:10px;">企業名をクリックすると、その企業の目標進捗ゲージがページ上部に表示され、メンバー別内訳の表示に切り替わります（ダッシュボード上部のKPIタイルもその会社の値に切り替わります。他のランキングタブは全社表示のまま変わりません）。</div>
     </div>
@@ -1067,6 +1082,25 @@ function companyPeriodContext(){
     return {mode: 'week', monthKey: ((w && w.end) || CURRENT_WEEK_KEY).slice(0, 7)};
   }
   return {mode: null};
+}
+
+// 稼働人員数（2026-10-05変更）: 各社がフォームで回答した「稼働予定者」の名簿(members)を目標人数とし、
+// そのうち実際にCyzenの出退勤打刻（出勤報告）があった人数を実績とする。名簿の外で打刻した人は「予定外」として別掲。
+function memberHeadcount(d, company){
+  const members = companyTargetFor(company).members;
+  if(!members || !members.length) return null;
+  const rows = d.attendance_person_rows || [];
+  const attended = new Set(rows.map(r => normNameJs(r[0])));
+  const memberSet = new Set(members.map(normNameJs));
+  let actual = 0;
+  memberSet.forEach(n => { if(attended.has(n)) actual++; });
+  const extra = rows.filter(r => r[1] === company && !memberSet.has(normNameJs(r[0]))).length;
+  return {target: memberSet.size, actual: actual, extra: extra};
+}
+function headcountSignal(actual, target){
+  if(!(target > 0)) return null;
+  const r = (actual || 0) / target;
+  return r >= 0.8 ? 'blue' : (r >= 0.5 ? 'yellow' : 'red');
 }
 function companySignalValue(c){
   const ctx = companyPeriodContext();
@@ -1573,7 +1607,8 @@ function gaugeRing(pctVal, opts={}){
 // 企業別ページのKPI進捗ゲージ（2026-08-31追加・小宮山さん依頼）。実績値を大きく見せつつ、
 // リングの塗り具合と色（緑=達成/黄=あと一歩/赤=遅れ）で目標に対する進捗を直感的に示す。
 // gaugeRing()（%だけを表示する小型版）とは別に、実績値そのものを主役にした大型カードとして作る。
-function kpiGaugeCard(label, actual, target, fmt, tileKind){
+function kpiGaugeCard(label, actual, target, fmt, tileKind, opts){
+  opts = opts || {};
   if(target === null || target === undefined || target === '') return '';
   fmt = fmt || (v => (v===null||v===undefined) ? '—' : String(v));
   const size = 132, stroke = 12;
@@ -1583,12 +1618,12 @@ function kpiGaugeCard(label, actual, target, fmt, tileKind){
   // 信号（青/黄/赤）: 標準進捗率（経過稼働日÷当月稼働日）に対する達成度。月次表示のときだけ判定する。
   const gctx = companyPeriodContext();
   const std = gctx.mode === 'month' ? gctx.std : null;
-  const sig = signalFor(actual, target, std);
+  const sig = opts.sigFn ? opts.sigFn(actual, target) : signalFor(actual, target, std);
   const sigColor = {blue:'#2563eb', yellow:'#d97706', red:'var(--danger)'};
   const color = sig ? sigColor[sig] : (rate===null ? 'var(--border)' : rate>=100 ? 'var(--success)' : rate>=85 ? 'var(--warn)' : 'var(--danger)');
   const offset = c*(1-p/100);
   const sigHtml = sig
-    ? `<div style="margin-top:6px;">${signalPill(sig, '標準進捗率に対する達成度')}</div><div style="font-size:11px; color:var(--text-sub); margin-top:2px;">標準進捗率 ${Math.round(std*1000)/10}%</div>`
+    ? `<div style="margin-top:6px;">${signalPill(sig, '標準進捗率に対する達成度')}</div><div style="font-size:11px; color:var(--text-sub); margin-top:2px;">${opts.sigNote ? opts.sigNote : '標準進捗率 ' + Math.round(std*1000)/10 + '%'}</div>`
     : '';
   const clickAttr = tileKind ? ` data-tile="${tileKind}"` : '';
   const clickCls = tileKind ? ' clickable' : '';
@@ -1602,7 +1637,7 @@ function kpiGaugeCard(label, actual, target, fmt, tileKind){
       <text x="50%" y="45%" text-anchor="middle" dominant-baseline="central" font-size="19" font-weight="800" fill="var(--ink)">${fmt(actual)}</text>
       <text x="50%" y="65%" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="700" fill="${color}">${rate===null?'—':rate+'%'}</text>
     </svg>
-    <div class="kpi-gauge-target">目標 ${fmt(target)}</div>
+    <div class="kpi-gauge-target">${opts.targetLabel || '目標'} ${fmt(target)}</div>
     ${sigHtml}
   </div>`;
 }
@@ -1709,7 +1744,8 @@ function renderTable(tableId, columns, rows, opts={}){
     let tbody = '<tbody>' + sorted.map(r=>{
       const isDirect = opts.directCheck ? opts.directCheck(r) : false;
       const clickable = opts.rowClick ? 'clickable' : '';
-      return `<tr class="${isDirect?'direct':''} ${clickable}">` + columns.map((c,i)=>{
+      const sigCls = opts.rowClassFn ? (opts.rowClassFn(r) || '') : '';
+      return `<tr class="${isDirect?'direct':''} ${clickable} ${sigCls}">` + columns.map((c,i)=>{
         const v = r[i];
         let out = v;
         if(c.fmt) out = c.fmt(v, r);
@@ -1845,7 +1881,7 @@ function renderAllTables(){
     {label:'成約率', num:true, fmt:v=>ratePill(v)},
     {label:'成約率Δ', num:true, cls:'diffcol', fmt:v=>deltaRateCell(v)},
     {label:'稼働人員数', num:true, fmt:v=>headcountCell(v)},
-    {label:'目標比(稼働)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).headcount, companyTargetFor(r[2]).chinin)},
+    {label:'目標比(稼働)', num:true, cls:'targetcol', fmt:(v,r)=>(()=>{ const mh = memberHeadcount(d, r[2]); return mh ? targetAchieveCell(mh.actual, mh.target) : targetAchieveCell(0, null); })()},
     {label:'アポ達成者数', num:true, fmt:v=>headcountCell(v)},
     {label:'成約達成者数', num:true, fmt:v=>headcountCell(v)},
     {label:'要対応', num:true, cls:'attn-needsaction', fmt:v=>headcountCell(v)},
@@ -1868,12 +1904,15 @@ function renderAllTables(){
       ctRate(c.uriage, companyTargetFor(c.company).uriage),
       c.rate, c.delta_rate,
       c.headcount,
-      ctRate(c.headcount, companyTargetFor(c.company).chinin),
+      (mh => mh ? ctRate(mh.actual, mh.target) : null)(memberHeadcount(d, c.company)),
       c.apo_achiever_count, c.seiyaku_achiever_count,
       c.attendance_alert_needsaction, c.attendance_alert_noclockin, c.attendance_alert_ok,
       c.status_tag, c.cause, c.next_action,
     ]),
-     {defaultSort:3, directCheck:r=>r[2].includes('Fit Founder'), rowClick:r=>openDrilldown(r[2])});
+     {defaultSort:3, directCheck:r=>r[2].includes('Fit Founder'), rowClick:r=>openDrilldown(r[2]),
+      rowClassFn:r=>r[11] ? 'sig-' + r[11] : ''});
+    const lg = document.getElementById('companySignalLegend');
+    if(lg) lg.style.display = companyPeriodContext().mode === 'month' ? '' : 'none';
     renderPositionMatrices(d);
     renderCompanyTargetForm(d.companies.map(c=>c.company));
   }
@@ -2280,7 +2319,12 @@ function renderTilesForCompany(d, company){
     kpiGaugeCard('アポ成約数', cSafe.apo_seiyaku, t.apo_seiyaku, v => (v===null||v===undefined)?'—':v+'件', 'apoSei'),
     kpiGaugeCard('クロ成約数', cSafe.clo_seiyaku, t.clo_seiyaku, v => (v===null||v===undefined)?'—':v+'件', 'sei'),
     kpiGaugeCard('売上', cSafe.uriage, t.uriage, v => (v===null||v===undefined)?'—':yen(v)+'円', 'uri'),
-    kpiGaugeCard('稼働人員数', cSafe.headcount, t.chinin, v => (v===null||v===undefined)?'—':v+'名', 'headcount'),
+    (() => {
+      const mh = memberHeadcount(d, company);
+      if(!mh) return '';
+      return kpiGaugeCard('稼働人員数（出退勤打刻）', mh.actual, mh.target, v => (v===null||v===undefined)?'—':v+'名', 'headcount',
+        {sigFn: headcountSignal, targetLabel: '稼働予定者', sigNote: '予定者のうち打刻あり（青80%以上・黄50%以上）' + (mh.extra ? `／予定外の打刻${mh.extra}名` : '')});
+    })(),
   ].filter(Boolean);
   document.getElementById('companyKpiGaugeTopTitle').textContent = company;
   document.getElementById('companyKpiGaugeTopCard').style.display = gauges.length ? '' : 'none';
