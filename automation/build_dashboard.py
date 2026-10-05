@@ -478,6 +478,8 @@ button.printbtn.active{background:var(--blue); color:#fff; border-color:var(--bl
     <div class="tiles" id="shodanTiles" style="margin-top:10px; grid-template-columns:repeat(4,1fr);"></div>
   </details>
 
+  <div class="card" id="overallLandingCard" style="margin-bottom:16px; padding:14px 18px; display:none;"></div>
+
   <div class="tiles">
     <div class="tile clickable" data-tile="apo"><div class="label">アポ獲得数</div><div class="value" id="tileApo">—<span class="unit">件</span></div><div class="sub">直販含む全社・キャンセル込み</div></div>
     <div class="tile clickable" data-tile="sei"><div class="label">成約数</div><div class="value" id="tileSei">—<span class="unit">件</span></div><div class="sub" id="tileSeiSub">—</div></div>
@@ -1009,6 +1011,133 @@ function companyTargetFor(company){
   if(CURRENT_MONTH_KEY === latest) return COMPANY_TARGETS[company] || {};
   const m = COMPANY_TARGETS_BY_MONTH[CURRENT_MONTH_KEY];
   return (m && m[company]) || {};
+}
+
+const OVERALL_TARGETS = __OVERALL_TARGETS__;
+// ---- 信号（青/黄/赤）・標準進捗率・日次/週次の月目標への貢献度（2026-10-05追加） ----
+// 標準進捗率 = 経過稼働日数 ÷ 当月稼働日数（月・火は休み。SlackのCanvasと同じ単純なカレンダー曜日ベース）。
+// 信号: 🔵 達成率が標準進捗率以上 / 🟡 標準進捗率の半分以上・標準未満 / 🔴 標準進捗率の半分未満 / ⚪ 目標なし。
+const OFF_WEEKDAYS = [1, 2];
+function workdaysUpTo(y, m, day){
+  let n = 0;
+  for(let i = 1; i <= day; i++){ if(OFF_WEEKDAYS.indexOf(new Date(y, m - 1, i).getDay()) < 0) n++; }
+  return n;
+}
+function standardProgressFor(monthKey, upToDateStr){
+  const p = monthKey.split('/').map(Number);
+  const dim = new Date(p[0], p[1], 0).getDate();
+  const upto = (upToDateStr && upToDateStr.slice(0, 7) === monthKey) ? parseInt(upToDateStr.slice(8, 10), 10) : dim;
+  const total = workdaysUpTo(p[0], p[1], dim);
+  return total ? workdaysUpTo(p[0], p[1], upto) / total : null;
+}
+function signalFor(actual, target, std){
+  if(!(target > 0) || std === null || std === undefined) return null;
+  const prog = (actual || 0) / target;
+  return prog >= std ? 'blue' : (prog >= std / 2 ? 'yellow' : 'red');
+}
+const SIGNAL_RANK = {red: 0, yellow: 1, blue: 2};
+function worstSignal(list){
+  const ls = list.filter(Boolean);
+  if(!ls.length) return null;
+  return ls.sort((a, b) => SIGNAL_RANK[a] - SIGNAL_RANK[b])[0];
+}
+function signalPill(s, title){
+  const m = {
+    blue:   ['🔵 好調',       '#dbeafe', '#1e40af'],
+    yellow: ['🟡 要注意',     '#fef3c7', '#92400e'],
+    red:    ['🔴 要テコ入れ', '#fee2e2', '#991b1b'],
+  };
+  if(!s) return '<span class="pill flat">⚪ 目標なし</span>';
+  return `<span class="pill" style="background:${m[s][1]}; color:${m[s][2]}; font-weight:700;" title="${title || ''}">${m[s][0]}</span>`;
+}
+function latestMonthKey(){ return MONTHLY_PERIOD_LIST[MONTHLY_PERIOD_LIST.length - 1].key; }
+function targetsForMonth(monthKey){
+  return monthKey === latestMonthKey() ? COMPANY_TARGETS : (COMPANY_TARGETS_BY_MONTH[monthKey] || {});
+}
+function companyPeriodContext(){
+  if(CURRENT_PERIOD === 'month'){
+    const ml = MONTHLY_PERIOD_LIST.find(x => x.key === CURRENT_MONTH_KEY);
+    const std = standardProgressFor(CURRENT_MONTH_KEY, CURRENT_MONTH_KEY === latestMonthKey() ? (ml && ml.end) : null);
+    return {mode: 'month', monthKey: CURRENT_MONTH_KEY, std: std};
+  }
+  if(CURRENT_PERIOD === 'day') return {mode: 'day', monthKey: CURRENT_DAY_DATE.slice(0, 7)};
+  if(CURRENT_PERIOD === 'week'){
+    // 月をまたぐ週は、週の終了日が属する月の目標を使う
+    const w = WEEKLY_PERIOD_LIST.find(x => x.key === CURRENT_WEEK_KEY);
+    return {mode: 'week', monthKey: ((w && w.end) || CURRENT_WEEK_KEY).slice(0, 7)};
+  }
+  return {mode: null};
+}
+function companySignalValue(c){
+  const ctx = companyPeriodContext();
+  if(ctx.mode !== 'month') return null;
+  const t = companyTargetFor(c.company);
+  return worstSignal([signalFor(c.apo_kakutoku, t.apo, ctx.std), signalFor(c.apo_seiyaku, t.apo_seiyaku, ctx.std), signalFor(c.clo_seiyaku, t.clo_seiyaku, ctx.std)]);
+}
+function companySignalCell(v, c){
+  const ctx = companyPeriodContext();
+  if(ctx.mode !== 'month') return '<span class="pill flat">—</span>';
+  const std = ctx.std === null ? '—' : Math.round(ctx.std * 1000) / 10 + '%';
+  return signalPill(v, `標準進捗率${std}に対する達成度（アポ・アポ成約・クロ成約のうち最も悪いもの）`);
+}
+function contribPct(c, metric, tkey){
+  const ctx = companyPeriodContext();
+  if(ctx.mode !== 'day' && ctx.mode !== 'week') return null;
+  const t = (targetsForMonth(ctx.monthKey)[c.company] || {})[tkey];
+  return t > 0 ? Math.round((c[metric] || 0) / t * 1000) / 10 : null;
+}
+function contribCell(c, metric, tkey){
+  const ctx = companyPeriodContext();
+  if(ctx.mode !== 'day' && ctx.mode !== 'week') return '<span class="pill flat">—</span>';
+  const t = (targetsForMonth(ctx.monthKey)[c.company] || {})[tkey];
+  if(!(t > 0)) return '<span class="pill flat">未設定</span>';
+  const a = c[metric] || 0;
+  const mp = MONTHLY_PERIODS[ctx.monthKey];
+  const mc = mp && mp.companies.find(x => x.company === c.company);
+  const cum = mc ? (mc[metric] || 0) : null;
+  const pct = (a / t * 100).toFixed(1);
+  return `<span title="この期間${a}件 / 月目標${t}件（当月累計${cum === null ? '—' : cum}件）">${pct}%` +
+    (cum === null ? '' : `<span style="color:var(--text-sub); font-size:11px;">（月累計${(cum / t * 100).toFixed(1)}%）</span>`) + `</span>`;
+}
+function renderOverallLanding(){
+  const el = document.getElementById('overallLandingCard');
+  if(!el) return;
+  if(!FORECAST || !FORECAST.metrics || !FORECAST.asof){ el.style.display = 'none'; return; }
+  const fm = FORECAST.asof.slice(0, 7);
+  const std = standardProgressFor(fm, FORECAST.asof);
+  const stretch = k => Object.values(COMPANY_TARGETS_DEFAULT).reduce((s, v) => s + ((v && v[k]) || 0), 0);
+  const items = [
+    {label: 'アポ獲得数', key: 'apo', target: stretch('apo') || null,
+     note: '目標＝各社ストレッチ目標の合算'},
+    {label: '成約数', key: 'seiyaku', target: (OVERALL_TARGETS.month === fm ? OVERALL_TARGETS.seiyaku : null),
+     note: `目標＝全体目標（${OVERALL_TARGETS.note}）／各社ストレッチ目標の合算は${stretch('clo_seiyaku')}件`},
+  ];
+  const rows = items.map(it => {
+    const m = FORECAST.metrics[it.key];
+    if(!m) return '';
+    const sig = signalFor(m.actual, it.target, std);
+    const prog = it.target ? (m.actual / it.target * 100).toFixed(1) + '%' : '—';
+    const land = it.target ? (m.forecast / it.target * 100).toFixed(0) + '%' : '—';
+    const diff = it.target ? m.forecast - it.target : null;
+    const diffTxt = diff === null ? '' : (diff >= 0 ? `（目標を約${diff}件上回る見込み）` : `（目標に約${-diff}件届かない見込み）`);
+    const badge = m.verified
+      ? `<span class="pill good" title="過去${(m.backtest||{}).n_months}か月でバックテスト">検証済 誤差±${(m.backtest||{}).mape}%</span>`
+      : `<span class="pill flat" title="${escapeHtml(m.note || '学習期間が短く精度を検証できません')}">参考値</span>`;
+    return `<tr>
+      <td class="name">${it.label}<div style="font-size:11px; color:var(--text-sub); font-weight:400;">${it.note}</div></td>
+      <td class="num">${m.actual.toLocaleString()}件</td>
+      <td class="num">${it.target ? it.target.toLocaleString() + '件' : '未設定'}</td>
+      <td class="num">${prog}</td>
+      <td>${signalPill(sig, '標準進捗率に対する達成度')}</td>
+      <td class="num"><b>${m.forecast.toLocaleString()}件</b> <span style="color:var(--text-sub); font-size:11px;">（目標比${land}）${diffTxt}</span></td>
+      <td>${badge}</td>
+    </tr>`;
+  }).join('');
+  el.style.display = '';
+  el.innerHTML = `<div style="font-weight:700; font-size:14px; color:var(--ink); margin-bottom:6px;">📈 スマートハウス事業全体の進捗と月末着地見込み（${fm.replace('/', '年')}月）</div>
+    <div class="note" style="margin-bottom:10px;">基準日 <b>${FORECAST.asof}</b>／標準進捗率 <b>${std === null ? '—' : (std * 100).toFixed(1) + '%'}</b>（経過稼働日 ÷ 当月稼働日・月火は休み）。
+      着地見込みは、経過分は実績どおり、残りの日は曜日・祝日区分ごとの過去平均（直近6か月・成約は獲得報告データのある7月以降）を足し込んだシミュレーションです。表示期間の切替とは連動しません。</div>
+    <div class="tablewrap"><table><thead><tr><th>指標</th><th>実績（当月累計）</th><th>目標</th><th>進捗率</th><th>信号</th><th>月末着地見込み</th><th>精度</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 function targetAchieveCell(actual, target){
   if(target === null || target === undefined || target === '') return '<span class="pill flat">未設定</span>';
@@ -1697,6 +1826,10 @@ function renderAllTables(){
     {label:'クロ成約', num:true},
     {label:'成約数Δ', num:true, cls:'diffcol', fmt:(v,r)=>deltaCell(v, companyByName.get(r[2]).delta_clo_pct)},
     {label:'目標比(クロ成約)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).clo_seiyaku, companyTargetFor(r[2]).clo_seiyaku)},
+    {label:'信号', fmt:(v,r)=>companySignalCell(v, companyByName.get(r[2]))},
+    {label:'貢献(アポ)', num:true, cls:'targetcol', fmt:(v,r)=>contribCell(companyByName.get(r[2]), 'apo_kakutoku', 'apo')},
+    {label:'貢献(アポ成約)', num:true, cls:'targetcol', fmt:(v,r)=>contribCell(companyByName.get(r[2]), 'apo_seiyaku', 'apo_seiyaku')},
+    {label:'貢献(クロ成約)', num:true, cls:'targetcol', fmt:(v,r)=>contribCell(companyByName.get(r[2]), 'clo_seiyaku', 'clo_seiyaku')},
     {label:'売上', num:true, fmt:v=>yen(v)},
     {label:'売上Δ', num:true, cls:'diffcol', fmt:(v,r)=>deltaCell(v, companyByName.get(r[2]).delta_uriage_pct)},
     {label:'目標比(売上)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).uriage, companyTargetFor(r[2]).uriage)},
@@ -1720,6 +1853,8 @@ function renderAllTables(){
       ctRate(c.apo_seiyaku, companyTargetFor(c.company).apo_seiyaku),
       c.clo_seiyaku, c.delta_clo_seiyaku,
       ctRate(c.clo_seiyaku, companyTargetFor(c.company).clo_seiyaku),
+      companySignalValue(c),
+      contribPct(c, 'apo_kakutoku', 'apo'), contribPct(c, 'apo_seiyaku', 'apo_seiyaku'), contribPct(c, 'clo_seiyaku', 'clo_seiyaku'),
       c.uriage, c.delta_uriage,
       ctRate(c.uriage, companyTargetFor(c.company).uriage),
       c.rate, c.delta_rate,
@@ -2063,6 +2198,7 @@ function realtimeActiveRecords(company){
 }
 function renderTiles(){
   const d = currentData();
+  renderOverallLanding();
   renderDailyHeadcountTile();
   if(COMPANY_SCOPE){ renderTilesForCompany(d, COMPANY_SCOPE); return; }
   document.getElementById('companyKpiGaugeTopCard').style.display = 'none';
@@ -5274,6 +5410,7 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
     # 2026-10-05: 過去月の目標（{"YYYY/MM": {会社名: {...}}}）。月次ピッカーでその月を選んだとき、
     # 当月ではなくその月の目標で進捗率を出すために使う。
     company_targets_by_month = company_targets_default.pop("_by_month", {})
+    overall_targets = company_targets_default.pop("_overall", {})
     _now_month = datetime.now(timezone(timedelta(hours=9))).strftime("%Y-%m")
     company_targets_lock = {"locked": bool(_locked_month) and _locked_month == _now_month,
                             "month": _locked_month or ""}
@@ -5389,6 +5526,7 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
     html_out = html_out.replace("__FUNNEL_MONTHLY_JSON__", json.dumps(funnel_monthly, ensure_ascii=False))
     html_out = html_out.replace("__COMPANY_TARGETS_JSON__", json.dumps(company_targets_default, ensure_ascii=False))
     html_out = html_out.replace("__COMPANY_TARGETS_LOCK__", json.dumps(company_targets_lock))
+    html_out = html_out.replace("__OVERALL_TARGETS__", json.dumps(overall_targets, ensure_ascii=False))
     html_out = html_out.replace("__COMPANY_TARGETS_BY_MONTH__", json.dumps(company_targets_by_month, ensure_ascii=False))
 
     with open(out_path, "w", encoding="utf-8") as f:
