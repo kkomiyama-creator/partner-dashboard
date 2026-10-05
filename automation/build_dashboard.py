@@ -1580,8 +1580,16 @@ function kpiGaugeCard(label, actual, target, fmt, tileKind){
   const r = (size-stroke)/2, c = 2*Math.PI*r;
   const rate = target > 0 ? Math.round((actual||0)/target*1000)/10 : null;
   const p = Math.max(0, Math.min(100, rate===null?0:rate));
-  const color = rate===null ? 'var(--border)' : rate>=100 ? 'var(--success)' : rate>=85 ? 'var(--warn)' : 'var(--danger)';
+  // 信号（青/黄/赤）: 標準進捗率（経過稼働日÷当月稼働日）に対する達成度。月次表示のときだけ判定する。
+  const gctx = companyPeriodContext();
+  const std = gctx.mode === 'month' ? gctx.std : null;
+  const sig = signalFor(actual, target, std);
+  const sigColor = {blue:'#2563eb', yellow:'#d97706', red:'var(--danger)'};
+  const color = sig ? sigColor[sig] : (rate===null ? 'var(--border)' : rate>=100 ? 'var(--success)' : rate>=85 ? 'var(--warn)' : 'var(--danger)');
   const offset = c*(1-p/100);
+  const sigHtml = sig
+    ? `<div style="margin-top:6px;">${signalPill(sig, '標準進捗率に対する達成度')}</div><div style="font-size:11px; color:var(--text-sub); margin-top:2px;">標準進捗率 ${Math.round(std*1000)/10}%</div>`
+    : '';
   const clickAttr = tileKind ? ` data-tile="${tileKind}"` : '';
   const clickCls = tileKind ? ' clickable' : '';
   return `<div class="kpi-gauge${clickCls}"${clickAttr}>
@@ -1595,6 +1603,7 @@ function kpiGaugeCard(label, actual, target, fmt, tileKind){
       <text x="50%" y="65%" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="700" fill="${color}">${rate===null?'—':rate+'%'}</text>
     </svg>
     <div class="kpi-gauge-target">目標 ${fmt(target)}</div>
+    ${sigHtml}
   </div>`;
 }
 
