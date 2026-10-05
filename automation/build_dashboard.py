@@ -15,7 +15,7 @@ import html
 import json
 import os
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from ranking_core import (aggregate, find_latest, aggregate_attendance, resolve_attendance_source,
@@ -554,6 +554,7 @@ button.printbtn.active{background:var(--blue); color:#fff; border-color:var(--bl
           パートナー企業ごとの月次目標（アポ獲得数・成約数・売上・稼働人員数）を入力すると、下の企業別実績表に達成率が表示されます。実データが未回収の会社は空欄のままでOKです（表では「未設定」と表示されます）。2026/8/31時点、各社の目標値は9月分を回収中で、判明した会社から順次このフォームに入力していく運用を想定しています。<br>
           <b>保存範囲について</b>　「保存して再計算」はご利用のブラウザにのみ保存されます（他の人のブラウザや別端末には反映されません）。<b>全社共通・恒久的な値にしたい場合は「JSONで書き出す」でファイルを保存し、そのファイルをClaudeに渡して「data/company_targets.jsonを更新して」と伝えてください</b>（deploy側・skill側の両方に反映され、以後は誰が見ても・ブラウザを変えてもこの値が初期表示されます）。
         </div>
+        <div id="companyTargetLockNote" class="note" style="display:none; margin-top:10px; font-weight:700; color:var(--ink);"></div>
         <div class="tablewrap" style="margin-top:14px;"><table id="companyTargetForm"></table></div>
         <div style="margin-top:10px; display:flex; gap:8px; align-items:center;">
           <button class="csvbtn" id="companyTargetSaveBtn" type="button">保存して再計算</button>
@@ -985,10 +986,14 @@ function tenureCell(name){
   return `<span title="Cyzenアカウント登録日を初稼働日の代理指標として使用">${tenureBucketLabel(t.bucket)}　${t.created_at}（${t.tenure_days}日）</span>`;
 }
 const COMPANY_TARGETS_DEFAULT = __COMPANY_TARGETS_JSON__;
+const COMPANY_TARGETS_LOCK = __COMPANY_TARGETS_LOCK__;
 const COMPANY_TARGETS_STORAGE_KEY = 'partnerDashboardCompanyTargets_v1';
 function loadCompanyTargets(){
   let t = null;
-  try{ const raw = localStorage.getItem(COMPANY_TARGETS_STORAGE_KEY); if(raw) t = JSON.parse(raw); }catch(e){}
+  // ロック中は端末ごとの保存値を無視し、登録済みの目標(DEFAULT)だけを使う
+  if(!COMPANY_TARGETS_LOCK.locked){
+    try{ const raw = localStorage.getItem(COMPANY_TARGETS_STORAGE_KEY); if(raw) t = JSON.parse(raw); }catch(e){}
+  }
   return Object.assign({}, COMPANY_TARGETS_DEFAULT, t);
 }
 function saveCompanyTargets(t){
@@ -2818,7 +2823,7 @@ function readTargetForm(){
 const COMPANY_TARGET_FIELDS = [['apo','目標アポ数'], ['apo_seiyaku','目標アポ成約数'], ['clo_seiyaku','目標クロ成約数'], ['uriage','目標売上(円)'], ['chinin','目標稼働人員数']];
 function renderCompanyTargetForm(companies){
   const el = document.getElementById('companyTargetForm');
-  const inputCell = (company, key, val) => `<td><input type="number" data-ct-company="${escapeHtml(company)}" data-ct-key="${key}"
+  const inputCell = (company, key, val) => `<td><input type="number" data-ct-company="${escapeHtml(company)}" data-ct-key="${key}" ${COMPANY_TARGETS_LOCK.locked?'disabled':''}
     value="${val===undefined||val===null?'':val}" style="width:100px; padding:5px 6px; border:1px solid var(--border); border-radius:6px; font-family:inherit;"></td>`;
   // 2026-09-07: 稼働者アンケート(Googleフォーム)の回答から判明した「当月稼働予定者」をバイネームで
   // 参考表示する列。編集不可(入力欄ではない)・readCompanyTargetForm側で保存時に消えないよう保持する。
@@ -2828,6 +2833,13 @@ function renderCompanyTargetForm(companies){
     return `<tr><td class="name">${escapeHtml(company)}</td>${COMPANY_TARGET_FIELDS.map(([k])=>inputCell(company, k, t[k])).join('')}${membersCell(t.members)}</tr>`;
   }).join('');
   el.innerHTML = `<thead><tr><th>会社名</th>${COMPANY_TARGET_FIELDS.map(([,l])=>`<th>${l}</th>`).join('')}<th>稼働予定者（参考・フォーム回答）</th></tr></thead><tbody>${rows}</tbody>`;
+  const lk = COMPANY_TARGETS_LOCK.locked;
+  ['companyTargetSaveBtn','companyTargetResetBtn'].forEach(id=>{ const b=document.getElementById(id); if(b) b.style.display = lk ? 'none' : ''; });
+  const ln = document.getElementById('companyTargetLockNote');
+  if(ln){
+    ln.style.display = lk ? '' : 'none';
+    ln.textContent = lk ? `🔒 ${COMPANY_TARGETS_LOCK.month.replace('-','年')}月の目標は登録済みのため、当月中は変更できません（翌月に自動で解除されます）。変更が必要な場合はClaudeにご依頼ください。` : '';
+  }
 }
 function readCompanyTargetForm(){
   // members等、入力フォームに存在しない既存フィールドを保存時に消さないよう、
@@ -3832,6 +3844,7 @@ document.getElementById('targetResetBtn').addEventListener('click', ()=>{
 });
 
 document.getElementById('companyTargetSaveBtn').addEventListener('click', ()=>{
+  if(COMPANY_TARGETS_LOCK.locked) return;
   COMPANY_TARGETS = readCompanyTargetForm();
   saveCompanyTargets(COMPANY_TARGETS);
   renderAllTables();
@@ -5243,6 +5256,12 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
     if company_targets_json and os.path.exists(company_targets_json):
         with open(company_targets_json, encoding="utf-8") as f:
             company_targets_default = json.load(f)
+    # 2026-10-05: "_locked_month"（例 "2026-10"）が入っていて、それがビルド時点(JST)の当月と一致する間は
+    # 目標値フォームを読み取り専用にする（月替わりで自動的に解除）。JSには会社別目標だけを渡す。
+    _locked_month = company_targets_default.pop("_locked_month", None)
+    _now_month = datetime.now(timezone(timedelta(hours=9))).strftime("%Y-%m")
+    company_targets_lock = {"locked": bool(_locked_month) and _locked_month == _now_month,
+                            "month": _locked_month or ""}
 
     # パートナーごとのシフト提出状況（2026-08-09追加・build_shift_status.pyの出力）。
     # 表示期間とは連動しない独立スナップショット（開拓先パートナー・行動分析タブと同じ設計）。
@@ -5354,6 +5373,7 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
     html_out = html_out.replace("__TSUJI_CROSSTAB_JSON__", json.dumps(tsuji_crosstab, ensure_ascii=False))
     html_out = html_out.replace("__FUNNEL_MONTHLY_JSON__", json.dumps(funnel_monthly, ensure_ascii=False))
     html_out = html_out.replace("__COMPANY_TARGETS_JSON__", json.dumps(company_targets_default, ensure_ascii=False))
+    html_out = html_out.replace("__COMPANY_TARGETS_LOCK__", json.dumps(company_targets_lock))
 
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(html_out)
