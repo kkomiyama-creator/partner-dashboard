@@ -160,6 +160,7 @@ def main():
          "--houjin-crm-json", houjin_crm_json,
          "--camp-roster-json", camp_roster_json,
          "--terakoya-json", terakoya_json,
+         "--completion-dir", os.path.join(AUTOMATION_DIR, "data", "completion_data"),
          "--out", out_html]
     if houjin_writeback_url:
         build_dashboard_cmd += ["--houjin-writeback-url", houjin_writeback_url]

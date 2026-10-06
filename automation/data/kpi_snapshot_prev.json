@@ -1,5 +1,5 @@
 {
- "date": "2026-10-04",
+ "date": "2026-10-05",
  "companies": {
   "株式会社日本建装": {
    "apo_seiyaku": {
@@ -12,26 +12,37 @@
     "ratio": 0.5
    }
   },
-  "HY株式会社": {
+  "込山推進": {
    "apo_seiyaku": {
-    "ratio": 0.225
-   },
-   "clo_seiyaku": {
-    "ratio": 0.2558139534883721
-   },
-   "apo_num": {
-    "ratio": 0.13
-   }
-  },
-  "株式会社ASG": {
-   "apo_seiyaku": {
-    "ratio": 0.17391304347826086
+    "ratio": 0.6666666666666666
    },
    "clo_seiyaku": {
     "ratio": null
    },
    "apo_num": {
-    "ratio": 0.12222222222222222
+    "ratio": 0.2
+   }
+  },
+  "株式会社ASG": {
+   "apo_seiyaku": {
+    "ratio": 0.30434782608695654
+   },
+   "clo_seiyaku": {
+    "ratio": null
+   },
+   "apo_num": {
+    "ratio": 0.15555555555555556
+   }
+  },
+  "HY株式会社": {
+   "apo_seiyaku": {
+    "ratio": 0.275
+   },
+   "clo_seiyaku": {
+    "ratio": 0.32558139534883723
+   },
+   "apo_num": {
+    "ratio": 0.14
    }
   },
   "株式会社UNIVA FIT": {
@@ -42,18 +53,7 @@
     "ratio": null
    },
    "apo_num": {
-    "ratio": 0.08955223880597014
-   }
-  },
-  "Ambitious株式会社": {
-   "apo_seiyaku": {
-    "ratio": 0.0967741935483871
-   },
-   "clo_seiyaku": {
-    "ratio": 0.07142857142857142
-   },
-   "apo_num": {
-    "ratio": 0.13214285714285715
+    "ratio": 0.11940298507462686
    }
   },
   "株式会社LeadMore": {
@@ -61,7 +61,29 @@
     "ratio": 0.1111111111111111
    },
    "clo_seiyaku": {
-    "ratio": 0.06666666666666667
+    "ratio": 0.2
+   },
+   "apo_num": {
+    "ratio": 0.1
+   }
+  },
+  "Ambitious株式会社": {
+   "apo_seiyaku": {
+    "ratio": 0.11290322580645161
+   },
+   "clo_seiyaku": {
+    "ratio": 0.1
+   },
+   "apo_num": {
+    "ratio": 0.175
+   }
+  },
+  "株式会社ForMe works": {
+   "apo_seiyaku": {
+    "ratio": 0.1
+   },
+   "clo_seiyaku": {
+    "ratio": 0.1
    },
    "apo_num": {
     "ratio": 0.08333333333333333
@@ -75,7 +97,7 @@
     "ratio": null
    },
    "apo_num": {
-    "ratio": 0.07692307692307693
+    "ratio": 0.10256410256410256
    }
   },
   "株式会社JINNOVA": {
@@ -100,17 +122,6 @@
     "ratio": 0.02
    }
   },
-  "株式会社ForMe works": {
-   "apo_seiyaku": {
-    "ratio": 0.0
-   },
-   "clo_seiyaku": {
-    "ratio": 0.0
-   },
-   "apo_num": {
-    "ratio": 0.016666666666666666
-   }
-  },
   "NEO": {
    "apo_seiyaku": {
     "ratio": 0.0
@@ -122,17 +133,6 @@
     "ratio": 0.14705882352941177
    }
   },
-  "込山推進": {
-   "apo_seiyaku": {
-    "ratio": 0.6666666666666666
-   },
-   "clo_seiyaku": {
-    "ratio": null
-   },
-   "apo_num": {
-    "ratio": 0.0
-   }
-  },
   "株式会社Corest home": {
    "apo_seiyaku": {
     "ratio": 0.0
@@ -141,7 +141,7 @@
     "ratio": 0.0
    },
    "apo_num": {
-    "ratio": 0.08
+    "ratio": 0.12
    }
   },
   "株式会社Next Place": {
@@ -163,7 +163,7 @@
     "ratio": 0.0
    },
    "apo_num": {
-    "ratio": 0.0
+    "ratio": 0.23076923076923078
    }
   },
   "株式会社STORIA": {
@@ -193,7 +193,7 @@
     "ratio": 0.0
    },
    "clo_seiyaku": {
-    "ratio": 0.18604651162790697
+    "ratio": 0.20930232558139536
    },
    "apo_num": {
     "ratio": 0.1111111111111111
@@ -207,7 +207,7 @@
     "ratio": 0.0
    },
    "apo_num": {
-    "ratio": 0.3142857142857143
+    "ratio": 0.37142857142857144
    }
   },
   "株式会社Wiz": {
@@ -223,13 +223,13 @@
   },
   "株式会社guidance": {
    "apo_seiyaku": {
-    "ratio": 0.0
+    "ratio": 0.2
    },
    "clo_seiyaku": {
     "ratio": 0.0
    },
    "apo_num": {
-    "ratio": 0.1
+    "ratio": 0.11666666666666667
    }
   },
   "株式会社ゼニソ": {
