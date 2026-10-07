@@ -233,12 +233,13 @@ tbody tr:hover{background:var(--blue-pale);}
 tbody tr.direct{background:var(--warn-bg);}
 tbody tr.direct:hover{background:var(--warn-bg);}
 /* 企業別ランキングの行の塗り分け（青=好調／黄=要注意／赤=要テコ入れ・2026-10-05追加）。直販行の黄色より優先する */
-tbody tr.sig-blue, tbody tr.direct.sig-blue{background:#e3eefe;}
-tbody tr.sig-yellow, tbody tr.direct.sig-yellow{background:#fff3c4;}
-tbody tr.sig-red, tbody tr.direct.sig-red{background:#fddcdc;}
-tbody tr.sig-blue:hover{background:#cfe0fc;}
-tbody tr.sig-yellow:hover{background:#ffeaa0;}
-tbody tr.sig-red:hover{background:#fbc6c6;}
+/* 半透明の色にして、ライト・ダークどちらの背景でも文字（既定の文字色）が読めるようにする */
+tbody tr.sig-blue, tbody tr.direct.sig-blue{background:rgba(37,99,235,.16);}
+tbody tr.sig-yellow, tbody tr.direct.sig-yellow{background:rgba(234,179,8,.24);}
+tbody tr.sig-red, tbody tr.direct.sig-red{background:rgba(220,38,38,.18);}
+tbody tr.sig-blue:hover{background:rgba(37,99,235,.28);}
+tbody tr.sig-yellow:hover{background:rgba(234,179,8,.38);}
+tbody tr.sig-red:hover{background:rgba(220,38,38,.3);}
 td.rank{color:var(--text-sub); font-weight:700; width:40px;}
 td.name{font-weight:600; color:var(--text);}
 td.company{color:var(--text-sub);}
