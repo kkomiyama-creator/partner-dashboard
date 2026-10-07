@@ -4633,7 +4633,7 @@ function renderInputAccuracy(){
     '<thead><tr><th>順位</th><th>企業</th><th>人数</th><th>平均スコア</th><th>全体比</th><th>状態</th>' +
     M.map(k=>`<th>${escapeHtml(k)}</th>`).join('') + '<th>最も低い指標</th>' + wk.map(w=>`<th>${escapeHtml(w)}</th>`).join('') + '</tr></thead><tbody>' +
     d.companies.map(r => {
-      const bg = r.avg<70 ? ' style="background:#fddcdc;"' : r.avg<80 ? ' style="background:#fff3c4;"' : '';
+      const bg = r.avg<70 ? ' style="background:rgba(220,38,38,.18);"' : r.avg<80 ? ' style="background:rgba(234,179,8,.24);"' : '';
       return `<tr${bg}><td>${r.rank}</td><td class="name clickable-name ia-co" data-co="${escapeHtml(r.company)}" style="cursor:pointer; text-decoration:underline; text-decoration-style:dotted;" title="クリックで担当者別スコアを表示">${escapeHtml(short(r.company))}${r.n<=2?'※':''}</td><td>${r.n}</td><td><b>${r.avg.toFixed(1)}</b></td>` +
         `<td>${r.diff>0?'+':''}${r.diff.toFixed(1)}</td><td>${mk(r.avg)}</td>` + M.map(k=>`<td>${pc(r.metrics[k])}</td>`).join('') +
         `<td>${r.weak ? escapeHtml(r.weak)+' '+pc(r.weak_val) : '－'}</td>` + (r.weekly||[]).map(v=>`<td>${v===null?'－':Math.round(v)}</td>`).join('') + '</tr>';
@@ -4661,7 +4661,7 @@ function inputAccuracyDrill(company){
   const cols = ['氏名','全体順位','スコア','状態','出勤日数','アポ数'].concat(M).concat(wk.map(w=>w+'スコア'));
   const thead = '<thead><tr>' + cols.map((c,i)=>`<th class="${i===0?'':'num'}">${escapeHtml(c)}</th>`).join('') + '</tr></thead>';
   const body = (r.members||[]).map(m=>{
-    const bg = m.score!==null && m.score<70 ? ' style="background:#fddcdc;"' : m.score!==null && m.score<80 ? ' style="background:#fff3c4;"' : '';
+    const bg = m.score!==null && m.score<70 ? ' style="background:rgba(220,38,38,.18);"' : m.score!==null && m.score<80 ? ' style="background:rgba(234,179,8,.24);"' : '';
     return `<tr${bg}><td class="name">${escapeHtml(m.name)}${m.ref?' <span class="pill flat">参考</span>':''}</td>` +
       `<td class="num">${m.rank===null?'－':m.rank}</td><td class="num"><b>${m.score===null?'－':m.score.toFixed(1)}</b></td><td class="num">${mk(m.score)}</td>` +
       `<td class="num">${m.days===null||m.days===undefined?'－':m.days}</td><td class="num">${m.apo===null||m.apo===undefined?'－':m.apo}</td>` +
