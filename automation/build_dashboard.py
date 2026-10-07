@@ -1950,6 +1950,8 @@ function renderAllTables(){
     {label:'状態タグ', fmt:(v,r)=>statusCell(companyByName.get(r[2]))},
     {label:'主因', cls:'diffcol'},
     {label:'次アクション', cls:'diffcol'},
+    {label:'入力精度', num:true, fmt:(v,r)=>iaScoreCell(r[2])},
+    {label:'入力精度の要点', cls:'diffcol', fmt:(v,r)=>iaSummaryCell(r[2])},
   ], d.companies.map(c=>[
       c.rank, c.rank_change, c.company,
       c.apo_kakutoku, c.delta_apo_kakutoku,
@@ -1968,6 +1970,8 @@ function renderAllTables(){
       c.apo_achiever_count, c.seiyaku_achiever_count,
       c.attendance_alert_needsaction, c.attendance_alert_noclockin, c.attendance_alert_ok,
       c.status_tag, c.cause, c.next_action,
+      (ia => ia ? ia.avg : null)(iaFor(c.company)),
+      (ia => ia ? ia.avg.toFixed(1) + ' ' + (ia.weak||'') : '')(iaFor(c.company)),
     ]),
      {defaultSort:3, directCheck:r=>r[2].includes('Fit Founder'), rowClick:r=>openDrilldown(r[2]),
       rowClassFn:r=>r[11] ? 'sig-' + r[11] : ''});
@@ -4513,6 +4517,25 @@ document.getElementById('printBtn').addEventListener('click', ()=>{
   }, 800);
 });
 
+// ---------- 企業別実績表の右端「入力精度」列（2026-10-07追加・INPUT_ACCURACYから） ----------
+function iaFor(company){
+  return ((typeof INPUT_ACCURACY !== 'undefined' && INPUT_ACCURACY && INPUT_ACCURACY.companies) || []).find(x=>x.company===company) || null;
+}
+function iaScoreCell(company){
+  const ia = iaFor(company);
+  if(!ia) return '<span class="note">—</span>';
+  const sc = ia.avg;
+  const [bg, fg, mk] = sc>=90 ? ['#dcf5e7','#065f46','🟢'] : sc>=80 ? ['#eef2f7','#334155','⚪'] : sc>=70 ? ['#fff3c4','#92400e','🟡'] : ['#fddcdc','#991b1b','🔴'];
+  return `<span class="pill ia-link" data-co="${escapeHtml(company)}" onclick="event.stopPropagation(); inputAccuracyDrill(this.dataset.co)" style="background:${bg}; color:${fg}; font-weight:700; cursor:pointer;" title="クリックで担当者別スコアを表示">${mk} ${sc.toFixed(1)}点${ia.n<=2?'※':''}</span>`;
+}
+function iaSummaryCell(company){
+  const ia = iaFor(company);
+  if(!ia) return '<span class="note">対象外（出勤3日以上の担当者なし）</span>';
+  const pc = v => v===null||v===undefined ? '－' : Math.round(v*100)+'%';
+  const worst = ia.weak ? `最低：${escapeHtml(ia.weak.replace('打刻率','').replace('セット率','').replace('充足率','').replace('報告率',''))} ${pc(ia.weak_val)}` : '';
+  const low = ia.low_n>0 ? `<span style="color:#991b1b; font-weight:700;">70点未満 ${ia.low_n}名</span>` : '<span style="color:var(--success);">70点未満なし</span>';
+  return `<div style="font-size:12px; line-height:1.5; white-space:nowrap;">${worst}<br>${low}（全体比 ${ia.diff>0?'+':''}${ia.diff.toFixed(1)}）</div>`;
+}
 // ---------- Cyzen入力精度スコア表示（2026-10-07追加） ----------
 function renderInputAccuracy(){
   const card = document.getElementById('inputAccuracyCard');
