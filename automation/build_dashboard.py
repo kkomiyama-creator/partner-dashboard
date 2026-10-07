@@ -1121,7 +1121,7 @@ function memberHeadcount(d, company){
   const attended = new Set(rows.map(r => normNameJs(r[0])));
   const memberSet = new Set(members.map(normNameJs));
   let actual = 0;
-  const split = {apo: {t: 0, a: 0}, clo: {t: 0, a: 0}};
+  const split = {apo: {t: 0, a: 0}, clo: {t: 0, a: 0}, apoAll: {t: 0, a: 0}};
   memberSet.forEach(n => {
     const on = attended.has(n);
     if(on) actual++;
@@ -1130,6 +1130,9 @@ function memberHeadcount(d, company){
     const isClo = !!(t && (t.roles || []).indexOf('クローザー') >= 0);
     const g = isClo ? split.clo : split.apo;
     g.t++; if(on) g.a++;
+    // アポインター稼働（兼務を含む）: アポインタータグを持つ人（役割不明も含める）
+    const isApo = !t || (t.roles || []).indexOf('アポインター') >= 0 || !isClo;
+    if(isApo){ split.apoAll.t++; if(on) split.apoAll.a++; }
   });
   const extra = rows.filter(r => r[1] === company && !memberSet.has(normNameJs(r[0]))).length;
   return {target: memberSet.size, actual: actual, extra: extra, date: date, split: split};
@@ -1147,7 +1150,9 @@ function headcountSplitHtml(mh){
       <div style="height:6px; background:var(--border); border-radius:3px; overflow:hidden;"><div style="width:${pct}%; height:100%; background:${col};"></div></div></div>`;
   };
   return `<div style="margin-top:8px; padding-top:6px; border-top:1px solid var(--border); min-width:150px;">` +
-    row('アポインター専任', mh.split.apo) + row('クローザー兼務', mh.split.clo) + `</div>`;
+    row('アポインター稼働（兼務含む）', mh.split.apoAll) +
+    `<div style="margin-top:6px; font-size:11px; color:var(--text-sub); text-align:left;">内訳</div>` +
+    row('　アポインター専任', mh.split.apo) + row('　クローザー兼務', mh.split.clo) + `</div>`;
 }
 function headcountSignal(actual, target){
   if(!(target > 0)) return null;
