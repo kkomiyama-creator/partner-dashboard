@@ -4539,14 +4539,42 @@ function renderInputAccuracy(){
     M.map(k=>`<th>${escapeHtml(k)}</th>`).join('') + '<th>最も低い指標</th>' + wk.map(w=>`<th>${escapeHtml(w)}</th>`).join('') + '</tr></thead><tbody>' +
     d.companies.map(r => {
       const bg = r.avg<70 ? ' style="background:#fddcdc;"' : r.avg<80 ? ' style="background:#fff3c4;"' : '';
-      return `<tr${bg}><td>${r.rank}</td><td>${escapeHtml(short(r.company))}${r.n<=2?'※':''}</td><td>${r.n}</td><td><b>${r.avg.toFixed(1)}</b></td>` +
+      return `<tr${bg}><td>${r.rank}</td><td class="name clickable-name ia-co" data-co="${escapeHtml(r.company)}" style="cursor:pointer; text-decoration:underline; text-decoration-style:dotted;" title="クリックで担当者別スコアを表示">${escapeHtml(short(r.company))}${r.n<=2?'※':''}</td><td>${r.n}</td><td><b>${r.avg.toFixed(1)}</b></td>` +
         `<td>${r.diff>0?'+':''}${r.diff.toFixed(1)}</td><td>${mk(r.avg)}</td>` + M.map(k=>`<td>${pc(r.metrics[k])}</td>`).join('') +
         `<td>${r.weak ? escapeHtml(r.weak)+' '+pc(r.weak_val) : '－'}</td>` + (r.weekly||[]).map(v=>`<td>${v===null?'－':Math.round(v)}</td>`).join('') + '</tr>';
     }).join('') + '</tbody>';
+  document.querySelectorAll('#t-input-accuracy .ia-co').forEach(td=>{
+    td.addEventListener('click', ()=> inputAccuracyDrill(td.dataset.co));
+  });
   document.getElementById('inputAccuracyFoot').innerHTML =
     '※＝人数が2名以下（1人の影響が大きい）。右端の週別列は、その週に出勤のあった担当者の平均スコアです（最新週は暫定）。' +
     '各指標の定義：退勤＝出勤日に同日の勤務終了報告もある割合／整合＝報告を出した日に出勤打刻もある割合／後確＝アポ獲得報告にアポ後確依頼も出ている割合／' +
     'ヒアリング＝電気代・家族構成・会話内容の充足度／予定→結果＝商談予定日〜+3日以内に結果報告がある割合（クローザーのみ）。';
+}
+// 企業名クリック→その企業の担当者別スコア（既存のドリルダウンモーダルを流用）
+function inputAccuracyDrill(company){
+  const d = INPUT_ACCURACY;
+  const r = (d.companies||[]).find(x=>x.company===company);
+  if(!r) return;
+  const pc = v => v===null||v===undefined ? '－' : Math.round(v*100)+'%';
+  const mk = sc => sc===null||sc===undefined ? '' : sc>=90 ? '🟢' : sc>=80 ? '⚪' : sc>=70 ? '🟡' : '🔴';
+  const M = d.metrics, wk = d.weeks || [];
+  const short = n => n==='株式会社Fit Founder' ? 'Fit Founder直販' : n.replace('株式会社','').replace('有限会社','').trim();
+  document.getElementById('drillTitle').textContent = `${short(company)}｜担当者別 Cyzen入力精度スコア`;
+  document.getElementById('drillSub').textContent =
+    `平均 ${r.avg.toFixed(1)}点（出勤3日以上 ${r.n}名・70点未満 ${r.low_n}名）／対象期間 ${d.period}。スコアは入力の取りこぼしを見る指標で、営業成績の優劣ではありません。出勤3日未満は参考扱いです。`;
+  const cols = ['氏名','全体順位','スコア','状態','出勤日数','アポ数'].concat(M).concat(wk.map(w=>w+'スコア'));
+  const thead = '<thead><tr>' + cols.map((c,i)=>`<th class="${i===0?'':'num'}">${escapeHtml(c)}</th>`).join('') + '</tr></thead>';
+  const body = (r.members||[]).map(m=>{
+    const bg = m.score!==null && m.score<70 ? ' style="background:#fddcdc;"' : m.score!==null && m.score<80 ? ' style="background:#fff3c4;"' : '';
+    return `<tr${bg}><td class="name">${escapeHtml(m.name)}${m.ref?' <span class="pill flat">参考</span>':''}</td>` +
+      `<td class="num">${m.rank===null?'－':m.rank}</td><td class="num"><b>${m.score===null?'－':m.score.toFixed(1)}</b></td><td class="num">${mk(m.score)}</td>` +
+      `<td class="num">${m.days===null||m.days===undefined?'－':m.days}</td><td class="num">${m.apo===null||m.apo===undefined?'－':m.apo}</td>` +
+      M.map(k=>`<td class="num">${pc(m.metrics[k])}</td>`).join('') +
+      (m.weekly||[]).map(v=>`<td class="num">${v===null?'－':Math.round(v)}</td>`).join('') + '</tr>';
+  }).join('');
+  document.getElementById('drillTable').innerHTML = thead + '<tbody>' + (body || `<tr><td colspan="${cols.length}" style="text-align:center;color:var(--text-sub);">該当者なし</td></tr>`) + '</tbody>';
+  document.getElementById('drillModal').classList.add('show');
 }
 try{ renderInputAccuracy(); }catch(e){ console.error('renderInputAccuracy', e); }
 

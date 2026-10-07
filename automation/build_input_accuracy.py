@@ -3,7 +3,7 @@
 
 入力: weekly-partner-ranking スキルの data/sept_analysis/sept_analysis_result.json
 出力: automation/data/input_accuracy.json（build_dashboard.pyが読み込み、企業別タブに表示）
-個人名は出力しない（企業単位のみ）。Slackキャンバス「Cyzen入力精度ランキング（企業別・週次）」と同じロジック。
+企業別の集計に加え、企業ごとの担当者別スコア(members)も出力する（パスワード付きダッシュボードの企業名クリック用）。Slackキャンバス「Cyzen入力精度ランキング（企業別・週次）」と同じロジック。
 毎週月曜に入力JSONを更新したら、このスクリプトを再実行してpushする（CIは再計算しない）。
 
 使い方: python3 build_input_accuracy.py <sept_analysis_result.json> [更新日YYYY-MM-DD]
@@ -52,6 +52,26 @@ def main(src, updated):
                 tmp[co].append(v["score"])
         comp_week[w] = {co: mean(v) for co, v in tmp.items()}
 
+    # 個人別（企業名クリックのドリルダウン用）。全体順位は出勤3日以上の担当者(順位対象)の中でのスコア順位。
+    rank_scores = sorted((x["score"] for x in main_rk), reverse=True)
+    wuser = res["weekly_user"]
+    members = collections.defaultdict(list)
+    for x in rk:
+        sc = x.get("score")
+        weekly = []
+        for w in wk:
+            v = wuser.get(w, {}).get(f"{x['name']}|{x['company']}")
+            weekly.append(None if not v or v.get("score") is None or v.get("出勤日数", 0) <= 0 else round(v["score"], 1))
+        members[x["company"]].append({
+            "name": x["name"], "roles": x.get("roles", []), "days": x.get("出勤日数"), "apo": x.get("アポ数"),
+            "score": None if sc is None else round(sc, 1),
+            "rank": None if (x["参考扱い"] or sc is None) else 1 + sum(1 for v in rank_scores if v > sc),
+            "ref": bool(x["参考扱い"]),
+            "metrics": {k: (None if x.get(f"c_{k}") is None else round(x[f"c_{k}"], 3)) for k in COMPS},
+            "weekly": weekly,
+        })
+    for co in members:
+        members[co].sort(key=lambda m: (m["score"] is None, m["ref"], m["score"] if m["score"] is not None else 0))
     companies = []
     for co, xs in by.items():
         st = stats(xs)
@@ -62,6 +82,7 @@ def main(src, updated):
             "low_n": sum(1 for x in xs if x["score"] < 70),
             "metrics": {k: (None if st[k] is None else round(st[k], 3)) for k in COMPS},
             "weak": weak_k, "weak_val": None if weak_k is None else round(cs[weak_k], 3),
+            "members": members.get(co, []),
             "weekly": [None if comp_week[w].get(co) is None else round(comp_week[w][co], 1) for w in wk],
         })
     companies.sort(key=lambda r: (-r["avg"], r["company"]))
