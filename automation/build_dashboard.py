@@ -1121,9 +1121,33 @@ function memberHeadcount(d, company){
   const attended = new Set(rows.map(r => normNameJs(r[0])));
   const memberSet = new Set(members.map(normNameJs));
   let actual = 0;
-  memberSet.forEach(n => { if(attended.has(n)) actual++; });
+  const split = {apo: {t: 0, a: 0}, clo: {t: 0, a: 0}};
+  memberSet.forEach(n => {
+    const on = attended.has(n);
+    if(on) actual++;
+    // 役割はCyzenのユーザータグ。クローザータグがあれば「クローザー兼務」、それ以外（役割不明を含む）は「アポインター専任」
+    const t = TENURE_BY_NAME.get(n);
+    const isClo = !!(t && (t.roles || []).indexOf('クローザー') >= 0);
+    const g = isClo ? split.clo : split.apo;
+    g.t++; if(on) g.a++;
+  });
   const extra = rows.filter(r => r[1] === company && !memberSet.has(normNameJs(r[0]))).length;
-  return {target: memberSet.size, actual: actual, extra: extra, date: date};
+  return {target: memberSet.size, actual: actual, extra: extra, date: date, split: split};
+}
+function headcountSplitHtml(mh){
+  // クローザー（兼務）が在籍しないパートナーは内訳を出さない
+  if(!mh || !mh.split || !mh.split.clo.t) return '';
+  const row = (label, g) => {
+    if(!g.t) return '';
+    const sig = headcountSignal(g.a, g.t);
+    const col = {blue:'#2563eb', yellow:'#d97706', red:'var(--danger)'}[sig];
+    const pct = Math.round(g.a / g.t * 100);
+    return `<div style="margin-top:6px; text-align:left; font-size:11.5px;">
+      <div style="display:flex; justify-content:space-between; gap:8px;"><span>${label}</span><b style="color:${col}; font-variant-numeric:tabular-nums;">${g.a}/${g.t}名</b></div>
+      <div style="height:6px; background:var(--border); border-radius:3px; overflow:hidden;"><div style="width:${pct}%; height:100%; background:${col};"></div></div></div>`;
+  };
+  return `<div style="margin-top:8px; padding-top:6px; border-top:1px solid var(--border); min-width:150px;">` +
+    row('アポインター専任', mh.split.apo) + row('クローザー兼務', mh.split.clo) + `</div>`;
 }
 function headcountSignal(actual, target){
   if(!(target > 0)) return null;
@@ -1640,7 +1664,7 @@ function kpiGaugeCard(label, actual, target, fmt, tileKind, opts){
   opts = opts || {};
   if(target === null || target === undefined || target === '') return '';
   fmt = fmt || (v => (v===null||v===undefined) ? '—' : String(v));
-  const size = 132, stroke = 12;
+  const size = opts.size || 132, stroke = opts.stroke || 12;
   const r = (size-stroke)/2, c = 2*Math.PI*r;
   const rate = target > 0 ? Math.round((actual||0)/target*1000)/10 : null;
   const p = Math.max(0, Math.min(100, rate===null?0:rate));
@@ -1663,11 +1687,11 @@ function kpiGaugeCard(label, actual, target, fmt, tileKind, opts){
       <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}"
         stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${offset.toFixed(1)}" stroke-linecap="round"
         transform="rotate(-90 ${size/2} ${size/2})"/>
-      <text x="50%" y="45%" text-anchor="middle" dominant-baseline="central" font-size="19" font-weight="800" fill="var(--ink)">${fmt(actual)}</text>
-      <text x="50%" y="65%" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="700" fill="${color}">${rate===null?'—':rate+'%'}</text>
+      <text x="50%" y="45%" text-anchor="middle" dominant-baseline="central" font-size="${opts.size ? 16 : 19}" font-weight="800" fill="var(--ink)">${fmt(actual)}</text>
+      <text x="50%" y="65%" text-anchor="middle" dominant-baseline="central" font-size="${opts.size ? 11 : 12}" font-weight="700" fill="${color}">${rate===null?'—':rate+'%'}</text>
     </svg>
     <div class="kpi-gauge-target">${opts.targetLabel || '目標'} ${fmt(target)}</div>
-    ${sigHtml}
+    ${sigHtml}${opts.extraHtml || ''}
   </div>`;
 }
 
@@ -2352,7 +2376,7 @@ function renderTilesForCompany(d, company){
       const mh = memberHeadcount(d, company);
       if(!mh) return '';
       return kpiGaugeCard('稼働人員数（' + mh.date.slice(5) + ' 出退勤打刻）', mh.actual, mh.target, v => (v===null||v===undefined)?'—':v+'名', 'headcount',
-        {sigFn: headcountSignal, targetLabel: '稼働予定者', sigNote: mh.date.slice(5) + '（本日／直近の稼働日）に打刻ありの人数（青80%以上・黄50%以上）' + (mh.extra ? `／予定外の打刻${mh.extra}名` : '')});
+        {size: 104, stroke: 10, extraHtml: headcountSplitHtml(mh), sigFn: headcountSignal, targetLabel: '稼働予定者', sigNote: mh.date.slice(5) + '（本日／直近の稼働日）に打刻ありの人数（青80%以上・黄50%以上）' + (mh.extra ? `／予定外の打刻${mh.extra}名` : '')});
     })(),
   ].filter(Boolean);
   document.getElementById('companyKpiGaugeTopTitle').textContent = company;
