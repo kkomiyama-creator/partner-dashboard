@@ -5652,12 +5652,16 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
     html_out = html_out.replace("__CAMP_ANALYSIS_JSON__", json.dumps(camp_analysis, ensure_ascii=False))
     html_out = html_out.replace("__TERAKOYA_ANALYSIS_JSON__", json.dumps(terakoya_analysis, ensure_ascii=False))
     # Cyzen入力精度スコア（週次・build_input_accuracy.pyが生成）。無い/壊れていれば空で、カードは非表示になる。
-    try:
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "input_accuracy.json"), encoding="utf-8") as _f:
-            input_accuracy = json.load(_f)
-    except Exception as e:
-        print(f"[input_accuracy] 読み込みスキップ: {e}", file=sys.stderr)
-        input_accuracy = {}
+    input_accuracy = {}
+    _here = os.path.dirname(os.path.abspath(__file__))
+    for _p in (os.path.join(_here, "data", "input_accuracy.json"), os.path.join(_here, "..", "data", "input_accuracy.json"),
+               "/Users/fitfounderkomiyamakyousuke/Documents/partner-dashboard-deploy/automation/data/input_accuracy.json"):
+        try:
+            with open(_p, encoding="utf-8") as _f:
+                input_accuracy = json.load(_f)
+            break
+        except Exception:
+            continue
     html_out = html_out.replace("__INPUT_ACCURACY_JSON__", json.dumps(input_accuracy, ensure_ascii=False))
     html_out = html_out.replace("__CONFIG_JSON__", json.dumps(config_for_js, ensure_ascii=False))
     html_out = html_out.replace("__SLACK_TOPICS_JSON__", json.dumps(slack_topics, ensure_ascii=False))
