@@ -589,6 +589,14 @@ button.printbtn.active{background:var(--blue); color:#fff; border-color:var(--bl
           </div>
         </div>
       </details>
+      <details class="card" id="inputAccuracyCard" style="margin-bottom:16px; padding:14px 18px;" open>
+        <summary style="cursor:pointer; font-weight:700; font-size:13px; color:var(--ink);">📝 Cyzen入力精度スコア（出退勤の打刻・後確登録・ヒアリング・商談結果報告）</summary>
+        <div class="note" id="inputAccuracyMeta" style="margin-top:10px;"></div>
+        <div class="tablewrap" style="margin-top:10px;"><table id="t-input-accuracy-overall"></table></div>
+        <div style="font-size:12.5px; font-weight:700; color:var(--ink); margin:14px 0 6px;">企業別ランキング</div>
+        <div class="tablewrap"><table id="t-input-accuracy"></table></div>
+        <div class="note" id="inputAccuracyFoot" style="margin-top:10px;"></div>
+      </details>
       <div id="companySignalLegend" class="note" style="margin-bottom:8px; display:none;">行の色＝目標に対する今の状況：
         <span class="pill" style="background:#e3eefe; color:#1e40af; font-weight:700;">🔵 好調</span>
         <span class="pill" style="background:#fff3c4; color:#92400e; font-weight:700;">🟡 要注意</span>
@@ -979,6 +987,8 @@ const FORECAST = __FORECAST_JSON__;
 const CAMP_ANALYSIS = __CAMP_ANALYSIS_JSON__;
 // FF寺子屋（隔週アポインター向け研修）累計参加者の月次実績推移（2026-09-24追加・build_terakoya_analysis.pyが算出）。
 const TERAKOYA_ANALYSIS = __TERAKOYA_ANALYSIS_JSON__;
+// Cyzen入力精度スコア（2026-10-07追加・build_input_accuracy.pyが週次で生成するdata/input_accuracy.json）。企業別タブに表示。
+const INPUT_ACCURACY = __INPUT_ACCURACY_JSON__;
 const URGENT_TARGETS = __URGENT_TARGETS_JSON__;
 const TRAINING = __TRAINING_JSON__;
 // 役員会（SH役職者定例）で正式決定した急落・下降ターゲット32名（2026-08-04追加）。氏名の表記ゆれを
@@ -4459,6 +4469,43 @@ document.getElementById('printBtn').addEventListener('click', ()=>{
   }, 800);
 });
 
+// ---------- Cyzen入力精度スコア表示（2026-10-07追加） ----------
+function renderInputAccuracy(){
+  const card = document.getElementById('inputAccuracyCard');
+  if(!card) return;
+  const d = INPUT_ACCURACY;
+  if(!d || !d.companies || !d.companies.length){ card.style.display = 'none'; return; }
+  const pc = v => v===null||v===undefined ? '－' : Math.round(v*100)+'%';
+  const mk = sc => sc>=90 ? '🟢' : sc>=80 ? '⚪' : sc>=70 ? '🟡' : '🔴';
+  const M = d.metrics;
+  const short = n => n==='株式会社Fit Founder' ? 'Fit Founder直販' : n.replace('株式会社','').replace('有限会社','').trim();
+  const tgt = d.targets || {};
+  document.getElementById('inputAccuracyMeta').innerHTML =
+    `毎週月曜更新（最終更新：${escapeHtml(d.updated)}／対象期間：${escapeHtml(d.period)}）。出勤3日以上の担当者の平均です（個人名は載せていません）。` +
+    `🟢 90点以上／⚪ 80〜89点／🟡 70〜79点／🔴 70点未満。スコアは<b>入力の取りこぼし</b>を見る指標で、営業成績の優劣ではありません。`;
+  const ov = d.overall;
+  const ovRow = (lab, o) => `<tr><td><b>${lab}</b></td><td>${o.n}名</td><td><b>${o.avg.toFixed(1)}</b></td>` + M.map(k=>`<td>${pc(o[k])}</td>`).join('') + '</tr>';
+  document.getElementById('t-input-accuracy-overall').innerHTML =
+    '<thead><tr><th>区分</th><th>人数</th><th>スコア</th>' + M.map(k=>`<th>${escapeHtml(k)}</th>`).join('') + '</tr></thead><tbody>' +
+    ovRow('全体（直販含む）', ov.all) + ovRow('パートナーのみ', ov.partner) +
+    '<tr><td>10月末の目標案</td><td>－</td><td>－</td>' + M.map(k=>`<td>${pc(tgt[k])}</td>`).join('') + '</tr></tbody>';
+  const wk = d.weeks || [];
+  document.getElementById('t-input-accuracy').innerHTML =
+    '<thead><tr><th>順位</th><th>企業</th><th>人数</th><th>平均スコア</th><th>全体比</th><th>状態</th>' +
+    M.map(k=>`<th>${escapeHtml(k)}</th>`).join('') + '<th>最も低い指標</th>' + wk.map(w=>`<th>${escapeHtml(w)}</th>`).join('') + '</tr></thead><tbody>' +
+    d.companies.map(r => {
+      const bg = r.avg<70 ? ' style="background:#fddcdc;"' : r.avg<80 ? ' style="background:#fff3c4;"' : '';
+      return `<tr${bg}><td>${r.rank}</td><td>${escapeHtml(short(r.company))}${r.n<=2?'※':''}</td><td>${r.n}</td><td><b>${r.avg.toFixed(1)}</b></td>` +
+        `<td>${r.diff>0?'+':''}${r.diff.toFixed(1)}</td><td>${mk(r.avg)}</td>` + M.map(k=>`<td>${pc(r.metrics[k])}</td>`).join('') +
+        `<td>${r.weak ? escapeHtml(r.weak)+' '+pc(r.weak_val) : '－'}</td>` + (r.weekly||[]).map(v=>`<td>${v===null?'－':Math.round(v)}</td>`).join('') + '</tr>';
+    }).join('') + '</tbody>';
+  document.getElementById('inputAccuracyFoot').innerHTML =
+    '※＝人数が2名以下（1人の影響が大きい）。右端の週別列は、その週に出勤のあった担当者の平均スコアです（最新週は暫定）。' +
+    '各指標の定義：退勤＝出勤日に同日の勤務終了報告もある割合／整合＝報告を出した日に出勤打刻もある割合／後確＝アポ獲得報告にアポ後確依頼も出ている割合／' +
+    'ヒアリング＝電気代・家族構成・会話内容の充足度／予定→結果＝商談予定日〜+3日以内に結果報告がある割合（クローザーのみ）。';
+}
+try{ renderInputAccuracy(); }catch(e){ console.error('renderInputAccuracy', e); }
+
 // ---------- 企業名クリック→企業スコープに切り替え(2026-08-31改訂) ----------
 // 以前はモーダルで担当者別内訳を表示していたが、小宮山さんの依頼で「検索欄から絞り込んだ時と
 // 同じ挙動」に統一。setCompanyScope()を呼びページ上部のKPI進捗ゲージ（companyKpiGaugeTopCard）
@@ -5560,6 +5607,14 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
     html_out = html_out.replace("__FORECAST_JSON__", json.dumps(forecast, ensure_ascii=False))
     html_out = html_out.replace("__CAMP_ANALYSIS_JSON__", json.dumps(camp_analysis, ensure_ascii=False))
     html_out = html_out.replace("__TERAKOYA_ANALYSIS_JSON__", json.dumps(terakoya_analysis, ensure_ascii=False))
+    # Cyzen入力精度スコア（週次・build_input_accuracy.pyが生成）。無い/壊れていれば空で、カードは非表示になる。
+    try:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "input_accuracy.json"), encoding="utf-8") as _f:
+            input_accuracy = json.load(_f)
+    except Exception as e:
+        print(f"[input_accuracy] 読み込みスキップ: {e}", file=sys.stderr)
+        input_accuracy = {}
+    html_out = html_out.replace("__INPUT_ACCURACY_JSON__", json.dumps(input_accuracy, ensure_ascii=False))
     html_out = html_out.replace("__CONFIG_JSON__", json.dumps(config_for_js, ensure_ascii=False))
     html_out = html_out.replace("__SLACK_TOPICS_JSON__", json.dumps(slack_topics, ensure_ascii=False))
     html_out = html_out.replace("__OUTREACH_JSON__", json.dumps(outreach, ensure_ascii=False))
