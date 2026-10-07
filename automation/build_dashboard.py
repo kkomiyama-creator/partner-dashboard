@@ -1101,16 +1101,29 @@ function companyPeriodContext(){
 
 // 稼働人員数（2026-10-05変更）: 各社がフォームで回答した「稼働予定者」の名簿(members)を目標人数とし、
 // そのうち実際にCyzenの出退勤打刻（出勤報告）があった人数を実績とする。名簿の外で打刻した人は「予定外」として別掲。
+// 稼働人員数の健康状態は「本日（月・火は休みなので直近の稼働日）に稼働予定者の何名が出退勤打刻したか」で見る
+// （2026-10-07変更）。月累計だと予定者のほぼ全員が1回は稼働するため、状態の良し悪しが判断できない。
+function headcountBaseDate(){
+  const dates = Object.keys(DAILY_PERIODS).sort();
+  let k = dates.length - 1;
+  while(k > 0){
+    const p = dates[k].split('/').map(Number);
+    if(OFF_WEEKDAYS.indexOf(new Date(p[0], p[1] - 1, p[2]).getDay()) < 0) break;
+    k--;
+  }
+  return dates[k];
+}
 function memberHeadcount(d, company){
-  const members = companyTargetFor(company).members;
+  const members = (targetsForMonth(headcountBaseDate().slice(0, 7))[company] || {}).members;
   if(!members || !members.length) return null;
-  const rows = d.attendance_person_rows || [];
+  const date = headcountBaseDate();
+  const rows = (DAILY_PERIODS[date] && DAILY_PERIODS[date].attendance_person_rows) || [];
   const attended = new Set(rows.map(r => normNameJs(r[0])));
   const memberSet = new Set(members.map(normNameJs));
   let actual = 0;
   memberSet.forEach(n => { if(attended.has(n)) actual++; });
   const extra = rows.filter(r => r[1] === company && !memberSet.has(normNameJs(r[0]))).length;
-  return {target: memberSet.size, actual: actual, extra: extra};
+  return {target: memberSet.size, actual: actual, extra: extra, date: date};
 }
 function headcountSignal(actual, target){
   if(!(target > 0)) return null;
@@ -1897,7 +1910,7 @@ function renderAllTables(){
     {label:'成約率', num:true, fmt:v=>ratePill(v)},
     {label:'成約率Δ', num:true, cls:'diffcol', fmt:v=>deltaRateCell(v)},
     {label:'稼働人員数', num:true, fmt:v=>headcountCell(v)},
-    {label:'目標比(稼働)', num:true, cls:'targetcol', fmt:(v,r)=>(()=>{ const mh = memberHeadcount(d, r[2]); return mh ? targetAchieveCell(mh.actual, mh.target) : targetAchieveCell(0, null); })()},
+    {label:'目標比(稼働・本日)', num:true, cls:'targetcol', fmt:(v,r)=>(()=>{ const mh = memberHeadcount(d, r[2]); return mh ? targetAchieveCell(mh.actual, mh.target) : targetAchieveCell(0, null); })()},
     {label:'アポ達成者数', num:true, fmt:v=>headcountCell(v)},
     {label:'成約達成者数', num:true, fmt:v=>headcountCell(v)},
     {label:'要対応', num:true, cls:'attn-needsaction', fmt:v=>headcountCell(v)},
@@ -2338,8 +2351,8 @@ function renderTilesForCompany(d, company){
     (() => {
       const mh = memberHeadcount(d, company);
       if(!mh) return '';
-      return kpiGaugeCard('稼働人員数（出退勤打刻）', mh.actual, mh.target, v => (v===null||v===undefined)?'—':v+'名', 'headcount',
-        {sigFn: headcountSignal, targetLabel: '稼働予定者', sigNote: '予定者のうち打刻あり（青80%以上・黄50%以上）' + (mh.extra ? `／予定外の打刻${mh.extra}名` : '')});
+      return kpiGaugeCard('稼働人員数（' + mh.date.slice(5) + ' 出退勤打刻）', mh.actual, mh.target, v => (v===null||v===undefined)?'—':v+'名', 'headcount',
+        {sigFn: headcountSignal, targetLabel: '稼働予定者', sigNote: mh.date.slice(5) + '（本日／直近の稼働日）に打刻ありの人数（青80%以上・黄50%以上）' + (mh.extra ? `／予定外の打刻${mh.extra}名` : '')});
     })(),
   ].filter(Boolean);
   document.getElementById('companyKpiGaugeTopTitle').textContent = company;

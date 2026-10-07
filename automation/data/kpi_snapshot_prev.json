@@ -1,5 +1,5 @@
 {
- "date": "2026-10-05",
+ "date": "2026-10-07",
  "companies": {
   "株式会社日本建装": {
    "apo_seiyaku": {
@@ -25,7 +25,7 @@
   },
   "株式会社ASG": {
    "apo_seiyaku": {
-    "ratio": 0.30434782608695654
+    "ratio": 0.34782608695652173
    },
    "clo_seiyaku": {
     "ratio": null
@@ -42,18 +42,18 @@
     "ratio": 0.32558139534883723
    },
    "apo_num": {
-    "ratio": 0.14
+    "ratio": 0.15
    }
   },
-  "株式会社UNIVA FIT": {
+  "Ambitious株式会社": {
    "apo_seiyaku": {
-    "ratio": 0.2
+    "ratio": 0.14516129032258066
    },
    "clo_seiyaku": {
-    "ratio": null
+    "ratio": 0.14285714285714285
    },
    "apo_num": {
-    "ratio": 0.11940298507462686
+    "ratio": 0.17857142857142858
    }
   },
   "株式会社LeadMore": {
@@ -67,17 +67,6 @@
     "ratio": 0.1
    }
   },
-  "Ambitious株式会社": {
-   "apo_seiyaku": {
-    "ratio": 0.11290322580645161
-   },
-   "clo_seiyaku": {
-    "ratio": 0.1
-   },
-   "apo_num": {
-    "ratio": 0.175
-   }
-  },
   "株式会社ForMe works": {
    "apo_seiyaku": {
     "ratio": 0.1
@@ -86,7 +75,29 @@
     "ratio": 0.1
    },
    "apo_num": {
-    "ratio": 0.08333333333333333
+    "ratio": 0.11666666666666667
+   }
+  },
+  "株式会社UNIVA FIT": {
+   "apo_seiyaku": {
+    "ratio": 0.07692307692307693
+   },
+   "clo_seiyaku": {
+    "ratio": null
+   },
+   "apo_num": {
+    "ratio": 0.11940298507462686
+   }
+  },
+  "株式会社ベスティブロ": {
+   "apo_seiyaku": {
+    "ratio": 0.1
+   },
+   "clo_seiyaku": {
+    "ratio": 0.1
+   },
+   "apo_num": {
+    "ratio": 0.02
    }
   },
   "株式会社テクノホーム": {
@@ -97,7 +108,7 @@
     "ratio": null
    },
    "apo_num": {
-    "ratio": 0.10256410256410256
+    "ratio": 0.1282051282051282
    }
   },
   "株式会社JINNOVA": {
@@ -109,17 +120,6 @@
    },
    "apo_num": {
     "ratio": 0.16666666666666666
-   }
-  },
-  "株式会社ベスティブロ": {
-   "apo_seiyaku": {
-    "ratio": 0.05
-   },
-   "clo_seiyaku": {
-    "ratio": 0.0
-   },
-   "apo_num": {
-    "ratio": 0.02
    }
   },
   "NEO": {
@@ -138,7 +138,7 @@
     "ratio": 0.0
    },
    "clo_seiyaku": {
-    "ratio": 0.0
+    "ratio": 0.1
    },
    "apo_num": {
     "ratio": 0.12
