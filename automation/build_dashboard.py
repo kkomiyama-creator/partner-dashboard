@@ -1031,7 +1031,11 @@ let COMPANY_TARGETS = loadCompanyTargets();
 // 進捗率の計算に使う目標。月次ピッカーでその月を選んだときだけ、その月の目標を返す
 // （当月＝COMPANY_TARGETS、過去月＝COMPANY_TARGETS_BY_MONTH）。日次・週次・カスタム期間は目標が月単位のため空（未設定表示）。
 function companyTargetFor(company){
-  if(CURRENT_PERIOD !== 'month') return {};
+  // 日次・月内の期間指定は、その月の目標を使う（未設定表示を避ける）
+  if(CURRENT_PERIOD !== 'month'){
+    const b = signalBasis();
+    return b ? (targetsForMonth(b.monthKey)[company] || {}) : {};
+  }
   const latest = MONTHLY_PERIOD_LIST[MONTHLY_PERIOD_LIST.length - 1].key;
   if(CURRENT_MONTH_KEY === latest) return COMPANY_TARGETS[company] || {};
   const m = COMPANY_TARGETS_BY_MONTH[CURRENT_MONTH_KEY];
@@ -1039,6 +1043,16 @@ function companyTargetFor(company){
 }
 
 const OVERALL_TARGETS = __OVERALL_TARGETS__;
+// 目標比に使う実績: 日次は選んだ日時点の月累計、期間指定は期間実績（どちらも月目標に対する割合）、月次は月累計
+function achActual(company, key, fallbackRow){
+  const ba = basisCompanyActual(company);
+  return ba ? ba[key] : (fallbackRow ? fallbackRow[key] : 0);
+}
+function achSuffix(){
+  const b = signalBasis();
+  if(!b) return '';
+  return b.kind === 'day' ? '・月累計' : (b.kind === 'range' ? '・対月目標' : '');
+}
 // ---- 信号（青/黄/赤）・標準進捗率・日次/週次の月目標への貢献度（2026-10-05追加） ----
 // 標準進捗率 = 経過稼働日数 ÷ 当月稼働日数（月・火は休み。SlackのCanvasと同じ単純なカレンダー曜日ベース）。
 // 信号: 🔵 達成率が標準進捗率以上 / 🟡 標準進捗率の半分以上・標準未満 / 🔴 標準進捗率の半分未満 / ⚪ 目標なし。
@@ -1980,12 +1994,12 @@ function renderAllTables(){
     {label:'企業名'},
     {label:'アポ獲得数', num:true},
     {label:'アポ数Δ', num:true, cls:'diffcol', fmt:(v,r)=>deltaCell(v, companyByName.get(r[2]).delta_apo_pct)},
-    {label:'目標比(アポ)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).apo_kakutoku, companyTargetFor(r[2]).apo)},
+    {label:'目標比(アポ' + achSuffix() + ')', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(achActual(r[2], 'apo_kakutoku', companyByName.get(r[2])), companyTargetFor(r[2]).apo)},
     {label:'アポ成約', num:true},
-    {label:'目標比(アポ成約)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).apo_seiyaku, companyTargetFor(r[2]).apo_seiyaku)},
+    {label:'目標比(アポ成約' + achSuffix() + ')', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(achActual(r[2], 'apo_seiyaku', companyByName.get(r[2])), companyTargetFor(r[2]).apo_seiyaku)},
     {label:'クロ成約', num:true},
     {label:'成約数Δ', num:true, cls:'diffcol', fmt:(v,r)=>deltaCell(v, companyByName.get(r[2]).delta_clo_pct)},
-    {label:'目標比(クロ成約)', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(companyByName.get(r[2]).clo_seiyaku, companyTargetFor(r[2]).clo_seiyaku)},
+    {label:'目標比(クロ成約' + achSuffix() + ')', num:true, cls:'targetcol', fmt:(v,r)=>targetAchieveCell(achActual(r[2], 'clo_seiyaku', companyByName.get(r[2])), companyTargetFor(r[2]).clo_seiyaku)},
     {label:'信号', fmt:(v,r)=>companySignalCell(v, companyByName.get(r[2]))},
     {label:'貢献(アポ)', num:true, cls:'targetcol', fmt:(v,r)=>contribCell(companyByName.get(r[2]), 'apo_kakutoku', 'apo')},
     {label:'貢献(アポ成約)', num:true, cls:'targetcol', fmt:(v,r)=>contribCell(companyByName.get(r[2]), 'apo_seiyaku', 'apo_seiyaku')},
@@ -2010,11 +2024,11 @@ function renderAllTables(){
   ], d.companies.map(c=>[
       c.rank, c.rank_change, c.company,
       c.apo_kakutoku, c.delta_apo_kakutoku,
-      ctRate(c.apo_kakutoku, companyTargetFor(c.company).apo),
+      ctRate(achActual(c.company, 'apo_kakutoku', c), companyTargetFor(c.company).apo),
       c.apo_seiyaku,
-      ctRate(c.apo_seiyaku, companyTargetFor(c.company).apo_seiyaku),
+      ctRate(achActual(c.company, 'apo_seiyaku', c), companyTargetFor(c.company).apo_seiyaku),
       c.clo_seiyaku, c.delta_clo_seiyaku,
-      ctRate(c.clo_seiyaku, companyTargetFor(c.company).clo_seiyaku),
+      ctRate(achActual(c.company, 'clo_seiyaku', c), companyTargetFor(c.company).clo_seiyaku),
       companySignalValue(c),
       contribPct(c, 'apo_kakutoku', 'apo'), contribPct(c, 'apo_seiyaku', 'apo_seiyaku'), contribPct(c, 'clo_seiyaku', 'clo_seiyaku'),
       c.uriage, c.delta_uriage,
