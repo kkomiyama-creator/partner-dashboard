@@ -1104,6 +1104,8 @@ function companyPeriodContext(){
 // 稼働人員数の健康状態は「本日（月・火は休みなので直近の稼働日）に稼働予定者の何名が出退勤打刻したか」で見る
 // （2026-10-07変更）。月累計だと予定者のほぼ全員が1回は稼働するため、状態の良し悪しが判断できない。
 function headcountBaseDate(){
+  // 日次を選んでいるときは、その日の稼働状況を見る（休みの月・火を選んだ場合もその日のまま）
+  if(CURRENT_PERIOD === 'day' && CURRENT_DAY_DATE && DAILY_PERIODS[CURRENT_DAY_DATE]) return CURRENT_DAY_DATE;
   const dates = Object.keys(DAILY_PERIODS).sort();
   let k = dates.length - 1;
   while(k > 0){
@@ -1939,7 +1941,7 @@ function renderAllTables(){
     {label:'成約率', num:true, fmt:v=>ratePill(v)},
     {label:'成約率Δ', num:true, cls:'diffcol', fmt:v=>deltaRateCell(v)},
     {label:'稼働人員数', num:true, fmt:v=>headcountCell(v)},
-    {label:'目標比(稼働・本日)', num:true, cls:'targetcol', fmt:(v,r)=>(()=>{ const mh = memberHeadcount(d, r[2]); return mh ? targetAchieveCell(mh.actual, mh.target) : targetAchieveCell(0, null); })()},
+    {label:'目標比(稼働・当日)', num:true, cls:'targetcol', fmt:(v,r)=>(()=>{ const mh = memberHeadcount(d, r[2]); return mh ? targetAchieveCell(mh.actual, mh.target) : targetAchieveCell(0, null); })()},
     {label:'アポ達成者数', num:true, fmt:v=>headcountCell(v)},
     {label:'成約達成者数', num:true, fmt:v=>headcountCell(v)},
     {label:'要対応', num:true, cls:'attn-needsaction', fmt:v=>headcountCell(v)},
@@ -2381,7 +2383,7 @@ function renderTilesForCompany(d, company){
       const mh = memberHeadcount(d, company);
       if(!mh) return '';
       return kpiGaugeCard('稼働人員数（' + mh.date.slice(5) + ' 出退勤打刻）', mh.actual, mh.target, v => (v===null||v===undefined)?'—':v+'名', 'headcount',
-        {size: 104, stroke: 10, extraHtml: headcountSplitHtml(mh), sigFn: headcountSignal, targetLabel: '稼働予定者', sigNote: mh.date.slice(5) + '（本日／直近の稼働日）に打刻ありの人数（青80%以上・黄50%以上）' + (mh.extra ? `／予定外の打刻${mh.extra}名` : '')});
+        {size: 104, stroke: 10, extraHtml: headcountSplitHtml(mh), sigFn: headcountSignal, targetLabel: '稼働予定者', sigNote: mh.date.slice(5) + (CURRENT_PERIOD === 'day' ? '（選択日）' : '（本日／直近の稼働日）') + 'に打刻ありの人数（青80%以上・黄50%以上）' + (mh.extra ? `／予定外の打刻${mh.extra}名` : '')});
     })(),
   ].filter(Boolean);
   document.getElementById('companyKpiGaugeTopTitle').textContent = company;
