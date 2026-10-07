@@ -601,7 +601,7 @@ button.printbtn.active{background:var(--blue); color:#fff; border-color:var(--bl
         <span class="pill" style="background:#e3eefe; color:#1e40af; font-weight:700;">🔵 好調</span>
         <span class="pill" style="background:#fff3c4; color:#92400e; font-weight:700;">🟡 要注意</span>
         <span class="pill" style="background:#fddcdc; color:#991b1b; font-weight:700;">🔴 要テコ入れ</span>
-        <span style="color:var(--text-sub);">（標準進捗率＝経過稼働日÷当月稼働日。アポ成約数・クロ成約数のうち良い方で判定／月次表示のみ）</span></div>
+        <span style="color:var(--text-sub);">（標準進捗率＝経過稼働日÷当月稼働日。アポ成約数・クロ成約数のうち良い方で判定。月次＝月累計、日次＝選んだ日時点の月累計、月内の週次・期間指定＝その期間内の標準進捗率で判定。月をまたぐ期間は判定なし）</span></div>
       <div class="card"><div class="tablewrap"><table id="t-company"></table></div></div>
       <div class="note" style="margin-top:10px;">企業名をクリックすると、その企業の目標進捗ゲージがページ上部に表示され、メンバー別内訳の表示に切り替わります（ダッシュボード上部のKPIタイルもその会社の値に切り替わります。他のランキングタブは全社表示のまま変わりません）。</div>
     </div>
@@ -1161,18 +1161,73 @@ function headcountSignal(actual, target){
   const r = (actual || 0) / target;
   return r >= 0.8 ? 'blue' : (r >= 0.5 ? 'yellow' : 'red');
 }
+// ---- 信号の判定基準（2026-10-07変更）----
+// 月次: 月累計 ÷ 月目標 を、その時点の標準進捗率と比べる。
+// 日次: 選んだ日「時点」の月累計（月初〜その日）を、その日時点の標準進捗率と比べる（例: 10/6時点でここまでの進捗が良いか）。
+// 月内の週次・カスタム期間: その期間の実績を、「その期間の稼働日÷当月稼働日」（期間内の標準進捗率）で按分した目標と比べる。
+// 月をまたぐ期間や、日次データのない月は判定しない。
+function workdaysBetween(y, m, d1, d2){ return workdaysUpTo(y, m, d2) - workdaysUpTo(y, m, d1 - 1); }
+function signalBasis(){
+  const mk2 = ymd => ymd.slice(0, 7);
+  if(CURRENT_PERIOD === 'month'){
+    const ctx = companyPeriodContext();
+    return {kind: 'month', monthKey: ctx.monthKey, std: ctx.std, label: ''};
+  }
+  if(CURRENT_PERIOD === 'day'){
+    const D = CURRENT_DAY_DATE, mk = mk2(D);
+    if(!DAILY_PERIODS[mk + '/01']) return null;
+    return {kind: 'day', monthKey: mk, std: standardProgressFor(mk, D), start: mk + '/01', end: D, label: D.slice(5) + '時点の月累計'};
+  }
+  const d = currentData();
+  if((CURRENT_PERIOD === 'custom' || CURRENT_PERIOD === 'week') && d && d.start && d.end){
+    const s = d.start.replaceAll('-', '/'), e = d.end.replaceAll('-', '/');
+    if(mk2(s) !== mk2(e)) return null;
+    const p = s.split('/').map(Number), e2 = e.split('/').map(Number);
+    const total = workdaysUpTo(p[0], p[1], new Date(p[0], p[1], 0).getDate());
+    const share = total ? workdaysBetween(p[0], p[1], p[2], e2[2]) / total : null;
+    return {kind: 'range', monthKey: mk2(s), std: share, label: s.slice(5) + '〜' + e.slice(5) + 'の期間内'};
+  }
+  return null;
+}
+const _cumCache = {};
+function basisCompanyActual(company){
+  const b = signalBasis();
+  if(!b) return null;
+  if(b.kind === 'day'){
+    const key = b.start + '_' + b.end;
+    if(!_cumCache[key]){
+      const m = new Map();
+      Object.keys(DAILY_PERIODS).filter(x => x >= b.start && x <= b.end).forEach(x => {
+        DAILY_PERIODS[x].companies.forEach(c => {
+          const a = m.get(c.company) || {apo_kakutoku: 0, apo_seiyaku: 0, clo_seiyaku: 0};
+          a.apo_kakutoku += c.apo_kakutoku; a.apo_seiyaku += c.apo_seiyaku; a.clo_seiyaku += c.clo_seiyaku;
+          m.set(c.company, a);
+        });
+      });
+      _cumCache[key] = m;
+    }
+    return _cumCache[key].get(company) || {apo_kakutoku: 0, apo_seiyaku: 0, clo_seiyaku: 0};
+  }
+  const c = currentData().companies.find(x => x.company === company);
+  return c ? {apo_kakutoku: c.apo_kakutoku, apo_seiyaku: c.apo_seiyaku, clo_seiyaku: c.clo_seiyaku} : {apo_kakutoku: 0, apo_seiyaku: 0, clo_seiyaku: 0};
+}
+function basisTargets(company){
+  const b = signalBasis();
+  return b ? (targetsForMonth(b.monthKey)[company] || {}) : companyTargetFor(company);
+}
 function companySignalValue(c){
-  const ctx = companyPeriodContext();
-  if(ctx.mode !== 'month') return null;
-  const t = companyTargetFor(c.company);
-  // 評価対象はアポ成約数・クロ成約数のうち「良い方」（アポ獲得数は評価に含めない・2026-10-05変更）
-  return bestSignal([signalFor(c.apo_seiyaku, t.apo_seiyaku, ctx.std), signalFor(c.clo_seiyaku, t.clo_seiyaku, ctx.std)]);
+  const b = signalBasis();
+  if(!b) return null;
+  const t = targetsForMonth(b.monthKey)[c.company] || {};
+  const a = basisCompanyActual(c.company);
+  // 評価対象はアポ成約数・クロ成約数のうち「良い方」（アポ獲得数は評価に含めない）
+  return bestSignal([signalFor(a.apo_seiyaku, t.apo_seiyaku, b.std), signalFor(a.clo_seiyaku, t.clo_seiyaku, b.std)]);
 }
 function companySignalCell(v, c){
-  const ctx = companyPeriodContext();
-  if(ctx.mode !== 'month') return '<span class="pill flat">—</span>';
-  const std = ctx.std === null ? '—' : Math.round(ctx.std * 1000) / 10 + '%';
-  return signalPill(v, `標準進捗率${std}に対する達成度（アポ成約・クロ成約のうち良い方）`);
+  const b = signalBasis();
+  if(!b) return '<span class="pill flat">—</span>';
+  const std = b.std === null ? '—' : Math.round(b.std * 1000) / 10 + '%';
+  return signalPill(v, `${b.label ? b.label + 'の' : ''}標準進捗率${std}に対する達成度（アポ成約・クロ成約のうち良い方）`);
 }
 function contribPct(c, metric, tkey){
   const ctx = companyPeriodContext();
@@ -1676,14 +1731,14 @@ function kpiGaugeCard(label, actual, target, fmt, tileKind, opts){
   const rate = target > 0 ? Math.round((actual||0)/target*1000)/10 : null;
   const p = Math.max(0, Math.min(100, rate===null?0:rate));
   // 信号（青/黄/赤）: 標準進捗率（経過稼働日÷当月稼働日）に対する達成度。月次表示のときだけ判定する。
-  const gctx = companyPeriodContext();
-  const std = gctx.mode === 'month' ? gctx.std : null;
+  const gb = signalBasis();
+  const std = gb ? gb.std : null;
   const sig = opts.sigFn ? opts.sigFn(actual, target) : signalFor(actual, target, std);
   const sigColor = {blue:'#2563eb', yellow:'#d97706', red:'var(--danger)'};
   const color = sig ? sigColor[sig] : (rate===null ? 'var(--border)' : rate>=100 ? 'var(--success)' : rate>=85 ? 'var(--warn)' : 'var(--danger)');
   const offset = c*(1-p/100);
   const sigHtml = sig
-    ? `<div style="margin-top:6px;">${signalPill(sig, '標準進捗率に対する達成度')}</div><div style="font-size:11px; color:var(--text-sub); margin-top:2px;">${opts.sigNote ? opts.sigNote : '標準進捗率 ' + Math.round(std*1000)/10 + '%'}</div>`
+    ? `<div style="margin-top:6px;">${signalPill(sig, '標準進捗率に対する達成度')}</div><div style="font-size:11px; color:var(--text-sub); margin-top:2px;">${opts.sigNote ? opts.sigNote : (gb && gb.label ? gb.label + '／' : '') + '標準進捗率 ' + Math.round(std*1000)/10 + '%'}</div>`
     : '';
   const clickAttr = tileKind ? ` data-tile="${tileKind}"` : '';
   const clickCls = tileKind ? ' clickable' : '';
@@ -1976,7 +2031,7 @@ function renderAllTables(){
      {defaultSort:3, directCheck:r=>r[2].includes('Fit Founder'), rowClick:r=>openDrilldown(r[2]),
       rowClassFn:r=>r[11] ? 'sig-' + r[11] : ''});
     const lg = document.getElementById('companySignalLegend');
-    if(lg) lg.style.display = companyPeriodContext().mode === 'month' ? '' : 'none';
+    if(lg) lg.style.display = signalBasis() ? '' : 'none';
     renderPositionMatrices(d);
     renderCompanyTargetForm(d.companies.map(c=>c.company));
   }
@@ -2377,11 +2432,13 @@ function renderTiles(){
 function renderTilesForCompany(d, company){
   const c = d.companies.find(x => x.company === company);
   const cSafe = c || {};
-  const t = companyTargetFor(company);
+  const t = basisTargets(company);
+  const ba = basisCompanyActual(company);
+  const gv = k => ba ? ba[k] : cSafe[k];
   const gauges = [
-    kpiGaugeCard('アポ獲得数', cSafe.apo_kakutoku, t.apo, v => (v===null||v===undefined)?'—':v+'件', 'apo'),
-    kpiGaugeCard('アポ成約数', cSafe.apo_seiyaku, t.apo_seiyaku, v => (v===null||v===undefined)?'—':v+'件', 'apoSei'),
-    kpiGaugeCard('クロ成約数', cSafe.clo_seiyaku, t.clo_seiyaku, v => (v===null||v===undefined)?'—':v+'件', 'sei'),
+    kpiGaugeCard('アポ獲得数', gv('apo_kakutoku'), t.apo, v => (v===null||v===undefined)?'—':v+'件', 'apo'),
+    kpiGaugeCard('アポ成約数', gv('apo_seiyaku'), t.apo_seiyaku, v => (v===null||v===undefined)?'—':v+'件', 'apoSei'),
+    kpiGaugeCard('クロ成約数', gv('clo_seiyaku'), t.clo_seiyaku, v => (v===null||v===undefined)?'—':v+'件', 'sei'),
     kpiGaugeCard('売上', cSafe.uriage, t.uriage, v => (v===null||v===undefined)?'—':yen(v)+'円', 'uri'),
     (() => {
       const mh = memberHeadcount(d, company);
