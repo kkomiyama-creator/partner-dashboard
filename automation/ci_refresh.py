@@ -64,6 +64,17 @@ def apply_closing_supplement(closing_csv):
         rows = list(csv.reader(f))
     if not rows:
         return
+    # 除外行(data/closing_exclude.csv): 未成約のまま入力された行など、Cyzen報告を正として外す行
+    ex_path = os.path.join(DATA_DIR, "closing_exclude.csv")
+    if os.path.exists(ex_path):
+        with open(ex_path, encoding="utf-8-sig", newline="") as f:
+            ex = {(norm(r[0]), r[1].strip()) for r in list(csv.reader(f))[1:] if len(r) >= 2}
+        kept = [rows[0]] + [r for r in rows[1:] if not (r and (norm(r[0]), r[8].strip()) in ex)]
+        if len(kept) != len(rows):
+            print(f"closing除外行を{len(rows) - len(kept)}件除外")
+            rows = kept
+            with open(closing_csv, "w", encoding="utf-8-sig", newline="") as f:
+                csv.writer(f).writerows(rows)
     existing = {norm(r[0]) for r in rows[1:] if r}
     with open(sup_path, encoding="utf-8-sig", newline="") as f:
         sup = list(csv.reader(f))[1:]
