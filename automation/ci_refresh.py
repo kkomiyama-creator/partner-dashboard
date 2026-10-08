@@ -51,6 +51,33 @@ def run(cmd, cwd=None):
         raise SystemExit(f"failed: {' '.join(cmd)}")
 
 
+def apply_closing_supplement(closing_csv):
+    """獲得報告データ(Googleフォーム回答シート)に未入力の獲得報告を、Cyzen「クローザー：獲得（成約）」報告
+    を根拠にした補完行(data/closing_supplement.csv・人手管理)で補う(2026-10-08追加)。
+    シート側に同じお客様名(空白除去)の行が既にあれば重複追加しない(後からクローザーがフォーム入力しても二重計上しない)。"""
+    import csv
+    sup_path = os.path.join(DATA_DIR, "closing_supplement.csv")
+    if not os.path.exists(sup_path) or not os.path.exists(closing_csv):
+        return
+    norm = lambda x: "".join((x or "").split()).replace("様", "")
+    with open(closing_csv, encoding="utf-8-sig", newline="") as f:
+        rows = list(csv.reader(f))
+    if not rows:
+        return
+    existing = {norm(r[0]) for r in rows[1:] if r}
+    with open(sup_path, encoding="utf-8-sig", newline="") as f:
+        sup = list(csv.reader(f))[1:]
+    add = [r for r in sup if r and norm(r[0]) not in existing]
+    if not add:
+        return
+    width = len(rows[0])
+    with open(closing_csv, "a", encoding="utf-8-sig", newline="") as f:
+        w = csv.writer(f)
+        for r in add:
+            w.writerow((r + [""] * width)[:width])
+    print(f"closing補完行を{len(add)}件追加: " + ", ".join(r[0] for r in add))
+
+
 def month_add(d, delta):
     y, m = d.year, d.month + delta
     while m < 1:
@@ -99,6 +126,7 @@ def main():
     print("--- Google Sheets API (roster/closing/status/shift) ---")
     from gsheets_client_ci import fetch_all
     sheet_paths = fetch_all(DATA_DIR)
+    apply_closing_supplement(sheet_paths["closing"])
 
     print("--- build_shift_status.py ---")
     shift_status_json = os.path.join(DATA_DIR, "shift_status.json")
