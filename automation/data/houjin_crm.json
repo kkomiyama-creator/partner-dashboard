@@ -1,10 +1,10 @@
 {
- "updated": "2026-10-08 22:51",
- "as_of": "2026-10-08",
+ "updated": "2026-10-09 20:46",
+ "as_of": "2026-10-09",
  "summary": {
   "total_companies": 15,
   "overdue_count": 1,
-  "due_soon_count": 3,
+  "due_soon_count": 2,
   "no_next_action_count": 0,
   "total_contacts": 28
  },
@@ -691,11 +691,11 @@
    "next_action": "10/9の12時〜MTG",
    "due_date": "2026-10-09",
    "is_overdue": false,
-   "is_due_soon": true,
+   "is_due_soon": false,
    "contact_person": "",
    "area": "",
    "channel_business": "",
-   "resolved": false,
+   "resolved": true,
    "timestamp": "10/5/2026 10:42:26",
    "row_number": 26,
    "email": "k.komiyama@fit-founder.net",
@@ -719,7 +719,7 @@
      "note": "",
      "link": "",
      "email": "k.komiyama@fit-founder.net",
-     "resolved": false
+     "resolved": true
     },
     {
      "timestamp": "9/29/2026 17:33:34",
