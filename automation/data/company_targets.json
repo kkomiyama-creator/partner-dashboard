@@ -165,11 +165,11 @@
   "clo_seiyaku": 10
  },
  "株式会社JINNOVA": {
-  "apo": 18,
-  "apo_seiyaku": 5,
+  "apo": 30,
+  "apo_seiyaku": 10,
   "uriage": null,
   "chinin": null,
-  "clo_seiyaku": 13
+  "clo_seiyaku": 20
  },
  "株式会社LIVION partners": {
   "apo": 18,
@@ -299,15 +299,15 @@
   "apo": 10,
   "uriage": null,
   "chinin": null,
-  "apo_seiyaku": 3,
-  "clo_seiyaku": null
+  "apo_seiyaku": 5,
+  "clo_seiyaku": 0
  },
  "株式会社日本建装": {
   "apo": 2,
   "uriage": null,
   "chinin": null,
-  "apo_seiyaku": 0,
-  "clo_seiyaku": null
+  "apo_seiyaku": 3,
+  "clo_seiyaku": 0
  },
  "井上推進": {
   "apo": null,
