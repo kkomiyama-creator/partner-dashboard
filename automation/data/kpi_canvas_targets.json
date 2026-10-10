@@ -1,6 +1,6 @@
 {
  "month": "2026-10",
- "note": "10月計画値。原則は「10月の各パートナーごとのKPI計画値」(1_N1njhySYXwrYT9omf1Kfsfh7h7KdiCpXe7zSQJq3t0) の案値だが、パートナー稼働者アンケート（1noeKxt2IBAyHCnI2qaEENcZghG7rNV0tvnzZTZ5KYmw）で本人提出があった社は提出値に差替済み（2026-10-02反映: Ambitious株式会社・HY株式会社・一興商事株式会社・株式会社ASG・株式会社Corest home・株式会社guidance・株式会社Next Place・株式会社TRIXIA／2026-10-03追加反映: 株式会社ベスティブロ／2026-10-05追加反映（10/4回答分）: 株式会社LeadMore・株式会社ForMe works・株式会社STORIA。株式会社LIVION partnersは提出値が実績を下回る不自然な値のため保留し案値のまま）／2026-10-07追加反映: 株式会社UNIVA FIT（川上さんSlack報告・アポクロ成約目標13件）／2026-10-09追加反映（Slackスレッド回答）: 株式会社JINNOVA(アポ30・アポ成約10・クロ成約20)・株式会社日本建装(アポ成約3・クロ0)・込山推進(アポ成約5・クロ0)",
+ "note": "10月計画値。原則は「10月の各パートナーごとのKPI計画値」(1_N1njhySYXwrYT9omf1Kfsfh7h7KdiCpXe7zSQJq3t0) の案値だが、パートナー稼働者アンケート（1noeKxt2IBAyHCnI2qaEENcZghG7rNV0tvnzZTZ5KYmw）で本人提出があった社は提出値に差替済み（2026-10-02反映: Ambitious株式会社・HY株式会社・一興商事株式会社・株式会社ASG・株式会社Corest home・株式会社guidance・株式会社Next Place・株式会社TRIXIA／2026-10-03追加反映: 株式会社ベスティブロ／2026-10-05追加反映（10/4回答分）: 株式会社LeadMore・株式会社ForMe works・株式会社STORIA。株式会社LIVION partnersは提出値が実績を下回る不自然な値のため保留し案値のまま）／2026-10-07追加反映: 株式会社UNIVA FIT（川上さんSlack報告・アポクロ成約目標13件）／2026-10-09追加反映（Slackスレッド回答）: 株式会社JINNOVA(アポ30・アポ成約10・クロ成約20)・株式会社日本建装(アポ成約3・クロ0)・込山推進(アポ成約5・クロ0)／2026-10-10追加反映（野崎さんSlack回答）: 株式会社LIVION partners(アポ80・アポ成約20・クロ成約40)。保留を解除",
  "targets": {
   "株式会社テクノホーム": {
    "apo_seiyaku": 8,
@@ -83,9 +83,9 @@
    "apo": 25
   },
   "株式会社LIVION partners": {
-   "apo_seiyaku": 4,
-   "clo_seiyaku": 43,
-   "apo": 18
+   "apo_seiyaku": 20,
+   "clo_seiyaku": 40,
+   "apo": 80
   },
   "一興商事株式会社": {
    "apo_seiyaku": 13,
