@@ -119,14 +119,15 @@ def build(tenure_json, attendance_csv, history_csv, roster_csv, closing_csv, tod
             rows = [person(k, p) for k, p in lst]
             newcomp.append({"company": co, "first": min(r["created"] for r in rows), "members": rows, "f": funnel(rows)})
     c78 = cohorts["2026-07"] + cohorts["2026-08"]
+    call = c78 + cohorts["2026-09"] + cohorts["2026-10"]
     comp = collections.defaultdict(list)
-    for r in c78:
+    for r in call:
         comp[r["company"]].append(r)
     return {"asof": today.isoformat(), "rec_start": rec_start.isoformat(),
             "f7": funnel(cohorts["2026-07"]), "f8": funnel(cohorts["2026-08"]), "f78": funnel(c78),
-            "f9": funnel(cohorts["2026-09"]), "f10": funnel(cohorts["2026-10"]),
-            "people78": c78, "people910": cohorts["2026-09"] + cohorts["2026-10"],
-            "company78": [{"company": co, **funnel(l), "apo9": sum(r["m"][2][1] for r in l), "apo10": sum(r["m"][3][1] for r in l)} for co, l in comp.items()],
+            "f9": funnel(cohorts["2026-09"]), "f10": funnel(cohorts["2026-10"]), "fall": funnel(call),
+            "people": call,
+            "companyAll": [{"company": co, **funnel(l), "apo9": sum(r["m"][2][1] for r in l), "apo10": sum(r["m"][3][1] for r in l)} for co, l in comp.items()],
             "newcomp": newcomp}
 
 

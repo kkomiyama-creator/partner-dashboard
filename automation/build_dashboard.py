@@ -919,19 +919,21 @@ button.printbtn.active{background:var(--blue); color:#fff; border-color:var(--bl
     <div class="tiles" id="nsTiles" style="margin-bottom:16px;"></div>
 
     <h3 style="font-size:14px; margin:0 0 8px;">① 増員月ごとの立ち上がり</h3>
-    <div class="note" style="margin-bottom:8px;">「稼働記録あり」は登録後に出勤打刻かアポ獲得が1日以上ある人。「稼働中」は直近7日に稼働がある人。登録日はCyzenのアカウント作成日で、実際に営業を始めた日とずれることがあります。</div>
+    <div class="note" style="margin-bottom:8px;">「稼働記録あり」は登録後に出勤打刻かアポ獲得が1日以上ある人。「稼働中」は直近7日に稼働がある人。登録日はCyzenのアカウント作成日で、実際に営業を始めた日とずれることがあります。9月・10月の登録者は、登録からの日数が短いため、まだ判断できません。</div>
     <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-ns-funnel"></table></div></div>
 
     <h3 style="font-size:14px; margin:0 0 8px;">② 月ごとの動き（増員月グループ合計）</h3>
     <div class="note" style="margin-bottom:8px;">各月の稼働日・アポ・成約（アポ成約／クロ成約）。10月は本日までです。</div>
     <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-ns-months"></table></div></div>
 
-    <h3 style="font-size:14px; margin:0 0 8px;">③ 会社別（7・8月増員）</h3>
+    <h3 style="font-size:14px; margin:0 0 8px;">③ 会社別（7〜10月増員）</h3>
     <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-ns-company"></table></div></div>
 
-    <h3 style="font-size:14px; margin:0 0 8px;">④ 7・8月増員者の個人別</h3>
+    <h3 style="font-size:14px; margin:0 0 8px;">④ 増員者の個人別（7〜10月）</h3>
     <div class="periodbar" style="margin-bottom:8px;">
-      <span class="label">状態</span>
+      <span class="label">増員月</span>
+      <div class="period-switch" id="nsCohortSwitch"></div>
+      <span class="label" style="margin-left:12px;">状態</span>
       <div class="period-switch" id="nsStateSwitch"></div>
     </div>
     <div class="note" style="margin-bottom:8px;">休眠は稼働記録はあるが直近7日は動いていない人。未稼働は登録後に稼働記録がない人。列名をクリックで並べ替えできます。</div>
@@ -940,9 +942,6 @@ button.printbtn.active{background:var(--blue); color:#fff; border-color:var(--bl
     <h3 style="font-size:14px; margin:0 0 8px;">⑤ 9・10月に加わった新規パートナー</h3>
     <div class="note" style="margin-bottom:8px;">全メンバーの登録日が9/1以降の会社。Ximはキャンセルリサイクルの協業先で、通常のパートナーとは性質が異なります。</div>
     <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-ns-newcomp"></table></div></div>
-
-    <h3 style="font-size:14px; margin:0 0 8px;">⑥ 9・10月に登録した個人</h3>
-    <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-ns-people910"></table></div></div>
 
     <div class="note">稼働＝出勤打刻＋アポ台帳の獲得日（キャンセル除く）。出勤を押さずに動く人は少なく出ます。アポ＝アポ台帳の後確通過。成約＝獲得報告データのアポインター名／クローザー名で集計（氏名の表記ゆれで拾えない人がいる可能性があります）。</div>
   </div>
@@ -3860,6 +3859,7 @@ const TERAKOYA_TREND_LABEL = {all:'全員', up:'📈伸びている', down:'📉
 const TERAKOYA_TREND_CLS = {up:'delta-up', down:'delta-down', flat:''};
 // ===== 新規・増員者タブ（2026-10-11追加） =====
 let NS_STATE = '全員';
+let NS_COHORT = '全員';
 function nsPct(a,b){ return b ? Math.round(a/b*100)+'%' : '—'; }
 function nsMD(iso){ return iso ? iso.slice(5).replace('-','/') : '—'; }
 function nsShort(co){ return String(co||'').replace('株式会社','').replace('有限会社','').replace('合同会社','').trim(); }
@@ -3887,46 +3887,51 @@ function renderNewStarter(){
   const t = NEWSTARTER;
   const meta = document.getElementById('nsMeta');
   const tiles = document.getElementById('nsTiles');
-  if(!t || !t.f78){
+  if(!t || !t.fall){
     meta.innerHTML = '新規・増員者データが未取得です（--newstarter-json未指定）。';
     tiles.innerHTML = '';
-    ['t-ns-funnel','t-ns-months','t-ns-company','t-ns-people','t-ns-newcomp','t-ns-people910'].forEach(id=>{ const e=document.getElementById(id); if(e) e.innerHTML=''; });
+    ['t-ns-funnel','t-ns-months','t-ns-company','t-ns-people','t-ns-newcomp'].forEach(id=>{ const e=document.getElementById(id); if(e) e.innerHTML=''; });
     return;
   }
-  const f = t.f78;
-  meta.innerHTML = `${t.asof}時点。直近7日＝${nsMD(t.rec_start)}〜${nsMD(t.asof)}。7・8月に増員した${f.n}名と、9・10月に加わった方・新規パートナーの稼働、初アポ、成約を、Cyzenの登録日から数えています。`;
+  const f = t.fall;
+  meta.innerHTML = `${t.asof}時点。直近7日＝${nsMD(t.rec_start)}〜${nsMD(t.asof)}。7〜10月に増員した${f.n}名と、9・10月に加わった新規パートナーの稼働、初アポ、成約を、Cyzenの登録日から数えています。`;
   tiles.innerHTML = `
-    <div class="tile"><div class="label">7・8月の増員</div><div class="value">${f.n}<span class="unit">名</span></div><div class="sub">7月${t.f7.n}／8月${t.f8.n}</div></div>
+    <div class="tile"><div class="label">7〜10月の増員</div><div class="value">${f.n}<span class="unit">名</span></div><div class="sub">7月${t.f7.n}／8月${t.f8.n}／9月${t.f9.n}／10月${t.f10.n}</div></div>
     <div class="tile"><div class="label">初アポ到達</div><div class="value">${f.apo}<span class="unit">名</span></div><div class="sub">${nsPct(f.apo,f.n)}</div></div>
     <div class="tile"><div class="label">直近7日も稼働中</div><div class="value">${f.live}<span class="unit">名</span></div><div class="sub">${nsPct(f.live,f.n)}</div></div>
     <div class="tile"><div class="label">登録から初アポまで</div><div class="value">${f.med===null?'—':Math.round(f.med)}<span class="unit">日</span></div><div class="sub">中央値</div></div>
     <div class="tile"><div class="label">9・10月の新規パートナー</div><div class="value">${t.newcomp.length}<span class="unit">社</span></div></div>`;
 
-  const NS_RANK = {'7月増員':5,'8月増員':4,'7・8月合計':3,'（参考）9月登録':2,'（参考）10月登録':1};
+  const NS_RANK = {'7月増員':5,'8月増員':4,'9月増員':3,'10月増員':2,'合計（7〜10月）':1};
   const frow = (lbl,x)=>[NS_RANK[lbl], x.n, x.act, x.apo, x.sei, x.live, x.med===null?-1:Math.round(x.med)];
-  const fcols = [{label:'登録月',fmt:v=>Object.keys(NS_RANK).find(k=>NS_RANK[k]===v)},{label:'人数',num:true},
+  const fcols = [{label:'増員月',fmt:v=>Object.keys(NS_RANK).find(k=>NS_RANK[k]===v)},{label:'人数',num:true},
     {label:'稼働記録あり',num:true,fmt:(v,r)=>`${v}<small style="opacity:.65"> ${nsPct(v,r[1])}</small>`},
     {label:'初アポ到達',num:true,fmt:(v,r)=>`${v}<small style="opacity:.65"> ${nsPct(v,r[1])}</small>`},
     {label:'成約到達',num:true,fmt:(v,r)=>`${v}<small style="opacity:.65"> ${nsPct(v,r[1])}</small>`},
     {label:'稼働中',num:true,fmt:(v,r)=>`${v}<small style="opacity:.65"> ${nsPct(v,r[1])}</small>`},
     {label:'初アポまで日数(中央値)',num:true,fmt:v=>v<0?'—':v}];
-  renderTable('t-ns-funnel', fcols, [frow('7月増員',t.f7),frow('8月増員',t.f8),frow('7・8月合計',t.f78),frow('（参考）9月登録',t.f9),frow('（参考）10月登録',t.f10)], {defaultSort:0});
+  renderTable('t-ns-funnel', fcols, [frow('7月増員',t.f7),frow('8月増員',t.f8),frow('9月増員',t.f9),frow('10月増員',t.f10),frow('合計（7〜10月）',t.fall)], {defaultSort:0});
 
-  const mcols=[{label:'増員月',fmt:v=>v===2?'7月増員':'8月増員'}];
+  const NS_MR = {'7月増員':4,'8月増員':3,'9月増員':2,'10月増員':1};
+  const mcols=[{label:'増員月',fmt:v=>Object.keys(NS_MR).find(k=>NS_MR[k]===v)}];
   [7,8,9,10].forEach(mo=>{ mcols.push({label:`${mo}月 稼働日`,num:true},{label:'アポ',num:true},{label:'成約(アポ/クロ)'}); });
-  const mrow=(lbl,x)=>{ const r=[lbl==='7月増員'?2:1]; x.months.forEach(c=>{ r.push(c[0],c[1],`${c[2]}／${c[3]}`); }); return r; };
-  renderTable('t-ns-months', mcols, [mrow('7月増員',t.f7),mrow('8月増員',t.f8)], {defaultSort:0});
+  const mrow=(lbl,x)=>{ const r=[NS_MR[lbl]]; x.months.forEach(c=>{ r.push(c[0],c[1],`${c[2]}／${c[3]}`); }); return r; };
+  renderTable('t-ns-months', mcols, [mrow('7月増員',t.f7),mrow('8月増員',t.f8),mrow('9月増員',t.f9),mrow('10月増員',t.f10)], {defaultSort:0});
 
   const ccols=[{label:'会社',fmt:v=>escapeHtml(nsShort(v))},{label:'増員',num:true},{label:'稼働中',num:true},{label:'初アポ到達',num:true},{label:'成約到達',num:true},{label:'9月アポ',num:true},{label:'10月アポ',num:true}];
-  renderTable('t-ns-company', ccols, t.company78.map(c=>[c.company,c.n,c.live,c.apo,c.sei,c.apo9,c.apo10]), {defaultSort:1});
+  renderTable('t-ns-company', ccols, t.companyAll.map(c=>[c.company,c.n,c.live,c.apo,c.sei,c.apo9,c.apo10]), {defaultSort:1});
 
+  const cs = document.getElementById('nsCohortSwitch');
+  const cohorts = ['全員','7月','8月','9月','10月'];
+  cs.innerHTML = cohorts.map(s=>`<button class="period-btn ${NS_COHORT===s?'active':''}" data-ns-cohort="${s}">${s}</button>`).join('');
+  cs.querySelectorAll('[data-ns-cohort]').forEach(b=>b.addEventListener('click',()=>{ NS_COHORT=b.dataset.nsCohort; renderNewStarter(); }));
   const sw = document.getElementById('nsStateSwitch');
   const states = ['全員','稼働中','休眠','未稼働'];
   sw.innerHTML = states.map(s=>`<button class="period-btn ${NS_STATE===s?'active':''}" data-ns-state="${s}">${s}</button>`).join('');
   sw.querySelectorAll('[data-ns-state]').forEach(b=>b.addEventListener('click',()=>{ NS_STATE=b.dataset.nsState; renderNewStarter(); }));
-  const lbl = r=> r.created.slice(0,7)==='2026-07' ? '7月' : '8月';
-  const rows78 = t.people78.filter(r=>NS_STATE==='全員' || r.state===NS_STATE).map(r=>nsPersonRow(r,lbl(r)));
-  renderTable('t-ns-people', nsPersonCols(), rows78, {defaultSort:8});
+  const lbl = r=> String(parseInt(r.created.slice(5,7),10))+'月';
+  const rowsAll = t.people.filter(r=>(NS_STATE==='全員' || r.state===NS_STATE) && (NS_COHORT==='全員' || lbl(r)===NS_COHORT)).map(r=>nsPersonRow(r,lbl(r)));
+  renderTable('t-ns-people', nsPersonCols(), rowsAll, {defaultSort:8});
 
   const ncols=[{label:'会社',fmt:v=>escapeHtml(v)},{label:'最初の登録',fmt:v=>nsMD(v)},{label:'メンバー',num:true},{label:'稼働中',num:true},
     {label:'稼働日(9〜10月)',num:true},{label:'9月アポ',num:true},{label:'10月アポ',num:true},{label:'成約',num:true},{label:'10月KPI',fmt:v=>escapeHtml(v)}];
@@ -3934,8 +3939,6 @@ function renderNewStarter(){
     if(!d) return '未受領'; const g=x=>(x===null||x===undefined)?'—':x; return `アポ${g(d.apo)}／成約${g(d.apo_seiyaku)}`; };
   renderTable('t-ns-newcomp', ncols, t.newcomp.map(c=>[c.company,c.first,c.members.length,c.f.live,c.f.months[2][0]+c.f.months[3][0],c.f.months[2][1],c.f.months[3][1],
     c.f.months.reduce((a,m)=>a+m[2]+m[3],0), tg(c.company)]), {defaultSort:5});
-
-  renderTable('t-ns-people910', nsPersonCols(), t.people910.map(r=>nsPersonRow(r, r.created.slice(0,7)==='2026-09'?'9月':'10月')), {defaultSort:8});
 }
 let TERAKOYA_VIEW = 'all'; // 'all' | 開催回ラベル（例:'第1回'）
 
