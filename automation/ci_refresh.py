@@ -156,6 +156,15 @@ def main():
     run(["python3", os.path.join(AUTOMATION_DIR, "build_tenure_api.py"),
          "--as-of", today.isoformat(), "--out", tenure_json])
 
+    # 新規・増員者の立ち上がり(2026-10-11追加)。登録日(tenure.json)×出勤打刻×アポ台帳×獲得報告データ。
+    # CIの出勤打刻は前月頭からしか取れないので、7・8月分は固定の履歴CSV(newstarter_attendance_history.csv)を併用する。
+    print("--- build_newstarter.py ---")
+    newstarter_json = os.path.join(DATA_DIR, "newstarter.json")
+    run(["python3", os.path.join(AUTOMATION_DIR, "build_newstarter.py"),
+         "--tenure-json", tenure_json, "--attendance-csv", attendance_csv,
+         "--history-csv", os.path.join(DATA_DIR, "newstarter_attendance_history.csv"),
+         "--roster-csv", sheet_paths["roster"], "--closing-csv", sheet_paths["closing"], "--out", newstarter_json])
+
     # 企業別の月次目標値(2026-08-31追加)。人手で編集する小さいファイルで、CIが生成するもの
     # ではない(automation/data/company_targets.json としてgit管理・毎回チェックアウトされる)。
     company_targets_json = os.path.join(AUTOMATION_DIR, "data", "company_targets.json")
@@ -199,6 +208,7 @@ def main():
          "--houjin-crm-json", houjin_crm_json,
          "--camp-roster-json", camp_roster_json,
          "--terakoya-json", terakoya_json,
+         "--newstarter-json", newstarter_json,
          "--completion-dir", os.path.join(AUTOMATION_DIR, "data", "completion_data"),
          "--out", out_html]
     if houjin_writeback_url:

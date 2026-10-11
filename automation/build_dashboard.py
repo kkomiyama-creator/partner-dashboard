@@ -529,6 +529,7 @@ button.printbtn.active{background:var(--blue); color:#fff; border-color:var(--bl
       <div class="tab" data-panel="p-tsuji"><span class="tab-ico">👔</span><span class="tab-txt">辻さん向け週次</span></div>
       <div class="tab" data-panel="p-camp"><span class="tab-ico">🏕️</span><span class="tab-txt">合宿効果</span></div>
       <div class="tab" data-panel="p-terakoya"><span class="tab-ico">🎓</span><span class="tab-txt">寺子屋参加者</span></div>
+      <div class="tab" data-panel="p-newstarter"><span class="tab-ico">🌱</span><span class="tab-txt">新規・増員者</span></div>
     </div>
     <div class="actionbar">
       <button class="csvbtn" id="csvBtn" title="今表示中のタブをCSVで保存（役員会資料等への連携用）">
@@ -913,6 +914,39 @@ button.printbtn.active{background:var(--blue); color:#fff; border-color:var(--bl
     <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-camp-members"></table></div></div>
   </div>
 
+  <div id="p-newstarter" class="panel">
+    <div class="note" id="nsMeta" style="margin-bottom:14px;"></div>
+    <div class="tiles" id="nsTiles" style="margin-bottom:16px;"></div>
+
+    <h3 style="font-size:14px; margin:0 0 8px;">① 増員月ごとの立ち上がり</h3>
+    <div class="note" style="margin-bottom:8px;">「稼働記録あり」は登録後に出勤打刻かアポ獲得が1日以上ある人。「稼働中」は直近7日に稼働がある人。登録日はCyzenのアカウント作成日で、実際に営業を始めた日とずれることがあります。</div>
+    <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-ns-funnel"></table></div></div>
+
+    <h3 style="font-size:14px; margin:0 0 8px;">② 月ごとの動き（増員月グループ合計）</h3>
+    <div class="note" style="margin-bottom:8px;">各月の稼働日・アポ・成約（アポ成約／クロ成約）。10月は本日までです。</div>
+    <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-ns-months"></table></div></div>
+
+    <h3 style="font-size:14px; margin:0 0 8px;">③ 会社別（7・8月増員）</h3>
+    <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-ns-company"></table></div></div>
+
+    <h3 style="font-size:14px; margin:0 0 8px;">④ 7・8月増員者の個人別</h3>
+    <div class="periodbar" style="margin-bottom:8px;">
+      <span class="label">状態</span>
+      <div class="period-switch" id="nsStateSwitch"></div>
+    </div>
+    <div class="note" style="margin-bottom:8px;">休眠は稼働記録はあるが直近7日は動いていない人。未稼働は登録後に稼働記録がない人。列名をクリックで並べ替えできます。</div>
+    <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-ns-people"></table></div></div>
+
+    <h3 style="font-size:14px; margin:0 0 8px;">⑤ 9・10月に加わった新規パートナー</h3>
+    <div class="note" style="margin-bottom:8px;">全メンバーの登録日が9/1以降の会社。Ximはキャンセルリサイクルの協業先で、通常のパートナーとは性質が異なります。</div>
+    <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-ns-newcomp"></table></div></div>
+
+    <h3 style="font-size:14px; margin:0 0 8px;">⑥ 9・10月に登録した個人</h3>
+    <div class="card" style="margin-bottom:20px;"><div class="tablewrap"><table id="t-ns-people910"></table></div></div>
+
+    <div class="note">稼働＝出勤打刻＋アポ台帳の獲得日（キャンセル除く）。出勤を押さずに動く人は少なく出ます。アポ＝アポ台帳の後確通過。成約＝獲得報告データのアポインター名／クローザー名で集計（氏名の表記ゆれで拾えない人がいる可能性があります）。</div>
+  </div>
+
   <div id="p-terakoya" class="panel">
     <div class="periodbar" style="margin-bottom:10px;">
       <span class="label">表示範囲</span>
@@ -988,6 +1022,8 @@ const FORECAST = __FORECAST_JSON__;
 const CAMP_ANALYSIS = __CAMP_ANALYSIS_JSON__;
 // FF寺子屋（隔週アポインター向け研修）累計参加者の月次実績推移（2026-09-24追加・build_terakoya_analysis.pyが算出）。
 const TERAKOYA_ANALYSIS = __TERAKOYA_ANALYSIS_JSON__;
+// 新規・増員者の立ち上がり（2026-10-11追加・build_newstarter.pyが算出）。
+const NEWSTARTER = __NEWSTARTER_JSON__;
 // Cyzen入力精度スコア（2026-10-07追加・build_input_accuracy.pyが週次で生成するdata/input_accuracy.json）。企業別タブに表示。
 const INPUT_ACCURACY = __INPUT_ACCURACY_JSON__;
 const URGENT_TARGETS = __URGENT_TARGETS_JSON__;
@@ -2634,7 +2670,7 @@ function renderKawakamiWeeklyCard(){
   el.innerHTML = `<div class="note"><b>${escapeHtml(w.label)} 川上さん日報からの抽出サマリー</b><div style="margin-top:6px;">${cards}</div></div>`;
 }
 
-const TAB_LABELS = {'p-company':'企業別ランキング','p-apo':'アポインターランキング','p-soutiku':'創蓄アポインターランキング','p-closer':'クローザーランキング','p-naihan':'直販メンバー','p-topics':'Slackトピックス','p-outreach':'開拓先パートナー','p-route':'行動分析','p-trend':'傾向分析','p-decline':'下落メンバー','p-exec':'責任者会議','p-tsuji':'辻さん向け週次','p-camp':'合宿効果','p-terakoya':'寺子屋参加者'};
+const TAB_LABELS = {'p-company':'企業別ランキング','p-apo':'アポインターランキング','p-soutiku':'創蓄アポインターランキング','p-closer':'クローザーランキング','p-naihan':'直販メンバー','p-topics':'Slackトピックス','p-outreach':'開拓先パートナー','p-route':'行動分析','p-trend':'傾向分析','p-decline':'下落メンバー','p-exec':'責任者会議','p-tsuji':'辻さん向け週次','p-camp':'合宿効果','p-terakoya':'寺子屋参加者','p-newstarter':'新規・増員者'};
 
 function priorityPill(p){
   const cls = {'S':'good','A':'mid','B':'flat','C':'low'}[p] || 'flat';
@@ -3822,6 +3858,85 @@ function renderCamp(){
 
 const TERAKOYA_TREND_LABEL = {all:'全員', up:'📈伸びている', down:'📉下がっている', flat:'→横ばい'};
 const TERAKOYA_TREND_CLS = {up:'delta-up', down:'delta-down', flat:''};
+// ===== 新規・増員者タブ（2026-10-11追加） =====
+let NS_STATE = '全員';
+function nsPct(a,b){ return b ? Math.round(a/b*100)+'%' : '—'; }
+function nsMD(iso){ return iso ? iso.slice(5).replace('-','/') : '—'; }
+function nsShort(co){ return String(co||'').replace('株式会社','').replace('有限会社','').replace('合同会社','').trim(); }
+function nsStatePill(s){
+  const cls = {'稼働中':'delta-up','休眠':'','未稼働':'delta-down'}[s] || '';
+  return `<span class="${cls}">${escapeHtml(s)}</span>`;
+}
+function nsPersonRow(r, label){
+  const m = r.m;
+  return [r.name, nsShort(r.company), label, r.created, r.state, r.first_apo||'', r.d2a===null||r.d2a===undefined?-1:r.d2a,
+    r.days, r.apo, r.sei,
+    `${m[2][0]}／${m[2][1]}／${m[2][2]+m[2][3]}`, `${m[3][0]}／${m[3][1]}／${m[3][2]+m[3][3]}`, r.last||''];
+}
+function nsPersonCols(){
+  return [
+    {label:'氏名', fmt:v=>escapeHtml(v)}, {label:'会社', fmt:v=>escapeHtml(v)}, {label:'増員月'},
+    {label:'登録日', fmt:v=>nsMD(v)}, {label:'状態', fmt:v=>nsStatePill(v)},
+    {label:'初アポ', fmt:v=>nsMD(v)}, {label:'初アポまで日数', num:true, fmt:v=>v<0?'—':v},
+    {label:'稼働日(7〜10月)', num:true}, {label:'アポ計', num:true}, {label:'成約計', num:true},
+    {label:'9月 稼働/アポ/成約', num:true}, {label:'10月 稼働/アポ/成約', num:true},
+    {label:'最終稼働', fmt:v=>nsMD(v)}
+  ];
+}
+function renderNewStarter(){
+  const t = NEWSTARTER;
+  const meta = document.getElementById('nsMeta');
+  const tiles = document.getElementById('nsTiles');
+  if(!t || !t.f78){
+    meta.innerHTML = '新規・増員者データが未取得です（--newstarter-json未指定）。';
+    tiles.innerHTML = '';
+    ['t-ns-funnel','t-ns-months','t-ns-company','t-ns-people','t-ns-newcomp','t-ns-people910'].forEach(id=>{ const e=document.getElementById(id); if(e) e.innerHTML=''; });
+    return;
+  }
+  const f = t.f78;
+  meta.innerHTML = `${t.asof}時点。直近7日＝${nsMD(t.rec_start)}〜${nsMD(t.asof)}。7・8月に増員した${f.n}名と、9・10月に加わった方・新規パートナーの稼働、初アポ、成約を、Cyzenの登録日から数えています。`;
+  tiles.innerHTML = `
+    <div class="tile"><div class="label">7・8月の増員</div><div class="value">${f.n}<span class="unit">名</span></div><div class="sub">7月${t.f7.n}／8月${t.f8.n}</div></div>
+    <div class="tile"><div class="label">初アポ到達</div><div class="value">${f.apo}<span class="unit">名</span></div><div class="sub">${nsPct(f.apo,f.n)}</div></div>
+    <div class="tile"><div class="label">直近7日も稼働中</div><div class="value">${f.live}<span class="unit">名</span></div><div class="sub">${nsPct(f.live,f.n)}</div></div>
+    <div class="tile"><div class="label">登録から初アポまで</div><div class="value">${f.med===null?'—':Math.round(f.med)}<span class="unit">日</span></div><div class="sub">中央値</div></div>
+    <div class="tile"><div class="label">9・10月の新規パートナー</div><div class="value">${t.newcomp.length}<span class="unit">社</span></div></div>`;
+
+  const NS_RANK = {'7月増員':5,'8月増員':4,'7・8月合計':3,'（参考）9月登録':2,'（参考）10月登録':1};
+  const frow = (lbl,x)=>[NS_RANK[lbl], x.n, x.act, x.apo, x.sei, x.live, x.med===null?-1:Math.round(x.med)];
+  const fcols = [{label:'登録月',fmt:v=>Object.keys(NS_RANK).find(k=>NS_RANK[k]===v)},{label:'人数',num:true},
+    {label:'稼働記録あり',num:true,fmt:(v,r)=>`${v}<small style="opacity:.65"> ${nsPct(v,r[1])}</small>`},
+    {label:'初アポ到達',num:true,fmt:(v,r)=>`${v}<small style="opacity:.65"> ${nsPct(v,r[1])}</small>`},
+    {label:'成約到達',num:true,fmt:(v,r)=>`${v}<small style="opacity:.65"> ${nsPct(v,r[1])}</small>`},
+    {label:'稼働中',num:true,fmt:(v,r)=>`${v}<small style="opacity:.65"> ${nsPct(v,r[1])}</small>`},
+    {label:'初アポまで日数(中央値)',num:true,fmt:v=>v<0?'—':v}];
+  renderTable('t-ns-funnel', fcols, [frow('7月増員',t.f7),frow('8月増員',t.f8),frow('7・8月合計',t.f78),frow('（参考）9月登録',t.f9),frow('（参考）10月登録',t.f10)], {defaultSort:0});
+
+  const mcols=[{label:'増員月',fmt:v=>v===2?'7月増員':'8月増員'}];
+  [7,8,9,10].forEach(mo=>{ mcols.push({label:`${mo}月 稼働日`,num:true},{label:'アポ',num:true},{label:'成約(アポ/クロ)'}); });
+  const mrow=(lbl,x)=>{ const r=[lbl==='7月増員'?2:1]; x.months.forEach(c=>{ r.push(c[0],c[1],`${c[2]}／${c[3]}`); }); return r; };
+  renderTable('t-ns-months', mcols, [mrow('7月増員',t.f7),mrow('8月増員',t.f8)], {defaultSort:0});
+
+  const ccols=[{label:'会社',fmt:v=>escapeHtml(nsShort(v))},{label:'増員',num:true},{label:'稼働中',num:true},{label:'初アポ到達',num:true},{label:'成約到達',num:true},{label:'9月アポ',num:true},{label:'10月アポ',num:true}];
+  renderTable('t-ns-company', ccols, t.company78.map(c=>[c.company,c.n,c.live,c.apo,c.sei,c.apo9,c.apo10]), {defaultSort:1});
+
+  const sw = document.getElementById('nsStateSwitch');
+  const states = ['全員','稼働中','休眠','未稼働'];
+  sw.innerHTML = states.map(s=>`<button class="period-btn ${NS_STATE===s?'active':''}" data-ns-state="${s}">${s}</button>`).join('');
+  sw.querySelectorAll('[data-ns-state]').forEach(b=>b.addEventListener('click',()=>{ NS_STATE=b.dataset.nsState; renderNewStarter(); }));
+  const lbl = r=> r.created.slice(0,7)==='2026-07' ? '7月' : '8月';
+  const rows78 = t.people78.filter(r=>NS_STATE==='全員' || r.state===NS_STATE).map(r=>nsPersonRow(r,lbl(r)));
+  renderTable('t-ns-people', nsPersonCols(), rows78, {defaultSort:8});
+
+  const ncols=[{label:'会社',fmt:v=>escapeHtml(v)},{label:'最初の登録',fmt:v=>nsMD(v)},{label:'メンバー',num:true},{label:'稼働中',num:true},
+    {label:'稼働日(9〜10月)',num:true},{label:'9月アポ',num:true},{label:'10月アポ',num:true},{label:'成約',num:true},{label:'10月KPI',fmt:v=>escapeHtml(v)}];
+  const tg = co => { const d = (typeof COMPANY_TARGETS!=='undefined' && COMPANY_TARGETS) ? COMPANY_TARGETS[co] : null;
+    if(!d) return '未受領'; const g=x=>(x===null||x===undefined)?'—':x; return `アポ${g(d.apo)}／成約${g(d.apo_seiyaku)}`; };
+  renderTable('t-ns-newcomp', ncols, t.newcomp.map(c=>[c.company,c.first,c.members.length,c.f.live,c.f.months[2][0]+c.f.months[3][0],c.f.months[2][1],c.f.months[3][1],
+    c.f.months.reduce((a,m)=>a+m[2]+m[3],0), tg(c.company)]), {defaultSort:5});
+
+  renderTable('t-ns-people910', nsPersonCols(), t.people910.map(r=>nsPersonRow(r, r.created.slice(0,7)==='2026-09'?'9月':'10月')), {defaultSort:8});
+}
 let TERAKOYA_VIEW = 'all'; // 'all' | 開催回ラベル（例:'第1回'）
 
 function terakoyaDrillModal(title, sub, people, trendKey){
@@ -4550,6 +4665,7 @@ document.querySelectorAll('.tab').forEach(tab=>{
     if(tab.dataset.panel === 'p-tsuji') renderTsuji();
     if(tab.dataset.panel === 'p-camp') renderCamp();
     if(tab.dataset.panel === 'p-terakoya') renderTerakoya();
+    if(tab.dataset.panel === 'p-newstarter') renderNewStarter();
     updateTitleForActiveTab();
     // URLの#以降を現在のタブに合わせておく（ブラウザ履歴は増やさない）。
     // これにより「.../#p-camp」のようなリンクで特定タブへ直接遷移できるようになる（2026-09-23追加）。
@@ -5374,7 +5490,7 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
           urgent_targets_json=None, training_json=None, shift_status_json=None,
           clockout_csv=None, shodan_json=None, tenure_json=None, company_targets_json=None,
           houjin_crm_json=None, houjin_writeback_url=None, apo_report_json=None, camp_roster_json=None,
-          terakoya_json=None):
+          terakoya_json=None, newstarter_json=None):
     end_dt = datetime.strptime(end, "%Y/%m/%d")
     start_dt = datetime.strptime(start, "%Y/%m/%d")
     day_start = end_dt.strftime("%Y/%m/%d")
@@ -5601,6 +5717,15 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
     else:
         terakoya_analysis = {"members": []}
 
+    # 新規・増員者の立ち上がり（2026-10-11追加）。--newstarter-json省略時は空（タブに「未取得」と出る）。
+    newstarter_data = {}
+    if newstarter_json and os.path.exists(newstarter_json):
+        try:
+            with open(newstarter_json, encoding="utf-8") as _f:
+                newstarter_data = json.load(_f)
+        except Exception as e:  # noqa: BLE001
+            print(f"[newstarter] 新規・増員者データの読込に失敗しました: {e}", file=sys.stderr)
+
     ai_summary = None
     if ai_summary_json and os.path.exists(ai_summary_json):
         with open(ai_summary_json, encoding="utf-8") as f:
@@ -5774,6 +5899,7 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
     html_out = html_out.replace("__FORECAST_JSON__", json.dumps(forecast, ensure_ascii=False))
     html_out = html_out.replace("__CAMP_ANALYSIS_JSON__", json.dumps(camp_analysis, ensure_ascii=False))
     html_out = html_out.replace("__TERAKOYA_ANALYSIS_JSON__", json.dumps(terakoya_analysis, ensure_ascii=False))
+    html_out = html_out.replace("__NEWSTARTER_JSON__", json.dumps(newstarter_data, ensure_ascii=False, separators=(",", ":")))
     # Cyzen入力精度スコア（週次・build_input_accuracy.pyが生成）。無い/壊れていれば空で、カードは非表示になる。
     input_accuracy = {}
     _here = os.path.dirname(os.path.abspath(__file__))
@@ -5928,6 +6054,8 @@ def main():
     ap.add_argument("--terakoya-json", default=None,
                      help="FF寺子屋(隔週アポインター向け研修)累計参加者名簿（data/terakoya_roster.json）。"
                           "省略時は寺子屋参加者タブが空になる")
+    ap.add_argument("--newstarter-json", default=None,
+                     help="新規・増員者の立ち上がりデータ（build_newstarter.pyの出力）。省略時は新規・増員者タブが空になる")
     ap.add_argument("--start", default=None)
     ap.add_argument("--end", default=None)
     ap.add_argument("--out", default=os.path.expanduser("~/Desktop/partner_dashboard.html"))
@@ -5966,7 +6094,8 @@ def main():
                      houjin_writeback_url=args.houjin_writeback_url,
                      apo_report_json=args.apo_report_json,
                      camp_roster_json=args.camp_roster_json,
-                     terakoya_json=args.terakoya_json)
+                     terakoya_json=args.terakoya_json,
+                     newstarter_json=args.newstarter_json)
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
 
