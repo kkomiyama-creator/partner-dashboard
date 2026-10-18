@@ -36,10 +36,11 @@ def jst_now():
 
 
 def in_business_window(now):
-    # 水木金土日8:00-20:59 JST のみ実行する(パートナー稼働日=月・火休みに合わせる。
+    # 水木金土日7:00-23:59 JST のみ実行する(2026-10-18: 土日夜の商談・成約報告が20時以降にも
+    # 入るため、20:59打ち切りを23:59まで拡張。従来は日曜21時以降に一切更新されなかった)(パートナー稼働日=月・火休みに合わせる。
     # 2026-09-13 小宮山さん承認: 従来の「平日のみ」判定だと稼働日である土日に
     # 一切更新されなくなるため、パートナーの実際の稼働日基準に修正)。
-    return now.weekday() not in (0, 1) and 8 <= now.hour <= 20
+    return now.weekday() not in (0, 1) and 7 <= now.hour <= 23
 
 
 def run(cmd, cwd=None):
@@ -111,7 +112,7 @@ def main():
     # 時間帯に関わらず実行する。
     event_name = os.environ.get("GITHUB_EVENT_NAME", "")
     if event_name != "workflow_dispatch" and not in_business_window(now):
-        print(f"パートナー稼働日(水木金土日)8-20時の対象時間外のためスキップします（トリガー: {event_name or '不明'}）。")
+        print(f"パートナー稼働日(水木金土日)7-23時の対象時間外のためスキップします（トリガー: {event_name or '不明'}）。")
         return
 
     today = now.date()
@@ -134,6 +135,18 @@ def main():
          "--start", start.isoformat(), "--end", today.isoformat(),
          "--attendance-out", attendance_csv, "--clockout-out", clockout_csv])
 
+    # スポット台帳(2026-10-18追加): 当月分をAPIで取得し、スポット作成数・対面率・稼働人員数(スポット作成)に使う。
+    # 失敗してもダッシュボード更新は止めない(その場合は従来通りスポット系が空欄になるだけ)。
+    spot_csv = os.path.join(DATA_DIR, "spot_merged.csv")
+    month_start = today.replace(day=1)
+    try:
+        print("--- build_spots_api.py ---")
+        run(["python3", os.path.join(AUTOMATION_DIR, "build_spots_api.py"),
+             "--start", month_start.isoformat(), "--end", today.isoformat(), "--out", spot_csv])
+    except SystemExit as e:
+        print(f"スポット取得に失敗したためスキップします: {e}")
+        spot_csv = None
+
     print("--- Google Sheets API (roster/closing/status/shift) ---")
     from gsheets_client_ci import fetch_all
     sheet_paths = fetch_all(DATA_DIR)
@@ -149,7 +162,8 @@ def main():
     attendance_alert_csv = os.path.join(DATA_DIR, "cyzen_dashboard_master.csv")
     run(["python3", os.path.join(AUTOMATION_DIR, "build_attendance_alert.py"),
          "--clock-in-csv", attendance_csv, "--clock-out-csv", clockout_csv,
-         "--now", now.strftime("%Y-%m-%d %H:%M:%S"), "--out", attendance_alert_csv])
+         "--now", now.strftime("%Y-%m-%d %H:%M:%S"), "--out", attendance_alert_csv]
+        + (["--spot-csv", spot_csv, "--spot-start", month_start.isoformat(), "--spot-end", today.isoformat()] if spot_csv else []))
 
     print("--- build_tenure_api.py ---")
     tenure_json = os.path.join(DATA_DIR, "tenure.json")
@@ -211,6 +225,8 @@ def main():
          "--newstarter-json", newstarter_json,
          "--completion-dir", os.path.join(AUTOMATION_DIR, "data", "completion_data"),
          "--out", out_html]
+    if spot_csv:
+        build_dashboard_cmd += ["--spot-csv", spot_csv]
     if houjin_writeback_url:
         build_dashboard_cmd += ["--houjin-writeback-url", houjin_writeback_url]
     run(build_dashboard_cmd, cwd=AUTOMATION_DIR)
