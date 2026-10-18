@@ -147,10 +147,54 @@ def main():
         print(f"スポット取得に失敗したためスキップします: {e}")
         spot_csv = None
 
+    # アポ獲得報告の記載内容(2026-10-18追加): 傾向分析⑥・責任者会議ヒートマップ用。直近8日分を再取得して
+    # 既存のautomation/data/apo_report_records.json(git管理・過去分を保持)にマージする。失敗しても止めない。
+    apo_report_json = os.path.join(DATA_DIR, "apo_report_records.json")
+    try:
+        print("--- build_apo_report_content_api.py ---")
+        # CIはindex.htmlしかコミットしないため、このjsonは毎回リポジトリの保存版から始まる。保存版の最終日の
+        # 1日前から再取得して穴を作らない(保存版を新しく置き直すと取得範囲も自然に短くなる)。
+        import json as _json
+        _start = today - datetime.timedelta(days=8)
+        try:
+            with open(apo_report_json, encoding="utf-8") as _f:
+                _last = max(r["date"] for r in _json.load(_f))
+            _start = min(_start, datetime.date.fromisoformat(_last) - datetime.timedelta(days=1))
+        except Exception:
+            pass
+        _start = max(_start, today - datetime.timedelta(days=60))
+        run(["python3", os.path.join(AUTOMATION_DIR, "build_apo_report_content_api.py"),
+             "--start", _start.isoformat(), "--end", today.isoformat(),
+             "--out", apo_report_json])
+    except SystemExit as e:
+        print(f"アポ獲得報告の記載内容の取得に失敗したため前回分を使います: {e}")
+
     print("--- Google Sheets API (roster/closing/status/shift) ---")
     from gsheets_client_ci import fetch_all
     sheet_paths = fetch_all(DATA_DIR)
     apply_closing_supplement(sheet_paths["closing"])
+
+    # ファネル月次推移(2026-10-18追加): hamakomiシートの「ファネルまとめ」を取得。build_dashboard.pyは
+    # リポジトリ直下のdata/funnel_monthly.jsonを読む。取得に失敗しても前回分(git管理)が残る。
+    try:
+        print("--- fetch_funnel_monthly.py (CI版Sheets API) ---")
+        import runpy
+        import types
+        import gsheets_client_ci as _g
+        from googleapiclient.discovery import build as _build
+        _svc = _build("sheets", "v4", credentials=_g.get_credentials())
+        _shim = types.ModuleType("gsheets_client")
+        _shim.fetch_sheet_rows = lambda sid, gid: _g.fetch_sheet_rows(_svc, sid, gid=gid)
+        sys.modules["gsheets_client"] = _shim
+        os.makedirs(os.path.join(REPO_DIR, "data"), exist_ok=True)
+        _argv = sys.argv
+        sys.argv = ["fetch_funnel_monthly.py", "--out", os.path.join(REPO_DIR, "data", "funnel_monthly.json")]
+        try:
+            runpy.run_path(os.path.join(AUTOMATION_DIR, "fetch_funnel_monthly.py"), run_name="__main__")
+        finally:
+            sys.argv = _argv
+    except BaseException as e:  # SystemExit含む。ダッシュボード更新自体は止めない
+        print(f"ファネル月次の取得に失敗したため前回分を使います: {e}")
 
     print("--- build_shift_status.py ---")
     shift_status_json = os.path.join(DATA_DIR, "shift_status.json")
@@ -227,6 +271,8 @@ def main():
          "--out", out_html]
     if spot_csv:
         build_dashboard_cmd += ["--spot-csv", spot_csv]
+    if os.path.exists(apo_report_json):
+        build_dashboard_cmd += ["--apo-report-json", apo_report_json]
     if houjin_writeback_url:
         build_dashboard_cmd += ["--houjin-writeback-url", houjin_writeback_url]
     run(build_dashboard_cmd, cwd=AUTOMATION_DIR)

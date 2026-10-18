@@ -1,0 +1,97 @@
+{
+ "updated_at": null,
+ "months": [
+  {
+   "label": "2025年9月",
+   "apo": 1260,
+   "shodan": 1055,
+   "seiyaku": 273,
+   "kanko": 231
+  },
+  {
+   "label": "2025年10月",
+   "apo": 1373,
+   "shodan": 854,
+   "seiyaku": 241,
+   "kanko": 223
+  },
+  {
+   "label": "2025年11月",
+   "apo": 1488,
+   "shodan": 899,
+   "seiyaku": 254,
+   "kanko": 207
+  },
+  {
+   "label": "2025年12月",
+   "apo": 1095,
+   "shodan": 610,
+   "seiyaku": 214,
+   "kanko": 171
+  },
+  {
+   "label": "2026年1月",
+   "apo": 1306,
+   "shodan": 663,
+   "seiyaku": 207,
+   "kanko": 140
+  },
+  {
+   "label": "2026年2月",
+   "apo": 1239,
+   "shodan": 721,
+   "seiyaku": 272,
+   "kanko": 169
+  },
+  {
+   "label": "2026年3月",
+   "apo": 1317,
+   "shodan": 528,
+   "seiyaku": 334,
+   "kanko": 198
+  },
+  {
+   "label": "2026年4月",
+   "apo": 1182,
+   "shodan": 603,
+   "seiyaku": 219,
+   "kanko": 162
+  },
+  {
+   "label": "2026年5月",
+   "apo": 1295,
+   "shodan": 590,
+   "seiyaku": 259,
+   "kanko": 142
+  },
+  {
+   "label": "2026年6月",
+   "apo": 1019,
+   "shodan": 426,
+   "seiyaku": 175,
+   "kanko": 135
+  },
+  {
+   "label": "2026年7月",
+   "apo": 1107,
+   "shodan": 559,
+   "seiyaku": 228,
+   "kanko": 162
+  },
+  {
+   "label": "2026年8月",
+   "apo": 855,
+   "shodan": 592,
+   "seiyaku": 256,
+   "kanko": 142
+  },
+  {
+   "label": "2026年9月",
+   "apo": 474,
+   "shodan": 298,
+   "seiyaku": 100,
+   "kanko": 67
+  }
+ ],
+ "note": "注記：CCOK数(前確通過)はデータソース未特定のため含まず。アポ数=kintoneシート、商談数=スケジュール表(9月-3月)+Cyzen予定数(4月-8月)、成約数・完工数=浜西さん入力値。9月は進行中のため月末に確定値へ更新予定（アポ9/15時点・商談9/15時点・成約9/15時点・完工9/13時点）。移行率は単純な件数比で、実際のコホート追跡ではない参考値。"
+}
