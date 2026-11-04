@@ -4900,8 +4900,16 @@ function openTileDrillScoped(kind, d, company){
       rows: people.filter(p=>p.apoCount>0).slice().sort((a,b)=>b.apoCount-a.apoCount).map(p=>[p.name, p.apoCount])},
     apoSei: {title:`${company} アポ成約数の内訳（担当者別）`, cols:['氏名','アポ成約'],
       rows: people.filter(p=>p.apoSeiyaku>0).slice().sort((a,b)=>b.apoSeiyaku-a.apoSeiyaku).map(p=>[p.name, p.apoSeiyaku])},
-    sei: {title:`${company} 成約数の内訳（担当者別・クロ成約基準）`, cols:['氏名','クロ成約'],
-      rows: people.filter(p=>p.cloSeiyaku>0).slice().sort((a,b)=>b.cloSeiyaku-a.cloSeiyaku).map(p=>[p.name, p.cloSeiyaku])},
+    // 成約数カードをアポ成約・クロ成約に分けた（2026-11-04）のに合わせ、内訳もアポ成約・クロ成約の両方を出す。
+    // クローザーがいない会社はクロ成約の列を出さない。
+    sei: (() => {
+      const withClo = hasCloser(company);
+      const ps = people.filter(p=>p.apoSeiyaku>0 || (withClo && p.cloSeiyaku>0)).slice()
+        .sort((a,b)=>((b.apoSeiyaku||0)+(withClo?(b.cloSeiyaku||0):0))-((a.apoSeiyaku||0)+(withClo?(a.cloSeiyaku||0):0)) || String(a.name).localeCompare(String(b.name),'ja'));
+      return {title:`${company} 成約数の内訳（担当者別・${withClo?'アポ成約／クロ成約':'アポ成約'}）`,
+        cols: withClo ? ['氏名','アポ成約','クロ成約'] : ['氏名','アポ成約'],
+        rows: ps.map(p => withClo ? [p.name, p.apoSeiyaku||0, p.cloSeiyaku||0] : [p.name, p.apoSeiyaku||0])};
+    })(),
     uri: {title:`${company} 売上の内訳（担当者別）`, cols:['氏名','売上'],
       rows: people.filter(p=>p.uriage>0).slice().sort((a,b)=>b.uriage-a.uriage).map(p=>[p.name, yen(p.uriage)])},
     headcount: {title:`${company} 稼働人員数（出勤打刻あり）の内訳（担当者別）`, cols:['氏名','稼働日数'],
@@ -4954,8 +4962,11 @@ function openTileDrill(kind){
   const TILE_DEFS = {
     apo: {title:'アポ獲得数の内訳（会社別）', cols:['会社名','アポ獲得数'],
       rows: d.companies.slice().sort((a,b)=>b.apo_kakutoku-a.apo_kakutoku).map(c=>[c.company, c.apo_kakutoku])},
-    sei: {title:'成約数の内訳（会社別・クロ成約基準）', cols:['会社名','クロ成約'],
-      rows: d.companies.slice().sort((a,b)=>b.clo_seiyaku-a.clo_seiyaku).map(c=>[c.company, c.clo_seiyaku])},
+    // 成約数カードをアポ成約・クロ成約に分けた（2026-11-04）のに合わせ、内訳も両方出す。クローザーがいない会社のクロ成約は「—」。
+    sei: {title:'成約数の内訳（会社別・アポ成約／クロ成約）', cols:['会社名','アポ成約','クロ成約'],
+      rows: d.companies.filter(c=>(c.apo_seiyaku||0)>0 || (c.clo_seiyaku||0)>0).slice()
+        .sort((a,b)=>((b.apo_seiyaku||0)+(b.clo_seiyaku||0))-((a.apo_seiyaku||0)+(a.clo_seiyaku||0)) || (b.clo_seiyaku||0)-(a.clo_seiyaku||0))
+        .map(c=>[c.company, c.apo_seiyaku||0, hasCloser(c.company) ? (c.clo_seiyaku||0) : '—'])},
     uri: {title:'売上の内訳（会社別）', cols:['会社名','売上'],
       rows: d.companies.slice().sort((a,b)=>b.uriage-a.uriage).map(c=>[c.company, yen(c.uriage)])},
     headcount: headcountDrill,
