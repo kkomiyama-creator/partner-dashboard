@@ -24,7 +24,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, ".."))
 import build_alert  # noqa: E402
-from format_message import render_message  # noqa: E402
+from format_message import render_message, load_mention_map  # noqa: E402
 
 STATE = os.path.join(HERE, "..", "data", "attendance_alert_state.json")
 MESSAGE_OUT = os.path.join(HERE, "..", "data", "attendance_alert_message.txt")
@@ -70,7 +70,7 @@ def main():
     total = len(g1) + len(g2) + len(g3)
     print(f"① {len(g1)}名 / ② {len(g2)}名 / ③ {len(g3)}名（合計 {total}）")
 
-    msg = render_message(d)
+    msg = render_message(d, load_mention_map(os.path.join(HERE, "mention_map.json")))
     os.makedirs(os.path.dirname(MESSAGE_OUT), exist_ok=True)
     with open(MESSAGE_OUT, "w", encoding="utf-8") as f:
         f.write(msg)
