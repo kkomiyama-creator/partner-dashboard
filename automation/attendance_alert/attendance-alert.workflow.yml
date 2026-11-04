@@ -1,0 +1,80 @@
+name: attendance-alert
+
+# 出退勤打刻・報告データ突合の周知を、PCが動いていなくても毎晩22:10(JST)に自動実行する（2026-11-04）。
+# 計算: Cyzen /reports（CYZEN_DASHBOARD_TOKEN）。投稿: Slack Bot（SLACK_BOT_TOKEN・投稿先は
+# SLACK_ATTENDANCE_CHANNEL_ID、未設定なら #02_sh_パートナー様周知用）。
+# SLACK_BOT_TOKEN が未設定の間はドライラン（投稿せずログ・アーティファクトに周知文だけ残す）。
+# その間は小宮山さんのMacのスケジュールタスク（22:10に下書き作成＋DM）が代わりに動く。
+# scheduleは遅延することがあるため、post_alert.py側で21:00〜23:59(JST)以外は投稿しないガードを入れている。
+
+on:
+  schedule:
+    - cron: "10 13 * * *"   # 13:10 UTC = 22:10 JST
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "true なら投稿せず周知文だけ作る"
+        default: "true"
+      force_time:
+        description: "true なら21〜23時台のガードを無視する（テスト用）"
+        default: "false"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: attendance-alert
+  cancel-in-progress: false
+
+jobs:
+  attendance-alert:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install --quiet requests
+
+      - name: Build and post attendance alert
+        env:
+          CYZEN_DASHBOARD_TOKEN: ${{ secrets.CYZEN_DASHBOARD_TOKEN }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_ATTENDANCE_CHANNEL_ID: ${{ secrets.SLACK_ATTENDANCE_CHANNEL_ID }}
+        run: |
+          ARGS=""
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            [ "${{ github.event.inputs.dry_run }}" = "true" ] && ARGS="$ARGS --dry-run"
+            [ "${{ github.event.inputs.force_time }}" = "true" ] && ARGS="$ARGS --force-time"
+          fi
+          python3 automation/attendance_alert/post_alert.py $ARGS
+
+      - name: Upload message
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: attendance-alert-message
+          path: automation/data/attendance_alert_message.txt
+          if-no-files-found: ignore
+
+      - name: Commit state if changed
+        run: |
+          git config user.email "dashboard-bot@fit-founder.net"
+          git config user.name "Dashboard Bot (GitHub Actions)"
+          if [ ! -f automation/data/attendance_alert_state.json ]; then
+            echo "未投稿のためstate.jsonはありません。"
+            exit 0
+          fi
+          git add automation/data/attendance_alert_state.json
+          if git diff --cached --quiet; then
+            echo "変更なし。"
+          else
+            git fetch origin main
+            git rebase origin/main
+            git commit -m "update attendance alert state (GitHub Actions)"
+            git push
+          fi

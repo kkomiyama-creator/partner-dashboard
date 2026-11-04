@@ -1,0 +1,89 @@
+# -*- coding: utf-8 -*-
+"""build_alert.pyの出力JSONを、2026-08-20 23時台に実際に投稿したのと同じ体裁のSlack本文に整形する。
+
+使い方:
+  python3 format_message.py --in ../data/alert_latest.json
+"""
+import argparse
+import collections
+import json
+
+
+def _label(e, date_mode):
+    name = e["name"]
+    if not date_mode:
+        return name
+    last_in = e.get("last_clock_in")
+    if not last_in:
+        return f"{name}(直近の出勤打刻なし)"
+    m, day = last_in[5:7], last_in[8:10]
+    date_part = f"{int(m)}/{int(day)}"
+    if date_mode == "carried_over":
+        return f"{name}({date_part}出勤打刻のまま)"
+    if date_mode == "last_seen":
+        return f"{name}(最後の出勤打刻:{date_part})"
+    return name
+
+
+def group_by_company(entries, date_mode=None):
+    by_co = collections.defaultdict(list)
+    for e in entries:
+        by_co[e["company"] or "所属確認中"].append(_label(e, date_mode))
+    return by_co
+
+
+def render_group(entries, date_mode=None):
+    if not entries:
+        return "（該当者なし）"
+    by_co = group_by_company(entries, date_mode=date_mode)
+    unresolved = by_co.pop("所属確認中", [])
+    lines = [f"{co}：{'、'.join(names)}" for co, names in sorted(by_co.items())]
+    if unresolved:
+        lines.append(f"所属確認中：{'、'.join(unresolved)}")
+    return "\n".join(lines)
+
+
+def render_message(d):
+    """build_alert.pyの出力dict -> Slack本文（先頭に<!channel>）。"""
+    g1, g2, g3 = (d["group1_report_no_attendance"], d["group2_carried_over_checkin"],
+                  d["group3_today_checkin_no_checkout"])
+
+    date_label = d["generated_at"][:10].replace("-", "年", 1).replace("-", "月", 1) + "日"
+    time_label = d["generated_at"][11:16]
+
+    msg = f"""<!channel>
+🚨 cyzenの出退勤打刻・報告データ突合のご確認およびご対応のお願い（{date_label} {time_label}時点集計）🚨
+
+夜分遅くに失礼致します。
+Fit Founder 営業推進統括本部パートナー推進課の小宮山です。
+日頃より営業活動のほど、誠にありがとうございます。
+
+本日のCyzenシステムデータ集計におきまして、下記3点でCyzen上の出退勤打刻と実際の活動記録にズレが確認された方への確認・更新をお願いしたく存じます。
+明日で問題ございませんので、下記ご対象の方はご対応のほどよろしくお願いいたします。
+
+▼① アポ後確依頼・クローザー報告は提出されているが、本日の出退勤打刻が見当たらない方
+該当者：{len(g1)}名（敬称略）
+{render_group(g1, date_mode="last_seen")}
+
+▼② 出勤状態が前日以前から継続してしまっている方（退勤打刻漏れ）
+該当者：{len(g2)}名（敬称略）
+{render_group(g2, date_mode="carried_over")}
+
+▼③ 本日出勤打刻はあるが、まだ退勤打刻がされていない方
+該当者：{len(g3)}名（敬称略）
+{render_group(g3)}
+"""
+    return msg
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--in", dest="infile", required=True)
+    args = ap.parse_args()
+    with open(args.infile, encoding="utf-8") as f:
+        d = json.load(f)
+    print(render_message(d))
+
+
+if __name__ == "__main__":
+    main()
