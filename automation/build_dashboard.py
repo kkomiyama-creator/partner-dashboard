@@ -102,6 +102,10 @@ header.top .meta b{color:var(--text);}
 .tile .value{font-size:26px; font-weight:800; color:var(--ink); margin-top:6px; letter-spacing:-.01em;}
 .tile .unit{font-size:13px; font-weight:600; color:var(--text-sub); margin-left:3px;}
 .tile .sub{font-size:11.5px; color:var(--text-xs); margin-top:4px;}
+.tile .seisplit{display:flex; flex-direction:column; gap:3px; margin-top:6px;}
+.tile .seisplit .row{display:flex; align-items:baseline; gap:8px; font-size:24px; font-weight:800; color:var(--ink); letter-spacing:-.01em; line-height:1.15;}
+.tile .seisplit .row .k{font-size:12px; font-weight:700; color:var(--text-sub); letter-spacing:0; min-width:4.6em;}
+.tile .seisplit .row .unit{font-size:13px; font-weight:600; color:var(--text-sub); margin-left:0;}
 .tile.clickable{cursor:pointer;}
 .tile.clickable:hover{box-shadow:0 4px 20px rgba(15,31,61,.13); transform:translateY(-2px);}
 
@@ -2387,6 +2391,25 @@ function setCompanyScope(company){
 
 // KPIタイルのスパークライン部分だけを組み立てる（フェーズ2・2026-08-11追加）。
 // DAILY_PERIODSの直近14日推移。データが1日分しか無い（新規導入直後等）場合はsparkline()側で空SVGを返す。
+// 成約数タイルをアポ成約・クロ成約に分けて表示する（2026-11-04追加）。クローザーがいない会社は
+// クロ成約の行を出さない。「いる」の判定は、MONTHLY_PERIODSのいずれかの月でクロ成約が1件以上ある、
+// またはクローザーランキングに載っている会社（＝実績ベース。他社のクローザーが成約しているだけの会社は含まない）。
+let _CLOSER_COMPANIES = null;
+function closerCompanies(){
+  if(_CLOSER_COMPANIES) return _CLOSER_COMPANIES;
+  const s = new Set();
+  Object.values(MONTHLY_PERIODS || {}).forEach(mp => {
+    (mp.companies || []).forEach(c => { if((c.clo_seiyaku || 0) > 0) s.add(c.company); });
+    (mp.closer_ranking || []).forEach(r => { if(r && r[2]) s.add(r[2]); });
+  });
+  _CLOSER_COMPANIES = s;
+  return s;
+}
+function hasCloser(company){ return closerCompanies().has(company); }
+function seiSplitHtml(apoSei, cloSei, showClo){
+  const row = (k, v) => `<div class="row"><span class="k">${k}</span><span>${yen(v)}</span><span class="unit">件</span></div>`;
+  return `<div class="seisplit">${row('アポ成約', apoSei)}${showClo ? row('クロ成約', cloSei) : ''}</div>`;
+}
 function tileSparkHtml(getter, color){
   const series = dailyTrendSeries(getter, 14);
   if(series.filter(v=>v!==null && v!==undefined).length < 2) return '';
@@ -2423,7 +2446,7 @@ function renderTiles(){
   const rate = tot.apo_kakutoku ? (tot.clo_seiyaku/tot.apo_kakutoku*100) : 0;
   document.getElementById('tileApo').innerHTML = `${yen(tot.apo_kakutoku)}<span class="unit">件</span>` +
     tileSparkHtml(dp=>dp.totals.apo_kakutoku, 'var(--blue)');
-  document.getElementById('tileSei').innerHTML = `${yen(tot.clo_seiyaku)}<span class="unit">件</span>` +
+  document.getElementById('tileSei').innerHTML = seiSplitHtml(tot.apo_seiyaku, tot.clo_seiyaku, true) +
     tileSparkHtml(dp=>dp.totals.clo_seiyaku, 'var(--success)');
   document.getElementById('tileSeiSub').textContent = `獲得報告データ ${yen(d.n_closing_in_period)} 件が母数`;
   document.getElementById('tileUri').innerHTML = `${yen(tot.uriage)}<span class="unit">円</span>` +
@@ -2506,8 +2529,9 @@ function renderTilesForCompany(d, company){
   });
   const rate = (c && c.apo_kakutoku) ? (c.clo_seiyaku/c.apo_kakutoku*100) : 0;
   document.getElementById('tileApo').innerHTML = `${yen(c?c.apo_kakutoku:0)}<span class="unit">件</span>`;
-  document.getElementById('tileSei').innerHTML = `${yen(c?c.clo_seiyaku:0)}<span class="unit">件</span>`;
-  document.getElementById('tileSeiSub').textContent = `「${company}」に絞り込み中（全社集計ではありません）`;
+  const _showClo = hasCloser(company);
+  document.getElementById('tileSei').innerHTML = seiSplitHtml(c?c.apo_seiyaku:0, c?c.clo_seiyaku:0, _showClo);
+  document.getElementById('tileSeiSub').textContent = `「${company}」に絞り込み中（全社集計ではありません）` + (_showClo ? '' : '・クローザーがいないためクロ成約は非表示');
   document.getElementById('tileUri').innerHTML = `${yen(c?c.uriage:0)}<span class="unit">円</span>`;
   document.getElementById('tileRate').innerHTML = `${rate.toFixed(1)}<span class="unit">%</span>`;
   if(isTodayDaySelected() && ATTENDANCE_ALERT){
