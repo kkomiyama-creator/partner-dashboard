@@ -260,7 +260,7 @@ def main():
     kakuho_json = os.path.join(AUTOMATION_DIR, "data", "kakuho_cases.json")
     if os.environ.get("KINTONE_406_API_TOKEN"):
         print("--- build_kakuho_cases.py ---")
-        since = (jst_now().date().replace(day=1) - datetime.timedelta(days=1)).replace(day=1).isoformat()
+        since = "2026-09-01"  # 9月分から（小宮山さん指示 2026-11-06）
         r = subprocess.run(["python3", os.path.join(AUTOMATION_DIR, "build_kakuho_cases.py"),
                             "--since", since, "--out", kakuho_json], capture_output=True, text=True)
         print(r.stdout[-800:])

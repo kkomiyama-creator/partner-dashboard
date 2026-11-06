@@ -4887,13 +4887,13 @@ function kakuhoCasesHtml(name){
   const rows = mine.map(c => `<tr>`
     + `<td>${escapeHtml(c.apo_date.slice(5).replace('-','/'))}</td>`
     + `<td>${c.code ? `<span class="spotcode" data-code="${escapeHtml(c.code)}" title="クリックでコピー（Cyzenのスポット検索に貼れます）" style="cursor:pointer;font-family:monospace;">${escapeHtml(c.code)}</span>` : '—'}</td>`
-    + `<td>${badge(c.sched)}</td>`
+    + `<td>${(c.sched === 'なし' && ['成約','敗戦','提案中'].includes(c.result)) ? '<span style="color:var(--text-sub);font-weight:700;">報告のみ</span>' : badge(c.sched)}</td>`
     + `<td>${c.sched_date ? escapeHtml(c.sched_date.slice(5).replace('-','/')) : '—'}</td>`
     + `<td>${escapeHtml(c.closer || '—')}</td>`
     + `<td style="color:${resColor(c.result)};font-weight:700;">${escapeHtml(c.result || '—')}</td>`
     + `</tr>`).join('');
-  const none = mine.filter(c => c.sched === 'なし').length;
-  const foot = `<div class="note" style="margin-top:6px;">商談予定が未登録の通過案件：${none}件。`
+  const none = mine.filter(c => c.sched === 'なし' && !['成約','敗戦','提案中'].includes(c.result)).length;
+  const foot = `<div class="note" style="margin-top:6px;">商談予定が未登録の通過案件：${none}件（「報告のみ」は予定は見つからないが結果報告があるもの）。`
     + `スポットコードをクリックするとコピーできます（Cyzenのスポット検索で探せます）。電話番号・お客様名は載せていません。`
     + `予定は Cyzen のスポットに紐づく予定（確定／後確後／仮予定）を、クローザーは予定の参加者のうちアポインター本人以外を表示しています。`
     + `電話番号の突合で取りこぼした案件は載りません。</div>`;
