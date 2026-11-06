@@ -262,7 +262,8 @@ def main():
         print("--- build_kakuho_cases.py ---")
         since = "2026-09-01"  # 9月分から（小宮山さん指示 2026-11-06）
         r = subprocess.run(["python3", os.path.join(AUTOMATION_DIR, "build_kakuho_cases.py"),
-                            "--since", since, "--out", kakuho_json], capture_output=True, text=True)
+                            "--since", since, "--closing-csv", sheet_paths["closing"],
+                            "--out", kakuho_json], capture_output=True, text=True)
         print(r.stdout[-800:])
         if r.returncode != 0:
             print("[kakuho] 通過案件の更新に失敗。前回分を使います:", r.stderr[-300:], file=sys.stderr)

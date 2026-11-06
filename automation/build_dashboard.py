@@ -3973,6 +3973,7 @@ function terakoyaDrillModal(title, sub, people, trendKey){
   const cols = ['氏名','会社','参加回','ベースライン(件/日)','直近(件/日)','傾向'];
   document.getElementById('drillExtra').innerHTML = '';
   const table = document.getElementById('drillTable');
+  table.onclick = null;
   const thead = '<thead><tr>' + cols.map((c,i)=>`<th class="${i===0?'':'num'}">${escapeHtml(c)}</th>`).join('') + '</tr></thead>';
   const tbody = '<tbody>' + (people.length ? people.map(p=>
     `<tr><td class="name clickable-name" data-name="${escapeHtml(p.name)}">${escapeHtml(p.name)}</td>` +
@@ -4145,6 +4146,7 @@ function openTerakoyaPersonDetail(name){
     escapeHtml(`${m.company}／参加回: ${m.sessions.join('・')}／${first}〜${last} 日別実績（累計: アポ${totalApo}件・アポ成約${totalApoSeiyaku}件・クロ成約${totalCloSeiyaku}件）`);
   document.getElementById('drillExtra').innerHTML = '';
   const table = document.getElementById('drillTable');
+  table.onclick = null;
   const cols = ['日付','アポ数','アポ成約','クロ成約','売上'];
   const thead = '<thead><tr>' + cols.map(c=>`<th class="${c==='日付'?'':'num'}">${c}</th>`).join('') + '</tr></thead>';
   const tbody = '<tbody>' + m.daily.map(r=>
@@ -4258,6 +4260,7 @@ function renderDecline(){
 function _fillDeclineDrillTable(people, includeCompanyCol){
   document.getElementById('drillExtra').innerHTML = '';
   const table = document.getElementById('drillTable');
+  table.onclick = null;
   const cols = ['名前'];
   if(includeCompanyCol) cols.push('所属会社');
   cols.push('役割区分','評価軸','要因分類','基準週平均アポ','直近週アポ','基準週平均クロ成約','直近週クロ成約','基準週平均成約(アポ側・参考)','直近週成約(アポ側・参考)','直近週稼働');
@@ -4386,6 +4389,7 @@ function openOutreachDetail(c){
   document.getElementById('drillSub').textContent = c.url ? '' : '';
   document.getElementById('drillExtra').innerHTML = '';
   const table = document.getElementById('drillTable');
+  table.onclick = null;
   const rows = [
     ['優先度', c.priority], ['反応', c.response], ['積極アプローチ対象', c.active_target ? 'YES' : 'NO'],
     ['送付パターン', c.send_pattern], ['エリア', c.area], ['事業内容', c.business],
@@ -4501,6 +4505,7 @@ function openHoujinCrmDetail(c){
   document.getElementById('drillSub').textContent = `折衝${c.contact_count}件・接触日の新しい順`;
   document.getElementById('drillExtra').innerHTML = '';
   const table = document.getElementById('drillTable');
+  table.onclick = null;
   const cols = ['接触日', '折衝カテゴリ', '連絡種別', '案件ステータス', '内容（要点）', '次回アクション', '期限', '先方担当者', '関連リンク', '入力者', '対応済'];
   const thead = '<thead><tr>' + cols.map(c2 => `<th>${escapeHtml(c2)}</th>`).join('') + '</tr></thead>';
   const tbody = '<tbody>' + c.history.map((h, i) =>
@@ -4858,12 +4863,27 @@ function openPersonDetail(name){
 
   document.getElementById('drillExtra').innerHTML = '';
   const table = document.getElementById('drillTable');
+  table.onclick = null;
   const cols = ['日付','アポ数','アポ成約','クロ成約','売上'];
   const thead = '<thead><tr>' + cols.map(c=>`<th class="${c==='日付'?'':'num'}">${c}</th>`).join('') + '</tr></thead>';
-  const tbody = '<tbody>' + rows.map(r=>
-    `<tr><td>${r[0]}</td><td class="num">${r[1]}</td><td class="num">${r[2]}</td><td class="num">${r[3]}</td><td class="num">${yen(r[4])}</td></tr>`
-  ).join('') + '</tbody>';
+  // 件数のある日は行クリックで内訳（どのスポットか）を開く（2026-11-06追加）
+  const tbody = '<tbody>' + rows.map(r=>{
+    const has = r[1] || r[2] || r[3];
+    return `<tr${has ? ` class="day-row" data-date="${r[0]}" style="cursor:pointer;" title="クリックでスポット内訳を表示"` : ''}>`
+      + `<td>${has ? '▸ ' : ''}${r[0]}</td><td class="num">${r[1]}</td><td class="num">${r[2]}</td><td class="num">${r[3]}</td><td class="num">${yen(r[4])}</td></tr>`;
+  }).join('') + '</tbody>';
   table.innerHTML = thead + tbody;
+  table.onclick = ev => {
+    const tr = ev.target.closest && ev.target.closest('tr.day-row');
+    if(!tr) return;
+    const next = tr.nextElementSibling;
+    if(next && next.classList.contains('day-detail')){ next.remove(); tr.firstElementChild.textContent = '▸ ' + tr.dataset.date; return; }
+    const detail = document.createElement('tr');
+    detail.className = 'day-detail';
+    detail.innerHTML = `<td colspan="5" style="background:var(--bg-soft,#f7f9fc);padding:10px 14px;">${dayBreakdownHtml(name, tr.dataset.date)}</td>`;
+    tr.after(detail);
+    tr.firstElementChild.textContent = '▾ ' + tr.dataset.date;
+  };
   document.getElementById('drillExtra').innerHTML = kakuhoCasesHtml(name);
 
   document.getElementById('drillModal').classList.add('show');
@@ -4898,6 +4918,48 @@ function kakuhoCasesHtml(name){
     + `予定は Cyzen のスポットに紐づく予定（確定／後確後／仮予定）を、クローザーは予定の参加者のうちアポインター本人以外を表示しています。`
     + `電話番号の突合で取りこぼした案件は載りません。</div>`;
   return head + `<div class="tablewrap"><table><thead><tr><th>獲得日</th><th>スポットコード</th><th>商談予定</th><th>予定日</th><th>クローザー</th><th>結果</th></tr></thead><tbody>${rows}</tbody></table></div>` + foot;
+}
+// 日別表の行を開いたときの内訳。アポ数は 406「完了」、アポ成約・クロ成約は獲得報告シートの1行を Cyzen成約報告と
+// 照合してスポットコードを付けたもの（build_kakuho_cases.py）。表の件数と一覧の件数がずれる分は「特定できず」として明示する。
+function dayBreakdownHtml(name, dateSlash){
+  const iso = dateSlash.replace(/\//g, '-');
+  const key = normNameJs(name);
+  const cases = (KAKUHO && KAKUHO.cases) || [];
+  const sei = (KAKUHO && KAKUHO.sei) || [];
+  const byCode = {}; cases.forEach(c => { if(c.code) byCode[c.code] = c; });
+  const codeCell = code => code
+    ? `<span class="spotcode" data-code="${escapeHtml(code)}" title="クリックでコピー" style="cursor:pointer;font-family:monospace;">${escapeHtml(code)}</span>`
+    : '<span style="color:var(--text-sub);">スポット未特定</span>';
+  const md = d => d ? escapeHtml(d.slice(5).replace('-','/')) : '—';
+  const resColor = r => ({'成約':'var(--success)','敗戦':'var(--danger)','提案中':'#B7791F','未報告':'var(--danger)','予定':'var(--text-sub)'})[r] || 'var(--text-sub)';
+  const dp = DAILY_PERIODS[dateSlash];
+  const apoRow = dp && dp.apo_ranking.find(r => normNameJs(r[1]) === key);
+  const cloRow = dp && dp.closer_ranking.find(r => normNameJs(r[1]) === key);
+  const nApo = apoRow ? apoRow[4] : 0, nApoSei = apoRow ? apoRow[3] : 0, nCloSei = cloRow ? cloRow[3] : 0;
+  const myApo = cases.filter(c => c.apo_date === iso && normNameJs(c.apointer) === key);
+  const myApoSei = sei.filter(x => x.date === iso && normNameJs(x.apointer) === key);
+  const myCloSei = sei.filter(x => x.date === iso && normNameJs(x.closer) === key);
+  const gap = (shown, total) => (total > shown)
+    ? `<div class="note" style="margin:4px 0 0;">表の件数（${total}件）のうち ${total - shown}件は一覧に出せませんでした（突合できなかった／データの更新時差）。</div>` : '';
+  const section = (title, n, body) => `<div style="margin:6px 0 10px;"><div style="font-weight:700;margin-bottom:4px;">${title}：${n}件</div>${body}</div>`;
+  const tbl = (head, rows) => `<div class="tablewrap"><table><thead><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`;
+  let html = '';
+  if(nApo || myApo.length){
+    const rows = myApo.map(c => `<tr><td>${codeCell(c.code)}</td>`
+      + `<td>${c.sched === 'なし' && ['成約','敗戦','提案中'].includes(c.result) ? '報告のみ' : escapeHtml(c.sched)}</td>`
+      + `<td>${md(c.sched_date)}</td><td style="color:${resColor(c.result)};font-weight:700;">${escapeHtml(c.result || '—')}</td>`
+      + `<td>${c.cancel ? '<span style="color:var(--danger);font-weight:700;">キャンセル有</span>' : ''}</td></tr>`).join('');
+    html += section('アポ', nApo, (myApo.length ? tbl(['スポットコード','商談予定','予定日','結果','備考'], rows) : '') + gap(myApo.length, nApo));
+  }
+  const seiTbl = (list, who) => list.length ? tbl(['スポットコード', who, '獲得日→成約'], list.map(x => {
+    const c = x.code ? byCode[x.code] : null;
+    const lag = c ? Math.round((new Date(x.date) - new Date(c.apo_date)) / 86400000) : null;
+    return `<tr><td>${codeCell(x.code)}</td><td>${escapeHtml(who === 'クローザー' ? (x.closer || '—') : (x.apointer || '—'))}</td>`
+      + `<td>${c ? md(c.apo_date) + ' → ' + md(x.date) + '（' + lag + '日）' : '獲得日不明'}</td></tr>`;
+  }).join('')) : '';
+  if(nApoSei || myApoSei.length) html += section('アポ成約（本人がアポを取った成約）', nApoSei, seiTbl(myApoSei, 'クローザー') + gap(myApoSei.length, nApoSei));
+  if(nCloSei || myCloSei.length) html += section('クロ成約（本人がクローズした成約）', nCloSei, seiTbl(myCloSei, 'アポインター') + gap(myCloSei.length, nCloSei));
+  return html || '<div class="note">この日の内訳データはありません。</div>';
 }
 document.addEventListener('click', e => {
   const el = e.target.closest && e.target.closest('.spotcode');
@@ -4978,6 +5040,7 @@ function openTileDrillScoped(kind, d, company){
   document.getElementById('drillSub').textContent = `期間: ${d.start}〜${d.end}／${def.rows.length}名`;
   document.getElementById('drillExtra').innerHTML = '';
   const table = document.getElementById('drillTable');
+  table.onclick = null;
   const thead = '<thead><tr>' + def.cols.map((c,i)=>`<th class="${i===0?'':'num'}">${escapeHtml(c)}</th>`).join('') + '</tr></thead>';
   const tbody = '<tbody>' + (def.rows.length ? def.rows.map(r=>
     `<tr><td class="name clickable-name" data-name="${escapeHtml(r[0])}">${escapeHtml(r[0])}</td>` +
@@ -5041,6 +5104,7 @@ function openTileDrill(kind){
   document.getElementById('drillSub').textContent = def.subLabel || `期間: ${d.start}〜${d.end}／${def.rows.length}件`;
   document.getElementById('drillExtra').innerHTML = '';
   const table = document.getElementById('drillTable');
+  table.onclick = null;
   const thead = '<thead><tr>' + def.cols.map((c,i)=>`<th class="${i===0?'':'num'}">${escapeHtml(c)}</th>`).join('') + '</tr></thead>';
   const tbody = '<tbody>' + (def.rows.length ? def.rows.map(r=>
     '<tr>' + r.map((v,i)=>`<td class="${i===0?'':'num'}">${escapeHtml(v)}</td>`).join('') + '</tr>'

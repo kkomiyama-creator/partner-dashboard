@@ -30,6 +30,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from cyzen_api_client import CyzenAPIClient, build_role_map  # noqa: E402
 from build_shodan_api import fetch_schedules  # noqa: E402
+from company_resolver import canon_name  # noqa: E402
+import csv  # noqa: E402
 
 KINTONE_BASE = "https://fit-founder.cybozu.com/k/v1"
 APP_ID = 406
@@ -38,6 +40,23 @@ REQ_DEF = "アポ後確依頼"
 RESULT_KIND = {"クローザー：獲得（成約）": "成約", "クローザー：敗戦": "敗戦", "クローザー：提案中": "提案中"}
 SCHED_PRIORITY = {"確定": 3, "後確後（事務確認OK）": 2, "仮予定": 1}
 SCHED_LABEL = {"確定": "確定", "後確後（事務確認OK）": "後確後", "仮予定": "仮予定"}
+CLOSING_DEF = "クローザー：獲得（成約）"
+
+
+def cn(n):
+    """ダッシュボード側の集計と同じ表記ゆれ吸収（別名→正式名）。画面の担当者名と突き合わせるため。"""
+    return canon_name((n or "").strip())
+
+
+def same_person(a, b):
+    """お客様名の緩い一致（様・邸・空白を除いた前方一致）。reconcile_closing.pyと同じ考え方。名前はメモリ内だけで使う。"""
+    def nm(x):
+        x = x or ""
+        for ch in (" ", "\u3000", "様", "邸", "さん", "(", ")", "（", "）"):
+            x = x.replace(ch, "")
+        return x
+    a, b = nm(a), nm(b)
+    return bool(a and b) and (a.startswith(b) or b.startswith(a))
 
 
 def jst(iso_utc):
@@ -113,6 +132,14 @@ def fetch_spot_codes(client, spot_ids, start, end):
             if s.get("spot_id") in want:
                 out[s["spot_id"]] = (s.get("spot_code") or "").strip()
         d1 = d3 + datetime.timedelta(days=1)
+    # 期間走査で見つからなかったスポット（作成後に更新されていない古いスポットなど）は個別に引く
+    for sid in want - set(out):
+        try:
+            for sp in (client.get("spots", spot_id=sid).get("spots") or []):
+                if sp.get("spot_id") == sid:
+                    out[sid] = (sp.get("spot_code") or "").strip()
+        except Exception:  # noqa: BLE001
+            pass
     return out
 
 
@@ -121,6 +148,7 @@ def main():
     ap.add_argument("--since", required=True, help="獲得日の下限 YYYY-MM-DD")
     ap.add_argument("--out", required=True)
     ap.add_argument("--today", default=None)
+    ap.add_argument("--closing-csv", default=None, help="獲得報告シート(成約)のCSV。あればアポ成約/クロ成約をスポットに紐づける")
     args = ap.parse_args()
     today = (datetime.date.fromisoformat(args.today) if args.today
              else (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).date())
@@ -138,6 +166,7 @@ def main():
 
     # 電話番号 -> アポ後確依頼（spot_id と依頼日）。電話番号はこの辞書の中だけで使う
     by_phone = collections.defaultdict(list)
+    closing_reports = []
     results_by_spot = collections.defaultdict(list)
     for r in reports:
         name = r.get("report_definition_name")
@@ -148,6 +177,12 @@ def main():
                 by_phone[p].append((sid, jst(r["created_at"]).date()))
         elif name in RESULT_KIND and sid:
             results_by_spot[sid].append((jst(r["created_at"]).date(), RESULT_KIND[name], r.get("user_id")))
+        if name == CLOSING_DEF and sid:
+            cust = item(r, "契約者(漢字＋カタカナを記載)")
+            closing_reports.append({"sid": sid, "at": jst(r["created_at"]).date(),
+                                    "customer": str(cust or "").strip(),
+                                    "apo": cn(str(item(r, "アポインター氏名") or "")),
+                                    "closer": cn(str(item(r, "クローザー氏名") or ""))})
 
     scheds = fetch_schedules(client, (since - datetime.timedelta(days=5)).isoformat(),
                              (today + datetime.timedelta(days=30)).isoformat())[0]
@@ -170,24 +205,25 @@ def main():
         cands = by_phone.get(p) or []
         if not cands:
             unmatched += 1
+            matched.append((r, None))  # スポット未特定。画面の件数と一覧の件数を合わせるため行は残す（電話番号は出さない）
             continue
         sid = min(cands, key=lambda c: abs((c[1] - d0).days))[0]
         matched.append((r, sid))
-    print(f"電話番号で突合: 一致{len(matched)} / 不一致{unmatched}")
+    print(f"電話番号で突合: 一致{len(matched) - unmatched} / 不一致{unmatched}")
 
-    spot_ids = {sid for _, sid in matched}
+    spot_ids = {sid for _, sid in matched if sid} | {c["sid"] for c in closing_reports}
     codes = fetch_spot_codes(client, spot_ids, (since - datetime.timedelta(days=5)).isoformat(), win_end)
     print(f"スポットコード取得: {sum(1 for c in codes.values() if CODE_RE.fullmatch(c))}/{len(spot_ids)}")
 
     cases = []
     for r, sid in matched:
-        code = codes.get(sid, "")
+        code = codes.get(sid, "") if sid else ""
         code = code if CODE_RE.fullmatch(code) else ""
         ss = sorted(sched_by_spot.get(sid, []),
                     key=lambda s: (SCHED_PRIORITY[s["schedule_category"]["schedule_category_name"]],
                                    s["start_date"]), reverse=True)
         sched = ss[0] if ss else None
-        sched_label, sched_date, closer = "なし", "", ""
+        sched_label, sched_date, closer = ("なし" if sid else "不明"), "", ""
         if sched:
             sched_label = SCHED_LABEL[sched["schedule_category"]["schedule_category_name"]]
             sched_date = jst(sched["start_date"]).strftime("%Y-%m-%d")
@@ -203,7 +239,7 @@ def main():
             result = "予定" if sched_date >= today.isoformat() else "未報告"
         cases.append({
             "apo_date": r["獲得日"]["value"],
-            "apointer": (r["アポインター"]["value"] or "").strip(),
+            "apointer": cn(r["アポインター"]["value"]),
             "company": (r["会社名"]["value"] or "").strip(),
             "code": code,
             "cancel": bool(r["キャンセル有無"]["value"]),
@@ -211,13 +247,46 @@ def main():
         })
     cases.sort(key=lambda c: (c["apo_date"], c["apointer"]), reverse=True)
 
+    # 成約（獲得報告シートの1行＝1成約）→ Cyzenの成約報告と照合してスポットコードを付ける。
+    # お客様名の一致はメモリ内だけで使い、出力にはスポットコードと担当者名だけを残す。
+    sei, sei_unmatched = [], 0
+    if args.closing_csv and os.path.exists(args.closing_csv):
+        used = set()
+        with open(args.closing_csv, encoding="utf-8-sig", newline="") as f:
+            rows = list(csv.reader(f))[1:]
+        for row in rows:
+            if len(row) < 9 or not row[0].strip():
+                continue
+            try:
+                at = datetime.datetime.strptime(row[8].strip(), "%Y/%m/%d %H:%M:%S").date()
+            except ValueError:
+                continue
+            if at < since:
+                continue
+            apo, clo = cn(row[1]), cn(row[2])
+            cands = [(i, c) for i, c in enumerate(closing_reports)
+                     if i not in used and same_person(row[0], c["customer"]) and abs((c["at"] - at).days) <= 14]
+            # 担当者も合うものを優先し、同点なら日付が近いもの
+            cands.sort(key=lambda ic: (not (norm_name(ic[1]["closer"]) == norm_name(clo)), abs((ic[1]["at"] - at).days)))
+            code = ""
+            if cands:
+                i, c = cands[0]
+                used.add(i)
+                code = codes.get(c["sid"], "")
+                code = code if CODE_RE.fullmatch(code) else ""
+            else:
+                sei_unmatched += 1
+            sei.append({"date": at.isoformat(), "apointer": apo, "closer": clo, "code": code})
+        print(f"成約: シート{len(sei)}件 / Cyzen成約報告と未照合{sei_unmatched}件 / コード付き{sum(1 for x in sei if x['code'])}件")
+
     stats = {"done": len(recs), "matched": len(matched), "unmatched": unmatched,
              "with_code": sum(1 for c in cases if c["code"]),
+             "sei": len(sei), "sei_with_code": sum(1 for x in sei if x["code"]),
              "sched": collections.Counter(c["sched"] for c in cases),
              "result": collections.Counter(c["result"] or "-" for c in cases)}
     out = {"generated": (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime("%Y-%m-%d %H:%M"),
            "since": args.since, "stats": {k: (dict(v) if isinstance(v, collections.Counter) else v) for k, v in stats.items()},
-           "cases": cases}
+           "cases": cases, "sei": sei}
     os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=1)
