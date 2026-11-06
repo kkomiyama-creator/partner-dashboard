@@ -990,7 +990,7 @@ button.printbtn.active{background:var(--blue); color:#fff; border-color:var(--bl
       </div>
       <button class="modal-close" id="drillClose" aria-label="閉じる">✕</button>
     </div>
-    <div class="modal-body"><div class="tablewrap"><table id="drillTable"></table></div></div>
+    <div class="modal-body"><div id="drillExtra"></div><div class="tablewrap"><table id="drillTable"></table></div></div>
   </div>
 </div>
 
@@ -1027,6 +1027,7 @@ const CAMP_ANALYSIS = __CAMP_ANALYSIS_JSON__;
 const TERAKOYA_ANALYSIS = __TERAKOYA_ANALYSIS_JSON__;
 // 新規・増員者の立ち上がり（2026-10-11追加・build_newstarter.pyが算出）。
 const NEWSTARTER = __NEWSTARTER_JSON__;
+const KAKUHO = __KAKUHO_JSON__;
 // Cyzen入力精度スコア（2026-10-07追加・build_input_accuracy.pyが週次で生成するdata/input_accuracy.json）。企業別タブに表示。
 const INPUT_ACCURACY = __INPUT_ACCURACY_JSON__;
 const URGENT_TARGETS = __URGENT_TARGETS_JSON__;
@@ -3970,6 +3971,7 @@ function terakoyaDrillModal(title, sub, people, trendKey){
   document.getElementById('drillTitle').textContent = title;
   document.getElementById('drillSub').textContent = sub;
   const cols = ['氏名','会社','参加回','ベースライン(件/日)','直近(件/日)','傾向'];
+  document.getElementById('drillExtra').innerHTML = '';
   const table = document.getElementById('drillTable');
   const thead = '<thead><tr>' + cols.map((c,i)=>`<th class="${i===0?'':'num'}">${escapeHtml(c)}</th>`).join('') + '</tr></thead>';
   const tbody = '<tbody>' + (people.length ? people.map(p=>
@@ -4141,6 +4143,7 @@ function openTerakoyaPersonDetail(name){
   const first = m.daily[0][0], last = m.daily[m.daily.length-1][0];
   document.getElementById('drillSub').innerHTML =
     escapeHtml(`${m.company}／参加回: ${m.sessions.join('・')}／${first}〜${last} 日別実績（累計: アポ${totalApo}件・アポ成約${totalApoSeiyaku}件・クロ成約${totalCloSeiyaku}件）`);
+  document.getElementById('drillExtra').innerHTML = '';
   const table = document.getElementById('drillTable');
   const cols = ['日付','アポ数','アポ成約','クロ成約','売上'];
   const thead = '<thead><tr>' + cols.map(c=>`<th class="${c==='日付'?'':'num'}">${c}</th>`).join('') + '</tr></thead>';
@@ -4253,6 +4256,7 @@ function renderDecline(){
 
 // ---------- 下落メンバー：会社別バークリック→対象者内訳（既存drillModalを流用） ----------
 function _fillDeclineDrillTable(people, includeCompanyCol){
+  document.getElementById('drillExtra').innerHTML = '';
   const table = document.getElementById('drillTable');
   const cols = ['名前'];
   if(includeCompanyCol) cols.push('所属会社');
@@ -4380,6 +4384,7 @@ function escapeHtmlBr(s){ return escapeHtml(s).split(String.fromCharCode(10)).jo
 function openOutreachDetail(c){
   document.getElementById('drillTitle').textContent = c.company;
   document.getElementById('drillSub').textContent = c.url ? '' : '';
+  document.getElementById('drillExtra').innerHTML = '';
   const table = document.getElementById('drillTable');
   const rows = [
     ['優先度', c.priority], ['反応', c.response], ['積極アプローチ対象', c.active_target ? 'YES' : 'NO'],
@@ -4494,6 +4499,7 @@ function renderHoujinCrm(){
 function openHoujinCrmDetail(c){
   document.getElementById('drillTitle').textContent = c.company;
   document.getElementById('drillSub').textContent = `折衝${c.contact_count}件・接触日の新しい順`;
+  document.getElementById('drillExtra').innerHTML = '';
   const table = document.getElementById('drillTable');
   const cols = ['接触日', '折衝カテゴリ', '連絡種別', '案件ステータス', '内容（要点）', '次回アクション', '期限', '先方担当者', '関連リンク', '入力者', '対応済'];
   const thead = '<thead><tr>' + cols.map(c2 => `<th>${escapeHtml(c2)}</th>`).join('') + '</tr></thead>';
@@ -4850,6 +4856,7 @@ function openPersonDetail(name){
     `${company || '会社不明'}／${dates[0]}〜${dates[dates.length-1]} 日別実績（累計: アポ${totalApo}件・アポ成約${totalApoSeiyaku}件・クロ成約${totalCloSeiyaku}件）`;
   document.getElementById('drillSub').innerHTML = escapeHtml(summaryLine) + attendanceDetailHtml(name);
 
+  document.getElementById('drillExtra').innerHTML = '';
   const table = document.getElementById('drillTable');
   const cols = ['日付','アポ数','アポ成約','クロ成約','売上'];
   const thead = '<thead><tr>' + cols.map(c=>`<th class="${c==='日付'?'':'num'}">${c}</th>`).join('') + '</tr></thead>';
@@ -4857,9 +4864,47 @@ function openPersonDetail(name){
     `<tr><td>${r[0]}</td><td class="num">${r[1]}</td><td class="num">${r[2]}</td><td class="num">${r[3]}</td><td class="num">${yen(r[4])}</td></tr>`
   ).join('') + '</tbody>';
   table.innerHTML = thead + tbody;
+  document.getElementById('drillExtra').innerHTML = kakuhoCasesHtml(name);
 
   document.getElementById('drillModal').classList.add('show');
 }
+
+// 担当者の詳細画面に「通過案件（アポ後確 完了）」の一覧を出す（2026-11-06）。データは build_kakuho_cases.py が
+// kintone「アポ後確」と Cyzen を電話番号で突合して作る。電話番号・お客様名は含まれない（スポットコードのみ）。
+function kakuhoCasesHtml(name){
+  const all = (KAKUHO && KAKUHO.cases) || [];
+  if(!all.length) return '';
+  const key = normNameJs(name);
+  const mine = all.filter(c => normNameJs(c.apointer) === key);
+  const head = `<div class="note" style="margin:14px 0 6px;font-weight:700;">通過案件（アポ後確「完了」）：${mine.length}件`
+    + `<span style="font-weight:400;color:var(--text-sub);">　${escapeHtml(KAKUHO.since || '')}以降／更新 ${escapeHtml(KAKUHO.generated || '')}</span></div>`;
+  if(!mine.length) return head + '<div class="note">この期間の通過案件はありません。</div>';
+  const badge = (t, kind) => {
+    const col = ({'確定':'var(--success)','後確後':'var(--blue)','仮予定':'#B7791F','なし':'var(--danger)'})[t] || 'var(--text-sub)';
+    return `<span style="color:${col};font-weight:700;">${escapeHtml(t)}</span>`;
+  };
+  const resColor = r => ({'成約':'var(--success)','敗戦':'var(--danger)','提案中':'#B7791F','未報告':'var(--danger)','予定':'var(--text-sub)'})[r] || 'var(--text-sub)';
+  const rows = mine.map(c => `<tr>`
+    + `<td>${escapeHtml(c.apo_date.slice(5).replace('-','/'))}</td>`
+    + `<td>${c.code ? `<span class="spotcode" data-code="${escapeHtml(c.code)}" title="クリックでコピー（Cyzenのスポット検索に貼れます）" style="cursor:pointer;font-family:monospace;">${escapeHtml(c.code)}</span>` : '—'}</td>`
+    + `<td>${badge(c.sched)}</td>`
+    + `<td>${c.sched_date ? escapeHtml(c.sched_date.slice(5).replace('-','/')) : '—'}</td>`
+    + `<td>${escapeHtml(c.closer || '—')}</td>`
+    + `<td style="color:${resColor(c.result)};font-weight:700;">${escapeHtml(c.result || '—')}</td>`
+    + `</tr>`).join('');
+  const none = mine.filter(c => c.sched === 'なし').length;
+  const foot = `<div class="note" style="margin-top:6px;">商談予定が未登録の通過案件：${none}件。`
+    + `スポットコードをクリックするとコピーできます（Cyzenのスポット検索で探せます）。電話番号・お客様名は載せていません。`
+    + `予定は Cyzen のスポットに紐づく予定（確定／後確後／仮予定）を、クローザーは予定の参加者のうちアポインター本人以外を表示しています。`
+    + `電話番号の突合で取りこぼした案件は載りません。</div>`;
+  return head + `<div class="tablewrap"><table><thead><tr><th>獲得日</th><th>スポットコード</th><th>商談予定</th><th>予定日</th><th>クローザー</th><th>結果</th></tr></thead><tbody>${rows}</tbody></table></div>` + foot;
+}
+document.addEventListener('click', e => {
+  const el = e.target.closest && e.target.closest('.spotcode');
+  if(!el) return;
+  const code = el.dataset.code;
+  try { navigator.clipboard.writeText(code); el.textContent = '✔ コピーしました'; setTimeout(()=>{ el.textContent = code; }, 1200); } catch(err) {}
+});
 // 「稼働人員数・詳細」タイル用のドリルダウン定義（2026-08-11・小宮山さんの依頼＝出勤打刻がある人を
 // クリックで一覧表示し、各人の出勤/退勤時刻（記録があれば）とアポ獲得数・成約数を見たい、に対応）。
 // 2026-08-25修正：上部の表示期間ピッカーで選択中の期間（日次/週次/月次/カスタム）に連動するよう変更
@@ -4931,6 +4976,7 @@ function openTileDrillScoped(kind, d, company){
 
   document.getElementById('drillTitle').textContent = def.title;
   document.getElementById('drillSub').textContent = `期間: ${d.start}〜${d.end}／${def.rows.length}名`;
+  document.getElementById('drillExtra').innerHTML = '';
   const table = document.getElementById('drillTable');
   const thead = '<thead><tr>' + def.cols.map((c,i)=>`<th class="${i===0?'':'num'}">${escapeHtml(c)}</th>`).join('') + '</tr></thead>';
   const tbody = '<tbody>' + (def.rows.length ? def.rows.map(r=>
@@ -4993,6 +5039,7 @@ function openTileDrill(kind){
   if(!def) return;
   document.getElementById('drillTitle').textContent = def.title;
   document.getElementById('drillSub').textContent = def.subLabel || `期間: ${d.start}〜${d.end}／${def.rows.length}件`;
+  document.getElementById('drillExtra').innerHTML = '';
   const table = document.getElementById('drillTable');
   const thead = '<thead><tr>' + def.cols.map((c,i)=>`<th class="${i===0?'':'num'}">${escapeHtml(c)}</th>`).join('') + '</tr></thead>';
   const tbody = '<tbody>' + (def.rows.length ? def.rows.map(r=>
@@ -5528,7 +5575,7 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
           urgent_targets_json=None, training_json=None, shift_status_json=None,
           clockout_csv=None, shodan_json=None, tenure_json=None, company_targets_json=None,
           houjin_crm_json=None, houjin_writeback_url=None, apo_report_json=None, camp_roster_json=None,
-          terakoya_json=None, newstarter_json=None):
+          terakoya_json=None, newstarter_json=None, kakuho_json=None):
     end_dt = datetime.strptime(end, "%Y/%m/%d")
     start_dt = datetime.strptime(start, "%Y/%m/%d")
     day_start = end_dt.strftime("%Y/%m/%d")
@@ -5764,6 +5811,15 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
         except Exception as e:  # noqa: BLE001
             print(f"[newstarter] 新規・増員者データの読込に失敗しました: {e}", file=sys.stderr)
 
+    # 通過案件（kintone「アポ後確」完了×Cyzenスポット）。担当者の詳細画面で使う（2026-11-06追加）。
+    kakuho_data = {"cases": [], "generated": "", "since": ""}
+    if kakuho_json and os.path.exists(kakuho_json):
+        try:
+            with open(kakuho_json, encoding="utf-8") as _f:
+                kakuho_data = json.load(_f)
+        except Exception as e:  # noqa: BLE001
+            print(f"[kakuho] 通過案件データの読込に失敗しました: {e}", file=sys.stderr)
+
     ai_summary = None
     if ai_summary_json and os.path.exists(ai_summary_json):
         with open(ai_summary_json, encoding="utf-8") as f:
@@ -5938,6 +5994,7 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
     html_out = html_out.replace("__CAMP_ANALYSIS_JSON__", json.dumps(camp_analysis, ensure_ascii=False))
     html_out = html_out.replace("__TERAKOYA_ANALYSIS_JSON__", json.dumps(terakoya_analysis, ensure_ascii=False))
     html_out = html_out.replace("__NEWSTARTER_JSON__", json.dumps(newstarter_data, ensure_ascii=False, separators=(",", ":")))
+    html_out = html_out.replace("__KAKUHO_JSON__", json.dumps(kakuho_data, ensure_ascii=False, separators=(",", ":")))
     # Cyzen入力精度スコア（週次・build_input_accuracy.pyが生成）。無い/壊れていれば空で、カードは非表示になる。
     input_accuracy = {}
     _here = os.path.dirname(os.path.abspath(__file__))
@@ -6092,6 +6149,8 @@ def main():
     ap.add_argument("--terakoya-json", default=None,
                      help="FF寺子屋(隔週アポインター向け研修)累計参加者名簿（data/terakoya_roster.json）。"
                           "省略時は寺子屋参加者タブが空になる")
+    ap.add_argument("--kakuho-json", default=None,
+                     help="通過案件データ（build_kakuho_cases.pyの出力）。省略時は担当者詳細に通過案件を出さない")
     ap.add_argument("--newstarter-json", default=None,
                      help="新規・増員者の立ち上がりデータ（build_newstarter.pyの出力）。省略時は新規・増員者タブが空になる")
     ap.add_argument("--start", default=None)
@@ -6133,7 +6192,8 @@ def main():
                      apo_report_json=args.apo_report_json,
                      camp_roster_json=args.camp_roster_json,
                      terakoya_json=args.terakoya_json,
-                     newstarter_json=args.newstarter_json)
+                     newstarter_json=args.newstarter_json,
+                     kakuho_json=args.kakuho_json)
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
 

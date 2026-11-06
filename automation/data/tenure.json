@@ -1,16 +1,176 @@
 {
- "generated_at": "2026-10-11T20:21:29",
- "as_of": "2026-10-11",
+ "generated_at": "2026-11-06T14:41:01",
+ "as_of": "2026-11-06",
  "new_hire_days": 90,
  "mid_days": 365,
  "people": {
+  "下出口雄星": {
+   "company": "株式会社NECT",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-11-06",
+   "tenure_days": 0,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "中島佑悟": {
+   "company": "株式会社ASG",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-11-06",
+   "tenure_days": 0,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "木村一葵": {
+   "company": "HY株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-11-03",
+   "tenure_days": 3,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "古賀和也": {
+   "company": "D-MAK株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-11-03",
+   "tenure_days": 3,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "小野笑太": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-11-01",
+   "tenure_days": 5,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "鶴田純大": {
+   "company": "株式会社Fit Founder",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-11-01",
+   "tenure_days": 5,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "西川路誠也": {
+   "company": "株式会社JINNOVA",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-10-24",
+   "tenure_days": 13,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "石部耀": {
+   "company": "株式会社LeadMore",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-10-23",
+   "tenure_days": 14,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "桑名龍輔": {
+   "company": "兼高推進",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-10-23",
+   "tenure_days": 14,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "池田誠治": {
+   "company": "一興商事株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-10-23",
+   "tenure_days": 14,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "土居海成": {
+   "company": "株式会社K-growth",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-10-19",
+   "tenure_days": 18,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "中森裕介": {
+   "company": "株式会社Zembet",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-10-18",
+   "tenure_days": 19,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "森孝博": {
+   "company": "株式会社Zembet",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-10-18",
+   "tenure_days": 19,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "櫻井健也": {
+   "company": "有限会社イーティー",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-10-18",
+   "tenure_days": 19,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "大友勤之": {
+   "company": "兼高推進",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-10-18",
+   "tenure_days": 19,
+   "bucket": "new",
+   "account_status": 1
+  },
+  "谷壮真": {
+   "company": "Ambitious株式会社",
+   "roles": [
+    "アポインター"
+   ],
+   "created_at": "2026-10-16",
+   "tenure_days": 21,
+   "bucket": "new",
+   "account_status": 1
+  },
   "吉川柊馬": {
    "company": "株式会社K-growth",
    "roles": [
     "アポインター"
    ],
    "created_at": "2026-10-09",
-   "tenure_days": 2,
+   "tenure_days": 28,
    "bucket": "new",
    "account_status": 1
   },
@@ -20,7 +180,7 @@
     "アポインター"
    ],
    "created_at": "2026-10-07",
-   "tenure_days": 4,
+   "tenure_days": 30,
    "bucket": "new",
    "account_status": 1
   },
@@ -30,7 +190,7 @@
     "アポインター"
    ],
    "created_at": "2026-10-04",
-   "tenure_days": 7,
+   "tenure_days": 33,
    "bucket": "new",
    "account_status": 1
   },
@@ -40,7 +200,7 @@
     "アポインター"
    ],
    "created_at": "2026-10-04",
-   "tenure_days": 7,
+   "tenure_days": 33,
    "bucket": "new",
    "account_status": 1
   },
@@ -50,7 +210,7 @@
     "アポインター"
    ],
    "created_at": "2026-10-02",
-   "tenure_days": 9,
+   "tenure_days": 35,
    "bucket": "new",
    "account_status": 1
   },
@@ -60,7 +220,7 @@
     "アポインター"
    ],
    "created_at": "2026-10-02",
-   "tenure_days": 9,
+   "tenure_days": 35,
    "bucket": "new",
    "account_status": 1
   },
@@ -70,7 +230,7 @@
     "アポインター"
    ],
    "created_at": "2026-10-01",
-   "tenure_days": 10,
+   "tenure_days": 36,
    "bucket": "new",
    "account_status": 1
   },
@@ -80,7 +240,7 @@
     "アポインター"
    ],
    "created_at": "2026-10-01",
-   "tenure_days": 10,
+   "tenure_days": 36,
    "bucket": "new",
    "account_status": 1
   },
@@ -90,7 +250,7 @@
     "アポインター"
    ],
    "created_at": "2026-10-01",
-   "tenure_days": 10,
+   "tenure_days": 36,
    "bucket": "new",
    "account_status": 1
   },
@@ -100,7 +260,7 @@
     "アポインター"
    ],
    "created_at": "2026-10-01",
-   "tenure_days": 10,
+   "tenure_days": 36,
    "bucket": "new",
    "account_status": 1
   },
@@ -110,7 +270,7 @@
     "アポインター"
    ],
    "created_at": "2026-09-27",
-   "tenure_days": 14,
+   "tenure_days": 40,
    "bucket": "new",
    "account_status": 1
   },
@@ -120,7 +280,7 @@
     "アポインター"
    ],
    "created_at": "2026-09-27",
-   "tenure_days": 14,
+   "tenure_days": 40,
    "bucket": "new",
    "account_status": 1
   },
@@ -130,7 +290,7 @@
     "アポインター"
    ],
    "created_at": "2026-09-22",
-   "tenure_days": 19,
+   "tenure_days": 45,
    "bucket": "new",
    "account_status": 1
   },
@@ -140,7 +300,7 @@
     "アポインター"
    ],
    "created_at": "2026-09-18",
-   "tenure_days": 23,
+   "tenure_days": 49,
    "bucket": "new",
    "account_status": 1
   },
@@ -150,7 +310,7 @@
     "アポインター"
    ],
    "created_at": "2026-09-15",
-   "tenure_days": 26,
+   "tenure_days": 52,
    "bucket": "new",
    "account_status": 1
   },
@@ -160,7 +320,7 @@
     "アポインター"
    ],
    "created_at": "2026-09-14",
-   "tenure_days": 27,
+   "tenure_days": 53,
    "bucket": "new",
    "account_status": 1
   },
@@ -170,7 +330,7 @@
     "アポインター"
    ],
    "created_at": "2026-09-13",
-   "tenure_days": 28,
+   "tenure_days": 54,
    "bucket": "new",
    "account_status": 1
   },
@@ -181,7 +341,7 @@
     "クローザー"
    ],
    "created_at": "2026-09-13",
-   "tenure_days": 28,
+   "tenure_days": 54,
    "bucket": "new",
    "account_status": 1
   },
@@ -192,7 +352,7 @@
     "クローザー"
    ],
    "created_at": "2026-09-13",
-   "tenure_days": 28,
+   "tenure_days": 54,
    "bucket": "new",
    "account_status": 1
   },
@@ -202,7 +362,7 @@
     "アポインター"
    ],
    "created_at": "2026-09-12",
-   "tenure_days": 29,
+   "tenure_days": 55,
    "bucket": "new",
    "account_status": 1
   },
@@ -212,7 +372,7 @@
     "アポインター"
    ],
    "created_at": "2026-09-12",
-   "tenure_days": 29,
+   "tenure_days": 55,
    "bucket": "new",
    "account_status": 1
   },
@@ -222,7 +382,7 @@
     "アポインター"
    ],
    "created_at": "2026-09-12",
-   "tenure_days": 29,
+   "tenure_days": 55,
    "bucket": "new",
    "account_status": 1
   },
@@ -232,7 +392,7 @@
     "アポインター"
    ],
    "created_at": "2026-09-10",
-   "tenure_days": 31,
+   "tenure_days": 57,
    "bucket": "new",
    "account_status": 1
   },
@@ -242,7 +402,7 @@
     "アポインター"
    ],
    "created_at": "2026-09-10",
-   "tenure_days": 31,
+   "tenure_days": 57,
    "bucket": "new",
    "account_status": 1
   },
@@ -252,7 +412,7 @@
     "アポインター"
    ],
    "created_at": "2026-09-05",
-   "tenure_days": 36,
+   "tenure_days": 62,
    "bucket": "new",
    "account_status": 1
   },
@@ -262,7 +422,7 @@
     "アポインター"
    ],
    "created_at": "2026-09-05",
-   "tenure_days": 36,
+   "tenure_days": 62,
    "bucket": "new",
    "account_status": 1
   },
@@ -272,7 +432,7 @@
     "アポインター"
    ],
    "created_at": "2026-09-04",
-   "tenure_days": 37,
+   "tenure_days": 63,
    "bucket": "new",
    "account_status": 1
   },
@@ -282,7 +442,7 @@
     "アポインター"
    ],
    "created_at": "2026-08-28",
-   "tenure_days": 44,
+   "tenure_days": 70,
    "bucket": "new",
    "account_status": 0
   },
@@ -292,7 +452,7 @@
     "アポインター"
    ],
    "created_at": "2026-08-28",
-   "tenure_days": 44,
+   "tenure_days": 70,
    "bucket": "new",
    "account_status": 0
   },
@@ -302,7 +462,7 @@
     "アポインター"
    ],
    "created_at": "2026-08-28",
-   "tenure_days": 44,
+   "tenure_days": 70,
    "bucket": "new",
    "account_status": 1
   },
@@ -312,7 +472,7 @@
     "アポインター"
    ],
    "created_at": "2026-08-27",
-   "tenure_days": 45,
+   "tenure_days": 71,
    "bucket": "new",
    "account_status": 1
   },
@@ -322,9 +482,9 @@
     "アポインター"
    ],
    "created_at": "2026-08-22",
-   "tenure_days": 50,
+   "tenure_days": 76,
    "bucket": "new",
-   "account_status": 1
+   "account_status": 0
   },
   "中野皓雅": {
    "company": "HY株式会社",
@@ -332,7 +492,7 @@
     "アポインター"
    ],
    "created_at": "2026-08-21",
-   "tenure_days": 51,
+   "tenure_days": 77,
    "bucket": "new",
    "account_status": 1
   },
@@ -342,7 +502,7 @@
     "アポインター"
    ],
    "created_at": "2026-08-20",
-   "tenure_days": 52,
+   "tenure_days": 78,
    "bucket": "new",
    "account_status": 1
   },
@@ -352,7 +512,7 @@
     "アポインター"
    ],
    "created_at": "2026-08-20",
-   "tenure_days": 52,
+   "tenure_days": 78,
    "bucket": "new",
    "account_status": 1
   },
@@ -362,7 +522,7 @@
     "アポインター"
    ],
    "created_at": "2026-08-20",
-   "tenure_days": 52,
+   "tenure_days": 78,
    "bucket": "new",
    "account_status": 1
   },
@@ -372,7 +532,7 @@
     "アポインター"
    ],
    "created_at": "2026-08-20",
-   "tenure_days": 52,
+   "tenure_days": 78,
    "bucket": "new",
    "account_status": 1
   },
@@ -382,7 +542,7 @@
     "アポインター"
    ],
    "created_at": "2026-08-19",
-   "tenure_days": 53,
+   "tenure_days": 79,
    "bucket": "new",
    "account_status": 1
   },
@@ -392,7 +552,7 @@
     "アポインター"
    ],
    "created_at": "2026-08-14",
-   "tenure_days": 58,
+   "tenure_days": 84,
    "bucket": "new",
    "account_status": 1
   },
@@ -402,7 +562,7 @@
     "アポインター"
    ],
    "created_at": "2026-08-11",
-   "tenure_days": 61,
+   "tenure_days": 87,
    "bucket": "new",
    "account_status": 1
   },
@@ -412,7 +572,7 @@
     "アポインター"
    ],
    "created_at": "2026-08-11",
-   "tenure_days": 61,
+   "tenure_days": 87,
    "bucket": "new",
    "account_status": 1
   },
@@ -422,7 +582,7 @@
     "アポインター"
    ],
    "created_at": "2026-08-10",
-   "tenure_days": 62,
+   "tenure_days": 88,
    "bucket": "new",
    "account_status": 0
   },
@@ -432,7 +592,7 @@
     "アポインター"
    ],
    "created_at": "2026-08-09",
-   "tenure_days": 63,
+   "tenure_days": 89,
    "bucket": "new",
    "account_status": 1
   },
@@ -442,7 +602,7 @@
     "アポインター"
    ],
    "created_at": "2026-08-09",
-   "tenure_days": 63,
+   "tenure_days": 89,
    "bucket": "new",
    "account_status": 1
   },
@@ -452,8 +612,8 @@
     "アポインター"
    ],
    "created_at": "2026-08-07",
-   "tenure_days": 65,
-   "bucket": "new",
+   "tenure_days": 91,
+   "bucket": "mid",
    "account_status": 1
   },
   "前野隼也": {
@@ -462,8 +622,8 @@
     "アポインター"
    ],
    "created_at": "2026-08-03",
-   "tenure_days": 69,
-   "bucket": "new",
+   "tenure_days": 95,
+   "bucket": "mid",
    "account_status": 0
   },
   "鈴木崇": {
@@ -472,8 +632,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-31",
-   "tenure_days": 72,
-   "bucket": "new",
+   "tenure_days": 98,
+   "bucket": "mid",
    "account_status": 0
   },
   "草苅祐太": {
@@ -482,7 +642,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -492,8 +652,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-31",
-   "tenure_days": 72,
-   "bucket": "new",
+   "tenure_days": 98,
+   "bucket": "mid",
    "account_status": 0
   },
   "前田龍馬": {
@@ -502,9 +662,9 @@
     "アポインター"
    ],
    "created_at": "2026-07-31",
-   "tenure_days": 72,
-   "bucket": "new",
-   "account_status": 1
+   "tenure_days": 98,
+   "bucket": "mid",
+   "account_status": 0
   },
   "玉城守都": {
    "company": "株式会社 ALL CONNECT",
@@ -512,8 +672,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-31",
-   "tenure_days": 72,
-   "bucket": "new",
+   "tenure_days": 98,
+   "bucket": "mid",
    "account_status": 0
   },
   "山本涼斗": {
@@ -522,8 +682,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-31",
-   "tenure_days": 72,
-   "bucket": "new",
+   "tenure_days": 98,
+   "bucket": "mid",
    "account_status": 1
   },
   "濱田真之介": {
@@ -532,8 +692,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-31",
-   "tenure_days": 72,
-   "bucket": "new",
+   "tenure_days": 98,
+   "bucket": "mid",
    "account_status": 1
   },
   "阿部隆之介": {
@@ -543,8 +703,8 @@
     "クローザー"
    ],
    "created_at": "2026-07-30",
-   "tenure_days": 73,
-   "bucket": "new",
+   "tenure_days": 99,
+   "bucket": "mid",
    "account_status": 1
   },
   "小宮大空": {
@@ -553,8 +713,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-29",
-   "tenure_days": 74,
-   "bucket": "new",
+   "tenure_days": 100,
+   "bucket": "mid",
    "account_status": 0
   },
   "岩田空": {
@@ -563,8 +723,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-29",
-   "tenure_days": 74,
-   "bucket": "new",
+   "tenure_days": 100,
+   "bucket": "mid",
    "account_status": 0
   },
   "江尻竜馬": {
@@ -573,8 +733,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-29",
-   "tenure_days": 74,
-   "bucket": "new",
+   "tenure_days": 100,
+   "bucket": "mid",
    "account_status": 0
   },
   "足立遼哉": {
@@ -583,8 +743,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-29",
-   "tenure_days": 74,
-   "bucket": "new",
+   "tenure_days": 100,
+   "bucket": "mid",
    "account_status": 0
   },
   "大滝慧南": {
@@ -593,8 +753,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-29",
-   "tenure_days": 74,
-   "bucket": "new",
+   "tenure_days": 100,
+   "bucket": "mid",
    "account_status": 0
   },
   "齋藤佳輝": {
@@ -603,8 +763,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-29",
-   "tenure_days": 74,
-   "bucket": "new",
+   "tenure_days": 100,
+   "bucket": "mid",
    "account_status": 1
   },
   "豊永心": {
@@ -613,8 +773,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-29",
-   "tenure_days": 74,
-   "bucket": "new",
+   "tenure_days": 100,
+   "bucket": "mid",
    "account_status": 0
   },
   "高橋翼": {
@@ -623,8 +783,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-29",
-   "tenure_days": 74,
-   "bucket": "new",
+   "tenure_days": 100,
+   "bucket": "mid",
    "account_status": 0
   },
   "柴田陸空": {
@@ -633,8 +793,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-29",
-   "tenure_days": 74,
-   "bucket": "new",
+   "tenure_days": 100,
+   "bucket": "mid",
    "account_status": 0
   },
   "森山貴成": {
@@ -643,8 +803,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-29",
-   "tenure_days": 74,
-   "bucket": "new",
+   "tenure_days": 100,
+   "bucket": "mid",
    "account_status": 1
   },
   "ボンドアレキサンダー龍": {
@@ -653,8 +813,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-29",
-   "tenure_days": 74,
-   "bucket": "new",
+   "tenure_days": 100,
+   "bucket": "mid",
    "account_status": 1
   },
   "鷲田智拓": {
@@ -663,8 +823,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-29",
-   "tenure_days": 74,
-   "bucket": "new",
+   "tenure_days": 100,
+   "bucket": "mid",
    "account_status": 0
   },
   "武田功平": {
@@ -673,8 +833,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-29",
-   "tenure_days": 74,
-   "bucket": "new",
+   "tenure_days": 100,
+   "bucket": "mid",
    "account_status": 1
   },
   "倉住昇吾": {
@@ -683,9 +843,9 @@
     "アポインター"
    ],
    "created_at": "2026-07-26",
-   "tenure_days": 77,
-   "bucket": "new",
-   "account_status": 1
+   "tenure_days": 103,
+   "bucket": "mid",
+   "account_status": 0
   },
   "落水田匡平": {
    "company": "株式会社JINNOVA",
@@ -693,8 +853,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-26",
-   "tenure_days": 77,
-   "bucket": "new",
+   "tenure_days": 103,
+   "bucket": "mid",
    "account_status": 1
   },
   "吉里翔馬": {
@@ -703,8 +863,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-18",
-   "tenure_days": 85,
-   "bucket": "new",
+   "tenure_days": 111,
+   "bucket": "mid",
    "account_status": 0
   },
   "宮澤大介": {
@@ -713,8 +873,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-15",
-   "tenure_days": 88,
-   "bucket": "new",
+   "tenure_days": 114,
+   "bucket": "mid",
    "account_status": 0
   },
   "原未希斗": {
@@ -723,8 +883,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-15",
-   "tenure_days": 88,
-   "bucket": "new",
+   "tenure_days": 114,
+   "bucket": "mid",
    "account_status": 1
   },
   "佐藤響": {
@@ -733,8 +893,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-15",
-   "tenure_days": 88,
-   "bucket": "new",
+   "tenure_days": 114,
+   "bucket": "mid",
    "account_status": 1
   },
   "日比野琉成": {
@@ -743,8 +903,8 @@
     "アポインター"
    ],
    "created_at": "2026-07-14",
-   "tenure_days": 89,
-   "bucket": "new",
+   "tenure_days": 115,
+   "bucket": "mid",
    "account_status": 0
   },
   "渡邊雅広": {
@@ -753,7 +913,7 @@
     "アポインター"
    ],
    "created_at": "2026-07-10",
-   "tenure_days": 93,
+   "tenure_days": 119,
    "bucket": "mid",
    "account_status": 0
   },
@@ -763,7 +923,7 @@
     "アポインター"
    ],
    "created_at": "2026-07-10",
-   "tenure_days": 93,
+   "tenure_days": 119,
    "bucket": "mid",
    "account_status": 1
   },
@@ -773,7 +933,7 @@
     "アポインター"
    ],
    "created_at": "2026-07-10",
-   "tenure_days": 93,
+   "tenure_days": 119,
    "bucket": "mid",
    "account_status": 1
   },
@@ -783,7 +943,7 @@
     "アポインター"
    ],
    "created_at": "2026-07-07",
-   "tenure_days": 96,
+   "tenure_days": 122,
    "bucket": "mid",
    "account_status": 0
   },
@@ -793,7 +953,7 @@
     "アポインター"
    ],
    "created_at": "2026-07-05",
-   "tenure_days": 98,
+   "tenure_days": 124,
    "bucket": "mid",
    "account_status": 1
   },
@@ -803,7 +963,7 @@
     "アポインター"
    ],
    "created_at": "2026-07-05",
-   "tenure_days": 98,
+   "tenure_days": 124,
    "bucket": "mid",
    "account_status": 1
   },
@@ -813,7 +973,7 @@
     "アポインター"
    ],
    "created_at": "2026-07-04",
-   "tenure_days": 99,
+   "tenure_days": 125,
    "bucket": "mid",
    "account_status": 1
   },
@@ -823,7 +983,7 @@
     "アポインター"
    ],
    "created_at": "2026-07-01",
-   "tenure_days": 102,
+   "tenure_days": 128,
    "bucket": "mid",
    "account_status": 1
   },
@@ -833,7 +993,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-30",
-   "tenure_days": 103,
+   "tenure_days": 129,
    "bucket": "mid",
    "account_status": 1
   },
@@ -843,7 +1003,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-27",
-   "tenure_days": 106,
+   "tenure_days": 132,
    "bucket": "mid",
    "account_status": 0
   },
@@ -853,7 +1013,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-27",
-   "tenure_days": 106,
+   "tenure_days": 132,
    "bucket": "mid",
    "account_status": 0
   },
@@ -863,7 +1023,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-27",
-   "tenure_days": 106,
+   "tenure_days": 132,
    "bucket": "mid",
    "account_status": 0
   },
@@ -873,9 +1033,9 @@
     "アポインター"
    ],
    "created_at": "2026-06-25",
-   "tenure_days": 108,
+   "tenure_days": 134,
    "bucket": "mid",
-   "account_status": 1
+   "account_status": 0
   },
   "福岡涼真": {
    "company": "株式会社 ALL CONNECT",
@@ -883,7 +1043,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-25",
-   "tenure_days": 108,
+   "tenure_days": 134,
    "bucket": "mid",
    "account_status": 0
   },
@@ -893,7 +1053,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-25",
-   "tenure_days": 108,
+   "tenure_days": 134,
    "bucket": "mid",
    "account_status": 0
   },
@@ -903,7 +1063,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-25",
-   "tenure_days": 108,
+   "tenure_days": 134,
    "bucket": "mid",
    "account_status": 0
   },
@@ -913,7 +1073,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-25",
-   "tenure_days": 108,
+   "tenure_days": 134,
    "bucket": "mid",
    "account_status": 1
   },
@@ -923,7 +1083,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-25",
-   "tenure_days": 108,
+   "tenure_days": 134,
    "bucket": "mid",
    "account_status": 0
   },
@@ -933,7 +1093,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-25",
-   "tenure_days": 108,
+   "tenure_days": 134,
    "bucket": "mid",
    "account_status": 0
   },
@@ -943,7 +1103,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-25",
-   "tenure_days": 108,
+   "tenure_days": 134,
    "bucket": "mid",
    "account_status": 0
   },
@@ -953,7 +1113,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-25",
-   "tenure_days": 108,
+   "tenure_days": 134,
    "bucket": "mid",
    "account_status": 0
   },
@@ -963,7 +1123,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-25",
-   "tenure_days": 108,
+   "tenure_days": 134,
    "bucket": "mid",
    "account_status": 0
   },
@@ -973,7 +1133,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-25",
-   "tenure_days": 108,
+   "tenure_days": 134,
    "bucket": "mid",
    "account_status": 0
   },
@@ -983,7 +1143,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-24",
-   "tenure_days": 109,
+   "tenure_days": 135,
    "bucket": "mid",
    "account_status": 0
   },
@@ -994,7 +1154,7 @@
     "クローザー"
    ],
    "created_at": "2026-06-18",
-   "tenure_days": 115,
+   "tenure_days": 141,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1004,7 +1164,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-18",
-   "tenure_days": 115,
+   "tenure_days": 141,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1014,7 +1174,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-17",
-   "tenure_days": 116,
+   "tenure_days": 142,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1024,7 +1184,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-11",
-   "tenure_days": 122,
+   "tenure_days": 148,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1034,7 +1194,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-10",
-   "tenure_days": 123,
+   "tenure_days": 149,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1044,7 +1204,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-09",
-   "tenure_days": 124,
+   "tenure_days": 150,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1054,7 +1214,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1064,7 +1224,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-06",
-   "tenure_days": 127,
+   "tenure_days": 153,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1074,7 +1234,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-04",
-   "tenure_days": 129,
+   "tenure_days": 155,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1084,7 +1244,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-04",
-   "tenure_days": 129,
+   "tenure_days": 155,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1094,7 +1254,7 @@
     "アポインター"
    ],
    "created_at": "2026-06-02",
-   "tenure_days": 131,
+   "tenure_days": 157,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1105,7 +1265,7 @@
     "クローザー"
    ],
    "created_at": "2026-06-01",
-   "tenure_days": 132,
+   "tenure_days": 158,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1115,7 +1275,7 @@
     "アポインター"
    ],
    "created_at": "2026-05-29",
-   "tenure_days": 135,
+   "tenure_days": 161,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1125,7 +1285,7 @@
     "アポインター"
    ],
    "created_at": "2026-05-28",
-   "tenure_days": 136,
+   "tenure_days": 162,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1135,7 +1295,7 @@
     "アポインター"
    ],
    "created_at": "2026-05-28",
-   "tenure_days": 136,
+   "tenure_days": 162,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1145,17 +1305,17 @@
     "アポインター"
    ],
    "created_at": "2026-05-27",
-   "tenure_days": 137,
+   "tenure_days": 163,
    "bucket": "mid",
    "account_status": 1
   },
   "金子敦史": {
-   "company": "株式会社Birth47",
+   "company": "（不明）",
    "roles": [
     "アポインター"
    ],
    "created_at": "2026-05-25",
-   "tenure_days": 139,
+   "tenure_days": 165,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1165,7 +1325,7 @@
     "アポインター"
    ],
    "created_at": "2026-05-22",
-   "tenure_days": 142,
+   "tenure_days": 168,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1175,7 +1335,7 @@
     "アポインター"
    ],
    "created_at": "2026-05-17",
-   "tenure_days": 147,
+   "tenure_days": 173,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1186,7 +1346,7 @@
     "クローザー"
    ],
    "created_at": "2026-05-15",
-   "tenure_days": 149,
+   "tenure_days": 175,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1196,7 +1356,7 @@
     "アポインター"
    ],
    "created_at": "2026-05-14",
-   "tenure_days": 150,
+   "tenure_days": 176,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1206,9 +1366,9 @@
     "アポインター"
    ],
    "created_at": "2026-05-13",
-   "tenure_days": 151,
+   "tenure_days": 177,
    "bucket": "mid",
-   "account_status": 1
+   "account_status": 0
   },
   "福田拓未": {
    "company": "Ambitious株式会社",
@@ -1216,9 +1376,9 @@
     "アポインター"
    ],
    "created_at": "2026-05-13",
-   "tenure_days": 151,
+   "tenure_days": 177,
    "bucket": "mid",
-   "account_status": 0
+   "account_status": 1
   },
   "鎮守灯": {
    "company": "株式会社JINNOVA",
@@ -1226,7 +1386,7 @@
     "アポインター"
    ],
    "created_at": "2026-05-10",
-   "tenure_days": 154,
+   "tenure_days": 180,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1236,7 +1396,7 @@
     "アポインター"
    ],
    "created_at": "2026-05-08",
-   "tenure_days": 156,
+   "tenure_days": 182,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1246,7 +1406,7 @@
     "アポインター"
    ],
    "created_at": "2026-05-08",
-   "tenure_days": 156,
+   "tenure_days": 182,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1256,7 +1416,7 @@
     "アポインター"
    ],
    "created_at": "2026-05-07",
-   "tenure_days": 157,
+   "tenure_days": 183,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1266,7 +1426,7 @@
     "アポインター"
    ],
    "created_at": "2026-05-02",
-   "tenure_days": 162,
+   "tenure_days": 188,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1276,17 +1436,17 @@
     "アポインター"
    ],
    "created_at": "2026-05-01",
-   "tenure_days": 163,
+   "tenure_days": 189,
    "bucket": "mid",
    "account_status": 1
   },
   "小林勇良": {
-   "company": "奏建ハウス株式会社",
+   "company": "（不明）",
    "roles": [
     "アポインター"
    ],
    "created_at": "2026-04-30",
-   "tenure_days": 164,
+   "tenure_days": 190,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1296,7 +1456,7 @@
     "アポインター"
    ],
    "created_at": "2026-04-30",
-   "tenure_days": 164,
+   "tenure_days": 190,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1307,7 +1467,7 @@
     "クローザー"
    ],
    "created_at": "2026-04-30",
-   "tenure_days": 164,
+   "tenure_days": 190,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1317,7 +1477,7 @@
     "アポインター"
    ],
    "created_at": "2026-04-30",
-   "tenure_days": 164,
+   "tenure_days": 190,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1327,7 +1487,7 @@
     "アポインター"
    ],
    "created_at": "2026-04-30",
-   "tenure_days": 164,
+   "tenure_days": 190,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1337,7 +1497,7 @@
     "アポインター"
    ],
    "created_at": "2026-04-27",
-   "tenure_days": 167,
+   "tenure_days": 193,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1347,7 +1507,7 @@
     "アポインター"
    ],
    "created_at": "2026-04-27",
-   "tenure_days": 167,
+   "tenure_days": 193,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1357,7 +1517,7 @@
     "アポインター"
    ],
    "created_at": "2026-04-23",
-   "tenure_days": 171,
+   "tenure_days": 197,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1367,7 +1527,7 @@
     "アポインター"
    ],
    "created_at": "2026-04-23",
-   "tenure_days": 171,
+   "tenure_days": 197,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1377,7 +1537,7 @@
     "アポインター"
    ],
    "created_at": "2026-04-22",
-   "tenure_days": 172,
+   "tenure_days": 198,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1387,7 +1547,7 @@
     "アポインター"
    ],
    "created_at": "2026-04-22",
-   "tenure_days": 172,
+   "tenure_days": 198,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1397,7 +1557,7 @@
     "アポインター"
    ],
    "created_at": "2026-04-22",
-   "tenure_days": 172,
+   "tenure_days": 198,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1407,7 +1567,7 @@
     "アポインター"
    ],
    "created_at": "2026-04-20",
-   "tenure_days": 174,
+   "tenure_days": 200,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1417,7 +1577,7 @@
     "アポインター"
    ],
    "created_at": "2026-04-20",
-   "tenure_days": 174,
+   "tenure_days": 200,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1427,7 +1587,7 @@
     "アポインター"
    ],
    "created_at": "2026-04-18",
-   "tenure_days": 176,
+   "tenure_days": 202,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1437,7 +1597,7 @@
     "アポインター"
    ],
    "created_at": "2026-04-18",
-   "tenure_days": 176,
+   "tenure_days": 202,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1447,7 +1607,7 @@
     "アポインター"
    ],
    "created_at": "2026-04-18",
-   "tenure_days": 176,
+   "tenure_days": 202,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1458,7 +1618,7 @@
     "クローザー"
    ],
    "created_at": "2026-04-18",
-   "tenure_days": 176,
+   "tenure_days": 202,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1469,27 +1629,27 @@
     "クローザー"
    ],
    "created_at": "2026-04-18",
-   "tenure_days": 176,
+   "tenure_days": 202,
    "bucket": "mid",
    "account_status": 1
   },
   "野田煌暉": {
-   "company": "株式会社Birth47",
+   "company": "（不明）",
    "roles": [
     "アポインター"
    ],
    "created_at": "2026-04-16",
-   "tenure_days": 178,
+   "tenure_days": 204,
    "bucket": "mid",
    "account_status": 0
   },
   "中野雅生": {
-   "company": "株式会社Birth47",
+   "company": "（不明）",
    "roles": [
     "アポインター"
    ],
    "created_at": "2026-04-16",
-   "tenure_days": 178,
+   "tenure_days": 204,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1499,7 +1659,7 @@
     "アポインター"
    ],
    "created_at": "2026-04-16",
-   "tenure_days": 178,
+   "tenure_days": 204,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1509,17 +1669,17 @@
     "アポインター"
    ],
    "created_at": "2026-04-15",
-   "tenure_days": 179,
+   "tenure_days": 205,
    "bucket": "mid",
    "account_status": 0
   },
   "向井佳央": {
-   "company": "株式会社 LIBERA",
+   "company": "（不明）",
    "roles": [
     "アポインター"
    ],
    "created_at": "2026-04-12",
-   "tenure_days": 182,
+   "tenure_days": 208,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1529,7 +1689,7 @@
     "アポインター"
    ],
    "created_at": "2026-04-06",
-   "tenure_days": 188,
+   "tenure_days": 214,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1539,7 +1699,7 @@
     "アポインター"
    ],
    "created_at": "2026-04-04",
-   "tenure_days": 190,
+   "tenure_days": 216,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1549,7 +1709,7 @@
     "アポインター"
    ],
    "created_at": "2026-04-03",
-   "tenure_days": 191,
+   "tenure_days": 217,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1559,7 +1719,7 @@
     "アポインター"
    ],
    "created_at": "2026-04-02",
-   "tenure_days": 192,
+   "tenure_days": 218,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1569,7 +1729,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-31",
-   "tenure_days": 194,
+   "tenure_days": 220,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1579,7 +1739,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-31",
-   "tenure_days": 194,
+   "tenure_days": 220,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1589,7 +1749,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-31",
-   "tenure_days": 194,
+   "tenure_days": 220,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1599,7 +1759,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-27",
-   "tenure_days": 198,
+   "tenure_days": 224,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1609,7 +1769,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-27",
-   "tenure_days": 198,
+   "tenure_days": 224,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1620,7 +1780,7 @@
     "クローザー"
    ],
    "created_at": "2026-03-25",
-   "tenure_days": 200,
+   "tenure_days": 226,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1630,7 +1790,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-25",
-   "tenure_days": 200,
+   "tenure_days": 226,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1640,7 +1800,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-25",
-   "tenure_days": 200,
+   "tenure_days": 226,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1650,7 +1810,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-25",
-   "tenure_days": 200,
+   "tenure_days": 226,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1660,7 +1820,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-22",
-   "tenure_days": 203,
+   "tenure_days": 229,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1670,7 +1830,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-22",
-   "tenure_days": 203,
+   "tenure_days": 229,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1680,17 +1840,17 @@
     "アポインター"
    ],
    "created_at": "2026-03-22",
-   "tenure_days": 203,
+   "tenure_days": 229,
    "bucket": "mid",
    "account_status": 0
   },
   "石田一徹": {
-   "company": "株式会社 LIBERA",
+   "company": "（不明）",
    "roles": [
     "アポインター"
    ],
    "created_at": "2026-03-22",
-   "tenure_days": 203,
+   "tenure_days": 229,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1700,7 +1860,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-22",
-   "tenure_days": 203,
+   "tenure_days": 229,
    "bucket": "mid",
    "account_status": 1
   },
@@ -1710,7 +1870,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-18",
-   "tenure_days": 207,
+   "tenure_days": 233,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1720,7 +1880,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-17",
-   "tenure_days": 208,
+   "tenure_days": 234,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1730,7 +1890,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-16",
-   "tenure_days": 209,
+   "tenure_days": 235,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1740,7 +1900,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-16",
-   "tenure_days": 209,
+   "tenure_days": 235,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1750,7 +1910,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-15",
-   "tenure_days": 210,
+   "tenure_days": 236,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1760,7 +1920,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-15",
-   "tenure_days": 210,
+   "tenure_days": 236,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1771,7 +1931,7 @@
     "クローザー"
    ],
    "created_at": "2026-03-14",
-   "tenure_days": 211,
+   "tenure_days": 237,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1782,27 +1942,27 @@
     "クローザー"
    ],
    "created_at": "2026-03-14",
-   "tenure_days": 211,
+   "tenure_days": 237,
    "bucket": "mid",
    "account_status": 0
   },
   "大西拓也": {
-   "company": "株式会社Birth47",
+   "company": "（不明）",
    "roles": [
     "アポインター"
    ],
    "created_at": "2026-03-14",
-   "tenure_days": 211,
+   "tenure_days": 237,
    "bucket": "mid",
    "account_status": 0
   },
   "守屋誠": {
-   "company": "株式会社Birth47",
+   "company": "（不明）",
    "roles": [
     "アポインター"
    ],
    "created_at": "2026-03-14",
-   "tenure_days": 211,
+   "tenure_days": 237,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1812,7 +1972,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-13",
-   "tenure_days": 212,
+   "tenure_days": 238,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1822,7 +1982,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-12",
-   "tenure_days": 213,
+   "tenure_days": 239,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1832,7 +1992,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-12",
-   "tenure_days": 213,
+   "tenure_days": 239,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1842,7 +2002,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-12",
-   "tenure_days": 213,
+   "tenure_days": 239,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1852,7 +2012,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-11",
-   "tenure_days": 214,
+   "tenure_days": 240,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1863,7 +2023,7 @@
     "クローザー"
    ],
    "created_at": "2026-03-09",
-   "tenure_days": 216,
+   "tenure_days": 242,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1874,7 +2034,7 @@
     "クローザー"
    ],
    "created_at": "2026-03-09",
-   "tenure_days": 216,
+   "tenure_days": 242,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1885,7 +2045,7 @@
     "クローザー"
    ],
    "created_at": "2026-03-09",
-   "tenure_days": 216,
+   "tenure_days": 242,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1895,7 +2055,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-09",
-   "tenure_days": 216,
+   "tenure_days": 242,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1906,7 +2066,7 @@
     "クローザー"
    ],
    "created_at": "2026-03-09",
-   "tenure_days": 216,
+   "tenure_days": 242,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1916,7 +2076,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-08",
-   "tenure_days": 217,
+   "tenure_days": 243,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1926,7 +2086,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-08",
-   "tenure_days": 217,
+   "tenure_days": 243,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1936,7 +2096,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-06",
-   "tenure_days": 219,
+   "tenure_days": 245,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1946,7 +2106,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-06",
-   "tenure_days": 219,
+   "tenure_days": 245,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1956,7 +2116,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-06",
-   "tenure_days": 219,
+   "tenure_days": 245,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1966,7 +2126,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-06",
-   "tenure_days": 219,
+   "tenure_days": 245,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1976,7 +2136,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-05",
-   "tenure_days": 220,
+   "tenure_days": 246,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1986,7 +2146,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-05",
-   "tenure_days": 220,
+   "tenure_days": 246,
    "bucket": "mid",
    "account_status": 0
   },
@@ -1997,7 +2157,7 @@
     "クローザー"
    ],
    "created_at": "2026-03-05",
-   "tenure_days": 220,
+   "tenure_days": 246,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2008,7 +2168,7 @@
     "クローザー"
    ],
    "created_at": "2026-03-05",
-   "tenure_days": 220,
+   "tenure_days": 246,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2018,7 +2178,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-05",
-   "tenure_days": 220,
+   "tenure_days": 246,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2028,7 +2188,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-04",
-   "tenure_days": 221,
+   "tenure_days": 247,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2038,7 +2198,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-04",
-   "tenure_days": 221,
+   "tenure_days": 247,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2048,7 +2208,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-02",
-   "tenure_days": 223,
+   "tenure_days": 249,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2058,7 +2218,7 @@
     "アポインター"
    ],
    "created_at": "2026-03-01",
-   "tenure_days": 224,
+   "tenure_days": 250,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2068,7 +2228,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-27",
-   "tenure_days": 226,
+   "tenure_days": 252,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2078,7 +2238,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-27",
-   "tenure_days": 226,
+   "tenure_days": 252,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2088,17 +2248,18 @@
     "アポインター"
    ],
    "created_at": "2026-02-27",
-   "tenure_days": 226,
+   "tenure_days": 252,
    "bucket": "mid",
    "account_status": 1
   },
   "一ノ瀬文哉": {
    "company": "Ambitious株式会社",
    "roles": [
-    "アポインター"
+    "アポインター",
+    "クローザー"
    ],
    "created_at": "2026-02-27",
-   "tenure_days": 226,
+   "tenure_days": 252,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2108,7 +2269,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-26",
-   "tenure_days": 227,
+   "tenure_days": 253,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2118,7 +2279,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-13",
-   "tenure_days": 240,
+   "tenure_days": 266,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2128,7 +2289,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-13",
-   "tenure_days": 240,
+   "tenure_days": 266,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2138,7 +2299,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-13",
-   "tenure_days": 240,
+   "tenure_days": 266,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2148,7 +2309,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-11",
-   "tenure_days": 242,
+   "tenure_days": 268,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2158,7 +2319,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-11",
-   "tenure_days": 242,
+   "tenure_days": 268,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2168,7 +2329,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-11",
-   "tenure_days": 242,
+   "tenure_days": 268,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2178,7 +2339,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-11",
-   "tenure_days": 242,
+   "tenure_days": 268,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2188,7 +2349,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-11",
-   "tenure_days": 242,
+   "tenure_days": 268,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2198,7 +2359,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-11",
-   "tenure_days": 242,
+   "tenure_days": 268,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2208,7 +2369,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-11",
-   "tenure_days": 242,
+   "tenure_days": 268,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2218,7 +2379,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-10",
-   "tenure_days": 243,
+   "tenure_days": 269,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2228,7 +2389,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2238,7 +2399,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2248,7 +2409,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2258,7 +2419,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2268,7 +2429,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2278,7 +2439,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2288,27 +2449,27 @@
     "アポインター"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 0
   },
   "原田悠人": {
-   "company": "奏建ハウス株式会社",
+   "company": "（不明）",
    "roles": [
     "アポインター"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 0
   },
   "原田凪斗": {
-   "company": "奏建ハウス株式会社",
+   "company": "（不明）",
    "roles": [
     "アポインター"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2319,7 +2480,7 @@
     "クローザー"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2330,7 +2491,7 @@
     "クローザー"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2341,7 +2502,7 @@
     "クローザー"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2351,7 +2512,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2361,7 +2522,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2371,7 +2532,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2381,7 +2542,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2391,7 +2552,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2401,7 +2562,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2411,7 +2572,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2421,7 +2582,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2431,7 +2592,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2442,7 +2603,7 @@
     "クローザー"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2452,7 +2613,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2462,7 +2623,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2472,7 +2633,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-08",
-   "tenure_days": 245,
+   "tenure_days": 271,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2482,7 +2643,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-06",
-   "tenure_days": 247,
+   "tenure_days": 273,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2492,7 +2653,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-06",
-   "tenure_days": 247,
+   "tenure_days": 273,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2502,7 +2663,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-06",
-   "tenure_days": 247,
+   "tenure_days": 273,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2512,7 +2673,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-06",
-   "tenure_days": 247,
+   "tenure_days": 273,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2522,7 +2683,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-06",
-   "tenure_days": 247,
+   "tenure_days": 273,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2532,7 +2693,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-06",
-   "tenure_days": 247,
+   "tenure_days": 273,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2542,7 +2703,7 @@
     "アポインター"
    ],
    "created_at": "2026-02-06",
-   "tenure_days": 247,
+   "tenure_days": 273,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2553,7 +2714,7 @@
     "クローザー"
    ],
    "created_at": "2026-02-05",
-   "tenure_days": 248,
+   "tenure_days": 274,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2564,7 +2725,7 @@
     "クローザー"
    ],
    "created_at": "2026-02-05",
-   "tenure_days": 248,
+   "tenure_days": 274,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2574,7 +2735,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-27",
-   "tenure_days": 257,
+   "tenure_days": 283,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2584,7 +2745,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-26",
-   "tenure_days": 258,
+   "tenure_days": 284,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2594,7 +2755,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2604,7 +2765,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-21",
-   "tenure_days": 263,
+   "tenure_days": 289,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2614,7 +2775,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2625,7 +2786,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2633,7 +2794,7 @@
    "company": "（不明）",
    "roles": [],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2641,7 +2802,7 @@
    "company": "（不明）",
    "roles": [],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2651,7 +2812,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2661,7 +2822,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2671,7 +2832,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2681,7 +2842,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2691,7 +2852,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2701,7 +2862,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2711,7 +2872,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2721,7 +2882,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2732,7 +2893,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2742,7 +2903,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2752,7 +2913,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2762,7 +2923,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2772,7 +2933,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2782,7 +2943,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2792,7 +2953,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2802,7 +2963,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2812,7 +2973,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2822,7 +2983,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2832,7 +2993,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2842,7 +3003,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2852,7 +3013,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2862,7 +3023,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2872,7 +3033,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2882,7 +3043,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2892,7 +3053,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2902,7 +3063,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2912,7 +3073,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2923,7 +3084,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2934,7 +3095,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2945,7 +3106,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2956,7 +3117,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -2966,7 +3127,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2976,7 +3137,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2987,7 +3148,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -2997,7 +3158,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3007,7 +3168,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3017,7 +3178,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3027,7 +3188,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3038,7 +3199,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3049,7 +3210,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3059,7 +3220,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3069,7 +3230,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3080,7 +3241,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3091,7 +3252,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3102,7 +3263,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3113,7 +3274,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3124,7 +3285,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3135,7 +3296,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3146,7 +3307,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3157,7 +3318,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3168,7 +3329,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3179,7 +3340,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3190,7 +3351,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3201,7 +3362,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3212,7 +3373,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3223,7 +3384,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3233,7 +3394,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3243,7 +3404,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3253,7 +3414,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3263,7 +3424,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3273,7 +3434,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3283,7 +3444,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3293,7 +3454,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3303,7 +3464,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3313,7 +3474,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3323,7 +3484,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3333,7 +3494,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3343,7 +3504,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3354,7 +3515,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3365,7 +3526,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3376,7 +3537,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3387,7 +3548,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3398,7 +3559,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3409,7 +3570,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3420,7 +3581,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3430,7 +3591,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3440,7 +3601,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3451,7 +3612,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3462,7 +3623,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3472,7 +3633,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3482,7 +3643,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3492,7 +3653,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3502,7 +3663,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3512,17 +3673,17 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
   "藁科雅也": {
-   "company": "奏建ハウス株式会社",
+   "company": "（不明）",
    "roles": [
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3532,7 +3693,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3542,7 +3703,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3552,7 +3713,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3562,9 +3723,9 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
-   "account_status": 1
+   "account_status": 0
   },
   "古川昇平": {
    "company": "D-MAK株式会社",
@@ -3572,7 +3733,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3582,7 +3743,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3592,7 +3753,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3602,7 +3763,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3612,7 +3773,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3622,7 +3783,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3632,7 +3793,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3642,7 +3803,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3652,7 +3813,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3662,17 +3823,17 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
   "大賀隼人": {
-   "company": "合同会社インクライン",
+   "company": "（不明）",
    "roles": [
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3682,7 +3843,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3692,7 +3853,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3702,7 +3863,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3712,7 +3873,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3722,7 +3883,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3732,7 +3893,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3742,7 +3903,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3752,7 +3913,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3762,7 +3923,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3772,7 +3933,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3782,7 +3943,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3792,7 +3953,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3802,37 +3963,37 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
   "阿部竜": {
-   "company": "合同会社KARMA",
+   "company": "（不明）",
    "roles": [
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
   "小林太一": {
-   "company": "合同会社KARMA",
+   "company": "（不明）",
    "roles": [
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
   "徳山直樹": {
-   "company": "合同会社KARMA",
+   "company": "（不明）",
    "roles": [
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3843,7 +4004,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3854,7 +4015,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3865,7 +4026,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3876,7 +4037,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3887,7 +4048,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3898,7 +4059,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -3908,7 +4069,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3918,7 +4079,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3928,7 +4089,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3938,7 +4099,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3948,7 +4109,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3959,7 +4120,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -3969,9 +4130,9 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
-   "account_status": 1
+   "account_status": 0
   },
   "小寺茉友": {
    "company": "G.WORTH株式会社",
@@ -3979,9 +4140,9 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
-   "account_status": 1
+   "account_status": 0
   },
   "林起基": {
    "company": "G.WORTH株式会社",
@@ -3990,7 +4151,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4000,7 +4161,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4010,7 +4171,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4020,7 +4181,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4030,7 +4191,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4040,7 +4201,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4050,7 +4211,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4060,7 +4221,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4070,7 +4231,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4080,7 +4241,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4090,7 +4251,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4101,7 +4262,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4111,7 +4272,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4122,7 +4283,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4132,17 +4293,18 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
   "篠優": {
    "company": "HY株式会社",
    "roles": [
-    "アポインター"
+    "アポインター",
+    "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4152,7 +4314,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4163,7 +4325,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4174,7 +4336,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4185,7 +4347,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4195,7 +4357,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4205,7 +4367,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4215,7 +4377,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4225,7 +4387,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4235,7 +4397,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4245,7 +4407,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4255,7 +4417,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4265,7 +4427,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4276,7 +4438,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4287,7 +4449,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4297,7 +4459,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4307,7 +4469,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4317,7 +4479,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4328,7 +4490,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4338,7 +4500,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4349,7 +4511,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4359,7 +4521,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4369,7 +4531,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4379,7 +4541,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4389,7 +4551,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4399,7 +4561,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4409,7 +4571,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4419,7 +4581,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4429,7 +4591,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4440,7 +4602,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4451,7 +4613,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4462,7 +4624,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4473,7 +4635,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4484,7 +4646,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4495,7 +4657,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4506,7 +4668,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4516,7 +4678,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4526,7 +4688,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4536,7 +4698,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4546,7 +4708,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4556,7 +4718,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4566,7 +4728,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4576,7 +4738,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4586,7 +4748,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4596,7 +4758,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4606,7 +4768,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4616,7 +4778,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4626,7 +4788,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4636,7 +4798,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4646,7 +4808,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4657,7 +4819,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4667,7 +4829,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4678,7 +4840,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4688,7 +4850,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4698,7 +4860,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4709,7 +4871,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4720,7 +4882,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4730,7 +4892,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4741,7 +4903,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4752,7 +4914,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4763,7 +4925,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4774,7 +4936,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 0
   },
@@ -4784,7 +4946,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4794,7 +4956,7 @@
     "アポインター"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4805,7 +4967,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4816,7 +4978,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   },
@@ -4827,7 +4989,7 @@
     "クローザー"
    ],
    "created_at": "2026-01-20",
-   "tenure_days": 264,
+   "tenure_days": 290,
    "bucket": "mid",
    "account_status": 1
   }

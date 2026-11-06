@@ -255,6 +255,18 @@ def main():
     # 人手管理の静的ファイル（新しい回の参加者が確定したら追記して更新する。CIが生成するものではない）。
     terakoya_json = os.path.join(AUTOMATION_DIR, "data", "terakoya_roster.json")
 
+    # 通過案件（kintone「アポ後確」完了×Cyzen）。トークンがある環境では最新を作り直し、無い/失敗時は
+    # コミット済みの automation/data/kakuho_cases.json を使う（画面の「更新」時刻で鮮度が分かる）。
+    kakuho_json = os.path.join(AUTOMATION_DIR, "data", "kakuho_cases.json")
+    if os.environ.get("KINTONE_406_API_TOKEN"):
+        print("--- build_kakuho_cases.py ---")
+        since = (jst_now().date().replace(day=1) - datetime.timedelta(days=1)).replace(day=1).isoformat()
+        r = subprocess.run(["python3", os.path.join(AUTOMATION_DIR, "build_kakuho_cases.py"),
+                            "--since", since, "--out", kakuho_json], capture_output=True, text=True)
+        print(r.stdout[-800:])
+        if r.returncode != 0:
+            print("[kakuho] 通過案件の更新に失敗。前回分を使います:", r.stderr[-300:], file=sys.stderr)
+
     print("--- build_dashboard.py ---")
     out_html = os.path.join(DATA_DIR, "partner_dashboard_latest_raw.html")
     build_dashboard_cmd = ["python3", os.path.join(AUTOMATION_DIR, "build_dashboard.py"),
@@ -267,6 +279,7 @@ def main():
          "--camp-roster-json", camp_roster_json,
          "--terakoya-json", terakoya_json,
          "--newstarter-json", newstarter_json,
+         "--kakuho-json", kakuho_json,
          "--completion-dir", os.path.join(AUTOMATION_DIR, "data", "completion_data"),
          "--out", out_html]
     if spot_csv:

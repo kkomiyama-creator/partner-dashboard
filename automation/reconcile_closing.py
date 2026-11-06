@@ -12,6 +12,13 @@
 - 「シートにあるがCyzenに成約報告が無い」＝未成約のまま入力された/報告漏れの疑い → 不要なら data/closing_exclude.csv に書いて除外
 ※ ci_refresh.py は取得後に補完/除外を適用済みのCSVを書き出すので、このチェックは「未対応の差分」だけを出す。
 
+【シートの鮮度(2026-10-14修正)】
+data/closing_live.csv はGitHub Actions(ci_refresh)が使う作業ファイルで、手元では自動更新されない。
+2026-10-14に10/11時点の古いコピーと突合してしまい、シートに入力済みの6件を「入力漏れ」と誤検知した。
+そのため ①Google認証情報(GOOGLE_OAUTH_*)があれば獲得報告シートを毎回取得して突合(補完/除外も適用)、
+②無ければ --closing-csv で渡された/既定のCSVを使うが、CSV内の最新タイムスタンプが突合期間の
+終端より古い場合は「判定不可(STALE)」とし、差分を出さない(誤検知防止)。
+
 使い方:
   python3 reconcile_closing.py --days 3            # 直近3日(当日含む)の成約を突合
   python3 reconcile_closing.py --days 3 --md       # Slack/ログ向けの文面も出力
@@ -91,11 +98,39 @@ def read_sheet(closing_csv):
     return out
 
 
+def fetch_live_closing_csv(out_path):
+    """獲得報告シートを最新で取得してCSVに書き出す(補完/除外も適用)。認証情報が無い/失敗時はNone。"""
+    if not all(os.environ.get(k) for k in ("GOOGLE_OAUTH_CLIENT_ID", "GOOGLE_OAUTH_CLIENT_SECRET", "GOOGLE_OAUTH_REFRESH_TOKEN")):
+        return None
+    try:
+        from googleapiclient.discovery import build
+        import gsheets_client_ci as g
+        service = build("sheets", "v4", credentials=g.get_credentials())
+        sid, gid = next((i, d) for k, _, i, d in g.SHEETS if k == "closing")
+        g.fetch_sheet_as_csv(service, sid, out_path, gid=gid)
+        from ci_refresh import apply_closing_supplement
+        apply_closing_supplement(out_path)
+        return out_path
+    except Exception as e:  # noqa: BLE001
+        print(f"[warn] シートのライブ取得に失敗: {e}", file=sys.stderr)
+        return None
+
+
+def latest_sheet_timestamp(rows):
+    return max((r["at"] for r in rows), default=None)
+
+
 def reconcile(days, closing_csv):
     today = (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).date()
     win_start = today - datetime.timedelta(days=days - 1)
     cy = fetch_cyzen_closings(win_start - datetime.timedelta(days=LOOKBACK_EXTRA), today)
     sheet = read_sheet(closing_csv)
+    last = latest_sheet_timestamp(sheet)
+    # シートの最新入力が突合期間の開始より前＝コピーが古い。古いコピーでの突合は誤検知になるため判定しない。
+    if last is None or last.date() < win_start:
+        return {"window": [win_start.isoformat(), today.isoformat()], "stale": True,
+                "sheet_latest": last.strftime("%Y/%m/%d %H:%M:%S") if last else None,
+                "counts_by_day": {}, "missing_in_sheet": [], "sheet_only": []}
     in_win = lambda dt: win_start <= dt.date() <= today
     missing = [c for c in cy if in_win(c["at"]) and not any(same_person(c["customer"], s["customer"]) for s in sheet)]
     sheet_only = [s for s in sheet if in_win(s["at"]) and not any(same_person(s["customer"], c["customer"]) for c in cy)]
@@ -107,6 +142,8 @@ def reconcile(days, closing_csv):
         }
     return {
         "window": [win_start.isoformat(), today.isoformat()],
+        "stale": False,
+        "sheet_latest": last.strftime("%Y/%m/%d %H:%M:%S"),
         "counts_by_day": counts,
         "missing_in_sheet": [{**m, "at": m["at"].strftime("%Y/%m/%d %H:%M:%S")} for m in missing],
         "sheet_only": [{**s, "at": s["at"].strftime("%Y/%m/%d %H:%M:%S")} for s in sheet_only],
@@ -114,6 +151,10 @@ def reconcile(days, closing_csv):
 
 
 def to_markdown(res):
+    if res.get("stale"):
+        return (f"獲得報告の突合：判定不可（STALE）。参照したシートのコピーの最新入力が {res['sheet_latest']} で、"
+                f"突合期間({res['window'][0]}〜)より古いため、差分は出していません。"
+                "シートを最新化して再実行するか、獲得報告シート本体を直接確認してください。")
     lines = [f"獲得報告の突合（{res['window'][0]}〜{res['window'][1]}）",
              "※日別の件数は、Cyzen報告日とシート入力日が数日ずれることがあるため参考値。判定はお客様単位の突合結果で見る"]
     for d, c in res["counts_by_day"].items():
@@ -138,9 +179,15 @@ def main():
     ap.add_argument("--out", default=os.path.join(DATA_DIR, "closing_reconcile.json"))
     ap.add_argument("--md", action="store_true")
     a = ap.parse_args()
+    live = fetch_live_closing_csv(os.path.join(DATA_DIR, "closing_reconcile_src.csv"))
+    if live:
+        print("[info] 獲得報告シートを最新で取得して突合します")
+        a.closing_csv = live
     res = reconcile(a.days, a.closing_csv)
     with open(a.out, "w", encoding="utf-8") as f:
         json.dump(res, f, ensure_ascii=False, indent=2)
+    if res.get("stale"):
+        print(f"STALE=1 sheet_latest={res['sheet_latest']} -> 判定不可 ({a.out})")
     print(f"missing_in_sheet={len(res['missing_in_sheet'])} sheet_only={len(res['sheet_only'])} -> {a.out}")
     if a.md:
         print(to_markdown(res))
