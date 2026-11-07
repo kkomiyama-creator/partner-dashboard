@@ -668,21 +668,21 @@
  "_overall": {
   "month": "2026/11",
   "seiyaku": 250,
-  "note": "11月は仮置き（全体目標は未確定のため10月と同じ250件を仮置き）。KPI計画値案（Googleスプレッドシート11月計画値案・2026-11-04）"
+  "note": "11月は仮置き（全体目標は未確定のため10月と同じ250件を仮置き）。KPI計画値案（Googleスプレッドシート11月計画値案・2026-11-04） 2026-11-07: 11月アンケート回答済み10社（Ambitious・HY・ASG・一興商事・LIVION partners・Corest home・TRIXIA・UNIVA FIT・テクノホーム・Wiz）を本人提出値に差替（クロ成約0回答はクローザー無しとして空欄）。UNIVA FITは11/4（3名）と11/5（後藤さん1名）の2回答があり、全員分の11/4回答を採用（要確認）。残り21社は計画値案のまま。 稼働人員数の目標はアンケートの稼働予定者数。"
  },
  "株式会社ASG": {
-  "apo": 96,
-  "apo_seiyaku": 32,
+  "apo": 90,
+  "apo_seiyaku": 26,
   "uriage": null,
-  "chinin": null,
+  "chinin": 4,
   "clo_seiyaku": 2
  },
  "Ambitious株式会社": {
-  "apo": 258,
+  "apo": 255,
   "apo_seiyaku": 60,
   "uriage": null,
-  "chinin": null,
-  "clo_seiyaku": 69
+  "chinin": 22,
+  "clo_seiyaku": 78
  },
  "株式会社Next Place": {
   "apo": 8,
@@ -692,11 +692,11 @@
   "clo_seiyaku": null
  },
  "HY株式会社": {
-  "apo": 100,
-  "apo_seiyaku": 36,
+  "apo": 70,
+  "apo_seiyaku": 30,
   "uriage": null,
-  "chinin": null,
-  "clo_seiyaku": 39
+  "chinin": 17,
+  "clo_seiyaku": 33
  },
  "株式会社LeadMore": {
   "apo": 58,
@@ -706,10 +706,10 @@
   "clo_seiyaku": 12
  },
  "株式会社テクノホーム": {
-  "apo": 49,
-  "apo_seiyaku": 7,
+  "apo": 30,
+  "apo_seiyaku": 10,
   "uriage": null,
-  "chinin": null,
+  "chinin": 2,
   "clo_seiyaku": null
  },
  "株式会社guidance": {
@@ -727,11 +727,11 @@
   "clo_seiyaku": 19
  },
  "一興商事株式会社": {
-  "apo": 72,
-  "apo_seiyaku": 12,
+  "apo": 70,
+  "apo_seiyaku": 18,
   "uriage": null,
-  "chinin": null,
-  "clo_seiyaku": 1
+  "chinin": 4,
+  "clo_seiyaku": 2
  },
  "株式会社ForMe works": {
   "apo": 41,
@@ -748,10 +748,10 @@
   "clo_seiyaku": null
  },
  "株式会社UNIVA FIT": {
-  "apo": 60,
-  "apo_seiyaku": 5,
+  "apo": 70,
+  "apo_seiyaku": 15,
   "uriage": null,
-  "chinin": null,
+  "chinin": 3,
   "clo_seiyaku": null
  },
  "株式会社日本建装": {
@@ -762,11 +762,11 @@
   "clo_seiyaku": null
  },
  "株式会社LIVION partners": {
-  "apo": 29,
-  "apo_seiyaku": 5,
+  "apo": 80,
+  "apo_seiyaku": 15,
   "uriage": null,
-  "chinin": null,
-  "clo_seiyaku": 37
+  "chinin": 4,
+  "clo_seiyaku": 40
  },
  "株式会社ベスティブロ": {
   "apo": 26,
@@ -783,11 +783,11 @@
   "clo_seiyaku": null
  },
  "株式会社Corest home": {
-  "apo": 16,
-  "apo_seiyaku": 3,
+  "apo": 24,
+  "apo_seiyaku": 6,
   "uriage": null,
-  "chinin": null,
-  "clo_seiyaku": 4
+  "chinin": 4,
+  "clo_seiyaku": 9
  },
  "D-MAK株式会社": {
   "apo": 14,
@@ -804,17 +804,17 @@
   "clo_seiyaku": 8
  },
  "株式会社TRIXIA": {
-  "apo": 16,
-  "apo_seiyaku": 2,
+  "apo": 18,
+  "apo_seiyaku": 7,
   "uriage": null,
-  "chinin": null,
-  "clo_seiyaku": 3
+  "chinin": 5,
+  "clo_seiyaku": 2
  },
  "株式会社Wiz": {
-  "apo": null,
-  "apo_seiyaku": 1,
+  "apo": 15,
+  "apo_seiyaku": 4,
   "uriage": null,
-  "chinin": null,
+  "chinin": 1,
   "clo_seiyaku": null
  },
  "ティーダサポート株式会社": {
