@@ -8,7 +8,8 @@ COMPANY_TARGETS_DEFAULT（目標値・Googleフォーム集計）とPERIODS.mont
 前提（2026-09-08 小宮山さん確認済み）:
   - パートナーの稼働日は月・火が休み（祝日は考慮しない、単純なカレンダー曜日ベース）
   - 標準進捗率 = 経過稼働日数 ÷ 当月稼働日数
-  - 着地予想 = 実績 ÷ 経過稼働日数 × 当月稼働日数
+  - 着地予想 = ダッシュボードの FORECAST.companies（全体の見込みと合計が一致する会社別の見込み）。
+    取得できないときだけ 実績 ÷ 経過稼働日数 × 当月稼働日数 にフォールバックする（2026-11-09変更）
   - 信号: 🔵標準以上 / 🟡標準の半分以上・標準未満 / 🔴標準の半分未満 / ⚪目標値未受領
 
 「稼働予定者数(フォーム)」列はGoogleフォーム回答（company_targets.json内のmembers）。
@@ -106,7 +107,7 @@ def signal(ratio, std):
     return "🔴"
 
 
-def metric(actual, target, std, factor):
+def metric(actual, target, std, factor, landing=None):
     if target is None or target == 0:
         return {"actual": actual, "target": target, "ratio": None, "sig": None, "landing": None}
     ratio = actual / target
@@ -115,7 +116,7 @@ def metric(actual, target, std, factor):
         "target": target,
         "ratio": ratio,
         "sig": signal(ratio, std),
-        "landing": round(actual * factor, 1),
+        "landing": landing if landing is not None else round(actual * factor, 1),
     }
 
 
@@ -219,6 +220,9 @@ def main():
         targets = override["targets"]
     month_data = periods["month"]
     actual_by_co = {c["company"]: c for c in month_data["companies"]}
+    # 会社別の月末見込み（当月分のときだけ使う）
+    forecast_data = extract_balanced_json(html, "const FORECAST = ")
+    company_fc = (forecast_data.get("companies") or {}) if forecast_data.get("month") == f"{year}/{month:02d}" else {}
 
     today_attendance_counts = {}
     if args.attendance_json:
@@ -268,9 +272,9 @@ def main():
                 "pending": False,
                 "headcount_plan": headcount_plan,
                 "headcount_actual": headcount_actual,
-                "apo_seiyaku": metric(apo_seiyaku_a, apo_seiyaku_t, std, factor),
-                "clo_seiyaku": metric(clo_seiyaku_a, clo_seiyaku_t, std, factor),
-                "apo_num": metric(apo_num_a, apo_num_t, std, factor),
+                "apo_seiyaku": metric(apo_seiyaku_a, apo_seiyaku_t, std, factor, company_fc.get(co, {}).get("apo_seiyaku")),
+                "clo_seiyaku": metric(clo_seiyaku_a, clo_seiyaku_t, std, factor, company_fc.get(co, {}).get("clo_seiyaku")),
+                "apo_num": metric(apo_num_a, apo_num_t, std, factor, company_fc.get(co, {}).get("apo_num")),
             }
         )
 
@@ -296,9 +300,9 @@ def main():
                 {
                     "co": t.get("label", co),
                     "headcount_actual": today_attendance_counts.get(co),
-                    "apo_seiyaku": metric(a.get("apo_seiyaku", 0) or 0, t.get("apo_seiyaku"), std, factor),
-                    "clo_seiyaku": metric(a.get("clo_seiyaku", 0) or 0, t.get("clo_seiyaku"), std, factor),
-                    "apo_num": metric(a.get("apo_kakutoku", 0) or 0, t.get("apo"), std, factor),
+                    "apo_seiyaku": metric(a.get("apo_seiyaku", 0) or 0, t.get("apo_seiyaku"), std, factor, company_fc.get(co, {}).get("apo_seiyaku")),
+                    "clo_seiyaku": metric(a.get("clo_seiyaku", 0) or 0, t.get("clo_seiyaku"), std, factor, company_fc.get(co, {}).get("clo_seiyaku")),
+                    "apo_num": metric(a.get("apo_kakutoku", 0) or 0, t.get("apo"), std, factor, company_fc.get(co, {}).get("apo_num")),
                 }
             )
 

@@ -28,7 +28,7 @@ from company_resolver import resolve_company, norm_name, master_by_company, cano
 from build_declining_performers import build as build_declining_performers
 from build_exec_weekly_csv import build as build_exec_weekly_raw
 from build_workrate_apo_crosstab import build as build_workrate_crosstab_raw
-from build_forecast import build_forecast
+from build_forecast import build_forecast, build_company_forecast, _prev_months, _days_in
 from build_camp_analysis import build_camp_analysis
 from build_terakoya_analysis import build_terakoya_analysis
 import config
@@ -1303,6 +1303,16 @@ function contribCell(c, metric, tkey){
   return `<span title="この期間${a}件 / 月目標${t}件（当月累計${cum === null ? '—' : cum}件）">${pct}%` +
     (cum === null ? '' : `<span style="color:var(--text-sub); font-size:11px;">（月累計${(cum / t * 100).toFixed(1)}%）</span>`) + `</span>`;
 }
+// 成約の着地見込みの算出方法の説明（新方式が使えた日は内訳も出す）
+function forecastMethodNote(){
+  const s = (FORECAST.metrics || {}).seiyaku;
+  const base = 'アポ数は、経過分は実績どおり、残りの日は曜日・祝日区分ごとの過去平均（直近6か月）を足し込んでいます。';
+  if(!s || s.method !== 'schedule' || !s.layers){
+    return `着地見込みは、経過分は実績どおり、残りの日は曜日・祝日区分ごとの過去平均（直近6か月・成約は獲得報告データのある7月以降）を足し込んだシミュレーションです。${s && s.fallback_reason ? `（成約は商談予定を使えなかったため旧方式：${escapeHtml(s.fallback_reason)}）` : ''}`;
+  }
+  const l = s.layers, sc = l.schedule;
+  return `成約の着地見込みは <b>実績 ${l.actual}件 ＋ 今後${sc.days}日の商談予定 ${sc.booked}件 × 成約割合 ${(sc.rate*100).toFixed(1)}% ＝ ${Math.round(sc.value)}件 ＋ それ以降の${l.rest.days}日 ${Math.round(l.rest.value)}件</b> の積み上げです。予定の内訳は確定${sc.kakutei}・後確後${sc.kakugo}・仮予定${sc.kari}件。幅は成約割合のぶれ（${(sc.rate_low*100).toFixed(1)}〜${(sc.rate_high*100).toFixed(1)}%）と直近3か月の水準の差から計算しています。比較用の旧方式の見込みは${s.legacy_forecast}件です。${base}`;
+}
 function renderOverallLanding(){
   const el = document.getElementById('overallLandingCard');
   if(!el) return;
@@ -1333,14 +1343,14 @@ function renderOverallLanding(){
       <td class="num">${it.target ? it.target.toLocaleString() + '件' + (it.reference ? '（参考）' : '') : '未設定'}</td>
       <td class="num">${prog}</td>
       <td>${it.reference ? '<span class="pill flat" title="全体のアポ目標がないため信号は出しません">— 参考</span>' : signalPill(sig, '標準進捗率に対する達成度')}</td>
-      <td class="num"><b>${m.forecast.toLocaleString()}件</b> <span style="color:var(--text-sub); font-size:11px;">（目標比${land}）${diffTxt}</span></td>
+      <td class="num"><b>${m.forecast.toLocaleString()}件</b>${m.forecast_low != null ? ` <span style="font-size:12px;">幅 ${m.forecast_low.toLocaleString()}〜${m.forecast_high.toLocaleString()}件</span>` : ''} <span style="color:var(--text-sub); font-size:11px;">（目標比${land}）${diffTxt}</span></td>
       <td>${badge}</td>
     </tr>`;
   }).join('');
   el.style.display = '';
   el.innerHTML = `<div style="font-weight:700; font-size:14px; color:var(--ink); margin-bottom:6px;">📈 スマートハウス事業全体の進捗と月末着地見込み（${fm.replace('/', '年')}月）</div>
     <div class="note" style="margin-bottom:10px;">基準日 <b>${FORECAST.asof}</b>／標準進捗率 <b>${std === null ? '—' : (std * 100).toFixed(1) + '%'}</b>（経過稼働日 ÷ 当月稼働日・月火は休み）。
-      着地見込みは、経過分は実績どおり、残りの日は曜日・祝日区分ごとの過去平均（直近6か月・成約は獲得報告データのある7月以降）を足し込んだシミュレーションです。表示期間の切替とは連動しません。</div>
+      ${forecastMethodNote()}表示期間の切替とは連動しません。</div>
     <div class="tablewrap"><table><thead><tr><th>指標</th><th>実績（当月累計）</th><th>目標</th><th>進捗率</th><th>信号</th><th>月末着地見込み</th><th>精度</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 function targetAchieveCell(actual, target){
@@ -3023,7 +3033,8 @@ function renderExecForecast(){
     meta.innerHTML = `基準日 <b>${escapeHtml(FORECAST.asof)}</b>（${FORECAST.elapsed_days}/${FORECAST.days_in_month}日経過）。` +
       `曜日ごとの稼働量の差が大きい事業特性に合わせ、<b>経過分の実績はそのまま確定値として使い、残り日数に「その日の区分（平日／土日／祝日／火曜）の過去${mdl.train_window_months}ヶ月平均」を加算する</b>方式で算出しています。` +
       `従来の単純日割り（実績÷経過日数×月日数）は過去15ヶ月の実データで平均9〜15%外していたため置き換えました。` +
-      `<span style="color:var(--warn);">「参考値」表示の指標は、元データの蓄積月数が足りず精度検証ができていないものです。</span>`;
+      `<span style="color:var(--warn);">「参考値」表示の指標は、元データの蓄積月数が足りず精度検証ができていないものです。</span>` +
+      (FORECAST.metrics.seiyaku && FORECAST.metrics.seiyaku.method === 'schedule' ? `<br>${forecastMethodNote()}` : '');
   }
   el.innerHTML = FORECAST_TILES.map(t=>{
     const m = FORECAST.metrics[t.key];
@@ -3052,6 +3063,7 @@ function renderExecForecast(){
       <div style="min-width:0;">
         <div class="label">${escapeHtml(m.label)} 着地予測${badge}</div>
         <div class="value">${fmt(m.forecast)}<span class="unit">${t.unit}</span></div>
+        ${m.forecast_low != null ? `<div class="sub">幅 ${fmt(m.forecast_low)}〜${fmt(m.forecast_high)}${t.unit}</div>` : ''}
         <div class="sub">実績 ${fmt(m.actual)}${t.unit}　目標 ${hasTarget?fmt(target)+t.unit:'未設定'}${diffTxt}</div>
         <div class="reason-text">${escapeHtml(note)}</div>
       </div>
@@ -5839,10 +5851,22 @@ def build(roster_csv, closing_csv, start, end, out_path, attendance_csv=None, st
     # モデルの詳細と検証結果は build_forecast.py のdocstringを参照。
     # 失敗してもダッシュボード全体は止めない（タイルが「データ未取得」表示になるだけ）。
     try:
-        forecast = build_forecast(roster_csv, closing_csv, attendance_csv, end)
+        # 記録は定期更新（ci_refresh.py が FORECAST_WRITE_LEDGER=1 を設定）のときだけ書く。
+        forecast = build_forecast(roster_csv, closing_csv, attendance_csv, end, shodan_json=shodan_json,
+                                  write_ledger=os.environ.get("FORECAST_WRITE_LEDGER") == "1")
     except Exception as e:  # noqa: BLE001
         print(f"[forecast] 着地予測の算出に失敗しました: {e}", file=sys.stderr)
         forecast = {"metrics": {}, "error": str(e)}
+    # 会社別の月末見込み（Canvasの着地予想が使う・合計は全体の見込みに一致）。失敗しても全体は止めない。
+    try:
+        _fy, _fm, _fd = (int(x) for x in end.split("/"))
+        if forecast.get("metrics") and periods["month"]["start"] == f"{_fy}/{_fm:02d}/01":
+            _py, _pm = _prev_months(_fy, _fm, 1)[0]
+            _prev = aggregate(roster_csv, closing_csv, f"{_py}/{_pm:02d}/01", f"{_py}/{_pm:02d}/{_days_in(_py, _pm):02d}")
+            forecast["companies"] = build_company_forecast(periods["month"]["companies"], _prev["companies"],
+                                                           forecast, _fy, _fm, _fd)
+    except Exception as e:  # noqa: BLE001
+        print(f"[forecast] 会社別の着地予測の算出に失敗しました: {e}", file=sys.stderr)
 
     # 山中湖合宿（2026/09/14）前後比較（2026-09-22追加）。--camp-roster-json省略時は空。
     if camp_roster_json and os.path.exists(camp_roster_json):

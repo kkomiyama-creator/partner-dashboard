@@ -289,6 +289,8 @@ def main():
         build_dashboard_cmd += ["--apo-report-json", apo_report_json]
     if houjin_writeback_url:
         build_dashboard_cmd += ["--houjin-writeback-url", houjin_writeback_url]
+    # 着地見込みの毎日の記録（予定の状態・新旧の見込み）を定期更新のときだけ書き出す
+    os.environ["FORECAST_WRITE_LEDGER"] = "1"
     run(build_dashboard_cmd, cwd=AUTOMATION_DIR)
 
     print("--- パスワードゲート付与 -> index.html ---")
@@ -296,6 +298,12 @@ def main():
     index_path = os.path.join(REPO_DIR, "index.html")
     inject_gate(out_html, index_path)
     print(f"wrote {index_path}")
+
+    # ワークフローの「git add index.html」と同じコミットに記録も載せる（ワークフロー自体は変更しない）
+    if os.environ.get("GITHUB_ACTIONS") == "true":
+        ledger_dir = os.path.join(AUTOMATION_DIR, "data", "forecast_ledger")
+        if os.path.isdir(ledger_dir):
+            subprocess.run(["git", "add", ledger_dir], cwd=REPO_DIR, check=False)
 
 
 if __name__ == "__main__":

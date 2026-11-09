@@ -47,15 +47,33 @@ def _daterange_chunks(start, end, days=CHUNK_DAYS):
         d1 = d3 + datetime.timedelta(days=1)
 
 
+def _get_paged(client, d1, d2):
+    """/schedules は1回あたり約200件までで、続きがあると next_start_date が返る
+    （2026-10-28に判明。従来は1回しか取らず、件数の多い週は後半が欠落していた）。
+    next_start_date を from_date に渡して続きを取り、schedule_idで重複を除く。"""
+    out, seen = [], set()
+    frm = f"{d1}T00:00:00"
+    for _ in range(60):
+        data = client.get("schedules", from_date=frm, to_date=f"{d2}T23:59:59", with_actual=1)
+        items = data.get("schedules") or []
+        new = [s for s in items if s.get("schedule_id") not in seen]
+        for s in new:
+            seen.add(s.get("schedule_id"))
+        out.extend(new)
+        nxt = data.get("next_start_date")
+        if not nxt or not new:
+            break
+        frm = nxt
+    return out
+
+
 def fetch_schedules(client, start, end):
     """期間内の予定を取得。チャンクが500で落ちた場合は日単位に切り替え、
     それでも落ちる日はスキップして記録する（Cyzen側のデータ起因の既知不具合）。"""
     out, skipped = [], []
     for d1, d2 in _daterange_chunks(start, end):
         try:
-            data = client.get("schedules", from_date=f"{d1}T00:00:00",
-                              to_date=f"{d2}T23:59:59", with_actual=1)
-            out.extend(data.get("schedules") or [])
+            out.extend(_get_paged(client, d1, d2))
             continue
         except CyzenAPIError as e:
             if "500" not in str(e):
@@ -67,9 +85,7 @@ def fetch_schedules(client, start, end):
         while d <= last:
             ds = d.isoformat()
             try:
-                data = client.get("schedules", from_date=f"{ds}T00:00:00",
-                                  to_date=f"{ds}T23:59:59", with_actual=1)
-                out.extend(data.get("schedules") or [])
+                out.extend(_get_paged(client, ds, ds))
             except CyzenAPIError as e:
                 if "500" not in str(e):
                     raise
